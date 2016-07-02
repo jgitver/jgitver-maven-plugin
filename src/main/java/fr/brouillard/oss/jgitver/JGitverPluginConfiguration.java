@@ -57,10 +57,24 @@ class JGitverPluginConfiguration {
 
     List<String> nonQualifierBranches() {
         return pomPluginConfiguration
-          .map(node -> node.getChild("nonQualifierBranches").getChildren())
-          .map(xpp3Dom -> Arrays.stream(xpp3Dom)
-            .map(Xpp3Dom::getValue)
-            .collect(Collectors.toList()))
+          .map(node -> {
+              //Check if there is a direct configuration as string or with children
+              Xpp3Dom nonQualifierBranchesNode = node.getChild("nonQualifierBranches");
+              String value = nonQualifierBranchesNode.getValue();
+
+              //The children
+              Xpp3Dom[] children = nonQualifierBranchesNode.getChildren();
+
+              //Backwards compatibility, we have a string
+              if (children.length == 0 && value != null) {
+                  return Arrays.asList(value.split("\\s*,\\s*"));
+              }
+
+              //we do have children
+              return Arrays.stream(children)
+                .map(Xpp3Dom::getValue)
+                .collect(Collectors.toList());
+          })
           .orElse(Collections.singletonList("master"));
     }
 

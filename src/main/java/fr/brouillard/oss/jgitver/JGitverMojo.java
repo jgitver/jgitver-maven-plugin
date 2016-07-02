@@ -44,7 +44,10 @@ public class JGitverMojo extends AbstractMojo {
     private Integer gitCommitIdLength;
 
     @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
-    private List<String> nonQualifierBranches;
+    private String nonQualifierBranches;
+
+    @Parameter(property = "jgitver.nonQualifierBranchesList", defaultValue = "master")
+    private List<String> nonQualifierBranchesList;
 
     @Parameter(property = "jgitver.useDirty", defaultValue = "false")
     private Boolean useDirty;
