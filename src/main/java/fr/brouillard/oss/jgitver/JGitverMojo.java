@@ -21,6 +21,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import java.util.List;
+
 /**
  * jgitver plugin, should only be used as an extension. We use it for configuration purpose of the extension.
  */
@@ -42,7 +44,7 @@ public class JGitverMojo extends AbstractMojo {
     private Integer gitCommitIdLength;
 
     @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
-    private String nonQualifierBranches;
+    private List<String> nonQualifierBranches;
 
     @Parameter(property = "jgitver.useDirty", defaultValue = "false")
     private Boolean useDirty;
