@@ -58,6 +58,22 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- dependencies versions as properties -->
+        <jgitver.version>0.2.1</jgitver.version>
+        <maven-core.version>3.3.9</maven-core.version>
+        <plexus-utils.version>3.0.8</plexus-utils.version>
+        <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
+        <maven-plugin-api.version>2.0</maven-plugin-api.version>
+        <plexus-component-annotations.version>1.5.5</plexus-component-annotations.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <guava.version>19.0</guava.version>
+        <junit.version>4.8.2</junit.version>
+
+        <!-- plugins versions as properties -->
+        <plexus-component-metadata.version>1.6</plexus-component-metadata.version>
+        <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
+        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
     </properties>
 
     <developers>
@@ -100,51 +116,51 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>2.0</version>
+            <version>${maven-plugin-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.2</version>
+            <version>${maven-plugin-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.8</version>
+            <version>${plexus-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.3.9</version>
+            <version>${maven-core.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
-            <version>1.5.5</version>
+            <version>${plexus-component-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fr.brouillard.oss</groupId>
             <artifactId>jgitver</artifactId>
-            <version>0.2.0</version>
+            <version>${jgitver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>${guava.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -154,7 +170,7 @@
             <plugin>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-component-metadata</artifactId>
-                <version>1.6</version>
+                <version>${plexus-component-metadata.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -442,7 +458,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>${maven-gpg-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -461,7 +477,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
+                        <version>${nexus-staging-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>

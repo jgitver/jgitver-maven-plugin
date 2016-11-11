@@ -15,13 +15,11 @@
     limitations under the License.
 
 -->
-<configuration>
-    <useDirty>true</useDirty>
-    <exclusions>
-        <exclusion>.repository</exclusion>
-        <exclusion>target/local-repo</exclusion>
-        <exclusion>target/it/issues/issue-30-pre</exclusion>
-        <exclusion>target/it/pom-with-old-extension-system</exclusion>
-        <exclusion>target/it/pom-with-old-plugin-system</exclusion>
-    </exclusions>
-</configuration>
+<extensions xmlns="http://maven.apache.org/EXTENSIONS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/EXTENSIONS/1.0.0 http://maven.apache.org/xsd/core-extensions-1.0.0.xsd">
+  <extension>
+    <groupId>@project.groupId@</groupId>
+    <artifactId>@project.artifactId@</artifactId>
+    <version>@project.version@</version>
+  </extension>
+</extensions>

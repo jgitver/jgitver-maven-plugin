@@ -222,6 +222,9 @@ or using docker
 
 - `docker run -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 mvn -Prun-its clean verify`
 
+build and filter some IT tests
+
+- `mvn -Prun-its clean install "-Dinvoker.test=issues/issue-36*"`
 
 ### Release
 
