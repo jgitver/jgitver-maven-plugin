@@ -16,29 +16,41 @@
 package fr.brouillard.oss.jgitver.cfg;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.util.stream.Collectors;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.maven.MavenExecutionException;
 import org.codehaus.plexus.logging.Logger;
+import org.xml.sax.SAXException;
+
+import fr.brouillard.oss.jgitver.cfg.schema.ConfigurationSchema;
 
 public class ConfigurationLoader {
+    private final static String NAMESPACE = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
+
     /**
      * Loads a Configuration object from the root directory.
+     * 
      * @param rootDirectory the root directory of the maven project
      * @param logger the logger to report activity
-     * @return a non null Configuration object from the file $rootDirectory/.mvn/jgitver.config.xml
-     *     or a default one with default values if the configuration file does not exist
-     * @throws MavenExecutionException if the file exists but cannot be read correctly
+     * @return a non null Configuration object from the file
+     *         $rootDirectory/.mvn/jgitver.config.xml or a default one with
+     *         default values if the configuration file does not exist
+     * @throws MavenExecutionException
+     *             if the file exists but cannot be read correctly
      */
     public static Configuration loadFromRoot(File rootDirectory, Logger logger) throws MavenExecutionException {
-        JAXBContext jaxbContext;
-        Unmarshaller unmarshaller;
         File extensionMavenCoreDirectory = new File(rootDirectory, ".mvn");
         File configurationXml = new File(extensionMavenCoreDirectory, "jgitver.config.xml");
         if (!configurationXml.canRead()) {
@@ -49,32 +61,37 @@ public class ConfigurationLoader {
                 return new Configuration();
             }
         }
+
         try {
             logger.info("using jgitver configuration file: " + configurationXml);
-            jaxbContext = JAXBContext.newInstance(Configuration.class);
-            unmarshaller = jaxbContext.createUnmarshaller();
-            final FileInputStream is = new FileInputStream(configurationXml);
-            try {
-                Configuration c = (Configuration) unmarshaller.unmarshal(is);
-                return c;
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                    // ignore
-                }
-            }
-        } catch (JAXBException | FileNotFoundException ex) {
+            String configurationContent = Files.readAllLines(configurationXml.toPath()).stream().collect(Collectors.joining("\n"));
+
+            Configuration c = loadConfiguration(configurationContent);
+            return c;
+        } catch (JAXBException | IOException | SAXException ex) {
             throw new MavenExecutionException("cannot read configuration file " + configurationXml, ex);
         }
     }
-    
-//    public static void main(String[] args) throws Exception {
-//        JAXBContext context = JAXBContext.newInstance(Configuration.class);
-//        Marshaller marshaller = context.createMarshaller();
-//        StringWriter sw = new StringWriter();
-//        marshaller.marshal(new Configuration(), sw);
-//        
-//        System.out.println(sw.toString());
-//    }
+
+    private static Configuration loadConfiguration(String configurationContent) throws JAXBException, SAXException, IOException {
+        JAXBContext jaxbContext;
+        Unmarshaller unmarshaller;
+
+        if (configurationContent.contains(NAMESPACE)) {
+            jaxbContext = JAXBContext.newInstance(ConfigurationSchema.class);
+
+            StreamSource contentStreamSource = new StreamSource(new StringReader(configurationContent));
+            Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(ConfigurationLoader.class.getResource("/schemas/jgitver-configuration-v1_0_0-beta.xsd"));
+            Validator validator = schema.newValidator();
+            validator.validate(contentStreamSource);
+            unmarshaller = jaxbContext.createUnmarshaller();
+            unmarshaller.setSchema(schema);
+            ConfigurationSchema cs = (ConfigurationSchema) unmarshaller.unmarshal(new StringReader(configurationContent));
+            return cs.asConfiguration();
+        } else {
+            jaxbContext = JAXBContext.newInstance(Configuration.class);
+            unmarshaller = jaxbContext.createUnmarshaller();
+            return (Configuration) unmarshaller.unmarshal(new StringReader(configurationContent));
+        }
+    }
 }

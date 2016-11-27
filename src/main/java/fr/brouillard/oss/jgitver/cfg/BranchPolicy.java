@@ -36,6 +36,7 @@ public class BranchPolicy {
     @XmlElement(name = "transformation")
     public List<String> transformations = new LinkedList<>(
             Arrays.asList(
-                    BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name(),
-                    BranchNameTransformations.LOWERCASE_EN.name()));
+                    BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name()
+                    , BranchNameTransformations.LOWERCASE_EN.name())
+            );
 }

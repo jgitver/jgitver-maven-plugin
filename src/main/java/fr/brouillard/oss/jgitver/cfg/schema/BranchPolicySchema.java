@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.brouillard.oss.jgitver.cfg;
+package fr.brouillard.oss.jgitver.cfg.schema;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,29 +25,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import fr.brouillard.oss.jgitver.BranchingPolicy.BranchNameTransformations;
+import fr.brouillard.oss.jgitver.cfg.BranchPolicy;;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Configuration {
-    @XmlElement(name = "mavenLike")
-    public boolean mavenLike = true;
-    @XmlElement
-    public boolean autoIncrementPatch = true;
-    @XmlElement
-    public boolean useCommitDistance = false;
-    @XmlElement
-    public boolean useDirty = false;
-    @XmlElement
-    public boolean useDefaultBranchingPolicy = true;
-    @XmlElement
-    public boolean useGitCommitId = false;
-    @XmlElement
-    public int gitCommitIdLength = 8;
-    @XmlElement
-    public String nonQualifierBranches = "master";
-    @XmlElementWrapper(name = "exclusions")
-    @XmlElement(name = "exclusion")
-    public List<String> exclusions = new LinkedList<>();
-    @XmlElementWrapper(name = "branchPolicies")
-    @XmlElement(name = "branchPolicy")
-    public List<BranchPolicy> branchPolicies = new LinkedList<>();
+public class BranchPolicySchema {
+    @XmlElement(name = "pattern")
+    public String pattern;
+    @XmlElementWrapper(name = "transformations")
+    @XmlElement(name = "transformation")
+    public List<String> transformations = new LinkedList<>(
+            Arrays.asList(
+                    BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name()
+                    , BranchNameTransformations.LOWERCASE_EN.name())
+            );
+
+    public BranchPolicy asBranchPolicy() {
+        BranchPolicy bp = new BranchPolicy();
+        bp.pattern = pattern;
+        bp.transformations.addAll(transformations);
+        return bp;
+    }
 }

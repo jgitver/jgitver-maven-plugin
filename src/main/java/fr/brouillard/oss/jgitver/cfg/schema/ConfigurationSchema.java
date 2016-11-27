@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.brouillard.oss.jgitver.cfg;
+package fr.brouillard.oss.jgitver.cfg.schema;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,9 +25,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+import fr.brouillard.oss.jgitver.cfg.Configuration;
+
+@XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Configuration {
+public class ConfigurationSchema {
     @XmlElement(name = "mavenLike")
     public boolean mavenLike = true;
     @XmlElement
@@ -48,5 +51,22 @@ public class Configuration {
     public List<String> exclusions = new LinkedList<>();
     @XmlElementWrapper(name = "branchPolicies")
     @XmlElement(name = "branchPolicy")
-    public List<BranchPolicy> branchPolicies = new LinkedList<>();
+    public List<BranchPolicySchema> branchPolicies = new LinkedList<>();
+
+    public Configuration asConfiguration() {
+        Configuration c = new Configuration();
+        c.mavenLike = mavenLike;
+        c.autoIncrementPatch = autoIncrementPatch;
+        c.useCommitDistance = useCommitDistance;
+        c.useDirty = useDirty;
+        c.useDefaultBranchingPolicy = useDefaultBranchingPolicy;
+        c.useGitCommitId = useGitCommitId;
+        c.gitCommitIdLength = gitCommitIdLength;
+        c.nonQualifierBranches = nonQualifierBranches;
+
+        c.exclusions.addAll(exclusions);
+        c.branchPolicies.addAll(branchPolicies.stream().map(BranchPolicySchema::asBranchPolicy).collect(Collectors.toList()));
+
+        return c;
+    }
 }

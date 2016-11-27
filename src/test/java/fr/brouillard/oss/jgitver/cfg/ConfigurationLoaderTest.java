@@ -18,6 +18,7 @@ package fr.brouillard.oss.jgitver.cfg;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -47,6 +48,25 @@ public class ConfigurationLoaderTest {
             
             assertThat(cfg.mavenLike, is(false));
             assertThat(cfg.useCommitDistance, is(true));
+        }
+    }
+    
+    @Test
+    public void can_load_a_simple_configuration_with_xml_schema() throws MavenExecutionException, IOException {
+        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/simple.cfg.with.schema.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+            assertThat(cfg, notNullValue());
+            
+            assertThat(cfg.useCommitDistance, is(true));
+            assertThat(cfg.mavenLike, is(false));
+        }
+    }
+    
+    @Test (expected=MavenExecutionException.class)
+    public void must_fail_loading_an_invalid_configuration_with_xml_schema() throws MavenExecutionException, IOException {
+        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/invalid-with-schema.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+            fail("should have failed loading an erroneous file");
         }
     }
     

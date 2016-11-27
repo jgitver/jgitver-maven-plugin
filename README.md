@@ -27,13 +27,17 @@ __via curl__
 
 from the root directory of your project, run:
 
-`sh -c "$(curl -fsSL https://raw.githubusercontent.com/jgitver/jgitver-maven-plugin/master/src/doc/scripts/install.sh)"`
+``` shell
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/jgitver/jgitver-maven-plugin/master/src/doc/scripts/install.sh)"
+```
 
 __via wget__
 
 from the root directory of your project, run:
 
-`sh -c "$(wget https://raw.githubusercontent.com/jgitver/jgitver-maven-plugin/master/src/doc/scripts/install.sh -O -)"`
+``` shell
+sh -c "$(wget https://raw.githubusercontent.com/jgitver/jgitver-maven-plugin/master/src/doc/scripts/install.sh -O -)"
+```
 
 __manually__
 
@@ -41,7 +45,7 @@ __manually__
 1. Create file `.mvn/extensions.xml`
 1. Put the following content to `.mvn/extensions.xml` (adapt to [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22fr.brouillard.oss%22%20a%3A%22jgitver-maven-plugin%22)).
 
-    ```
+    ``` xml
     <extensions xmlns="http://maven.apache.org/EXTENSIONS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://maven.apache.org/EXTENSIONS/1.0.0 http://maven.apache.org/xsd/core-extensions-1.0.0.xsd">
       <extension>
@@ -55,10 +59,15 @@ __manually__
 ### Configuration
 
 In order to control [jgitver-maven-plugin](#jgitver-maven-plugin) behavior, you can provide a configuration
-file under `$rootProjectDir/.mvn/jgitver.config.xml` having the following format:
+file under `$rootProjectDir/.mvn/jgitver.config.xml`.
+The configuration file must be compliant with the [xml-schemas](https://jgitver.github.io) supported. 
 
-```
-<configuration>
+Here is an example configuration file:
+
+``` xml
+<configuration xmlns="http://jgitver.github.io/maven/configuration/1.0.0-beta"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jgitver.github.io/maven/configuration/1.0.0-beta https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_0_0-beta.xsd ">
     <mavenLike>true/false</mavenLike>
     <autoIncrementPatch>true/false</autoIncrementPatch>
     <useCommitDistance>true/false</useCommitDistance>
@@ -75,7 +84,7 @@ file under `$rootProjectDir/.mvn/jgitver.config.xml` having the following format
             <pattern>pattern</pattern>                  <!-- regex pattern -->
             <!-- list of transformations to apply, if empty, defaults to REPLACE_UNEXPECTED_CHARS_UNDERSCORE, LOWERCASE_EN -->
             <transformations>                           
-                <transformation>NAME</transformation> <!-- transformation name, one of jgitver#fr.brouillard.oss.jgitver.metadata.Metadatas -->
+                <transformation>NAME</transformation> <!-- transformation name, one of jgitver#fr.brouillard.oss.jgitver.BranchingPolicy#BranchNameTransformations -->
                 ...
             </transformations>
         </branchPolicy>
@@ -93,7 +102,7 @@ Those are available under the following properties name: "jgitver.meta" where `m
 
 You can then use them as standard maven properties in your build:
 
-```
+``` xml
 <plugin>
     <artifactId>maven-antrun-plugin</artifactId>
     <executions>
@@ -104,7 +113,6 @@ You can then use them as standard maven properties in your build:
             </goals>
             <configuration>
                 <tasks>
-
                     <echo>version calculated: ${jgitver.calculated_version}</echo>
                     <echo>dirty: ${jgitver.dirty}</echo>
                     <echo>head_committer_name: ${jgitver.head_committer_name}</echo>
@@ -250,7 +258,7 @@ In this context, when executing tests, maven will try to activate extensions sta
 
 To avoid such behavior, you need to tell `jgitver-maven-plugin` to ignore some directories. If you do not have already a jgitver configuration file, create one under `.mvn/jgitver.config.xml` and declare some exclusions (see [configuration](#configuration)):
 
-```
+``` xml
 <configuration>
     <exclusions>
         <exclusion>target/local-repo</exclusion>

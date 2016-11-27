@@ -111,7 +111,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                             .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                             .setNonQualifierBranches(cfg.nonQualifierBranches);
                         
-                        if (cfg.branchPolicies != null) {
+                        if (cfg.branchPolicies != null && !cfg.branchPolicies.isEmpty()) {
                             List<BranchingPolicy> policies = cfg.branchPolicies.stream()
                                     .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))
                                     .collect(Collectors.toList());
@@ -135,6 +135,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         try {
             calculateVersionIfNecessary();
         } catch (Exception ex) {
+            logger.error("failure while calculating version", ex);
             throw new IOException("cannot build a Model object using jgitver", ex);
         }
 
