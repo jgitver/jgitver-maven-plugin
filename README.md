@@ -271,6 +271,6 @@ To avoid such behavior, you need to tell `jgitver-maven-plugin` to ignore some d
 
 You can have a look at the configuration of [jgitver-maven-plugin](.mvn/jgitver.config.xml) itself.
 
-License
+# License
 
 jgitver-maven-plugin is delivered under the [Apache Licence, Version 2](https://opensource.org/licenses/Apache-2.0)

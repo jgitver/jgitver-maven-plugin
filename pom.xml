@@ -60,7 +60,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- dependencies versions as properties -->
-        <jgitver.version>0.2.2-issue_20-SNAPSHOT</jgitver.version>
+        <jgitver.version>0.3.0</jgitver.version>
         <maven-core.version>3.3.9</maven-core.version>
         <plexus-utils.version>3.0.8</plexus-utils.version>
         <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
