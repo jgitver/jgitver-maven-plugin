@@ -62,6 +62,7 @@ public class ConfigurationLoaderTest {
         }
     }
     
+    @SuppressWarnings("unused")
     @Test (expected=MavenExecutionException.class)
     public void must_fail_loading_an_invalid_configuration_with_xml_schema() throws MavenExecutionException, IOException {
         try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/invalid-with-schema.xml")) {

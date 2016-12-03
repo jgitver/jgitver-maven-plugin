@@ -43,6 +43,8 @@ public class Configuration {
     public int gitCommitIdLength = 8;
     @XmlElement
     public String nonQualifierBranches = "master";
+    @XmlElement(name="regexVersionTag")
+    public String regexVersionTag;
     @XmlElementWrapper(name = "exclusions")
     @XmlElement(name = "exclusion")
     public List<String> exclusions = new LinkedList<>();

@@ -111,6 +111,10 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                             .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                             .setNonQualifierBranches(cfg.nonQualifierBranches);
                         
+                        if (cfg.regexVersionTag != null) {
+                            gitVersionCalculator.setFindTagVersionPattern(cfg.regexVersionTag);
+                        }
+                        
                         if (cfg.branchPolicies != null && !cfg.branchPolicies.isEmpty()) {
                             List<BranchingPolicy> policies = cfg.branchPolicies.stream()
                                     .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))

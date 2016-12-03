@@ -42,7 +42,7 @@
     			</xs:annotation></xs:element>
     		<xs:element name="useGitCommitId" type="xs:boolean" minOccurs="0" maxOccurs="1">
     			<xs:annotation>
-    				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the lenght is controled by the property 'gitCommitIdLength' </xs:documentation>
+    				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the length is controlled by the property 'gitCommitIdLength' </xs:documentation>
     			</xs:annotation></xs:element>
     		<xs:element name="gitCommitIdLength" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
     		<xs:element name="nonQualifierBranches" type="xs:string" minOccurs="0" maxOccurs="1">
@@ -51,6 +51,10 @@
     			</xs:annotation></xs:element>
     		<xs:element name="exclusions" type="Exclusions" minOccurs="0" maxOccurs="1"></xs:element>
     		<xs:element name="useDefaultBranchingPolicy" type="xs:boolean" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="regexVersionTag" type="xs:string" minOccurs="0" maxOccurs="1" nillable="false">
+    			<xs:annotation>
+    				<xs:documentation>java regular expression to find tags to extract version from, if omitted default value is used: v?([0-9]+(?:\.[0-9]+){0,2}(?:-[a-zA-Z0-9\-_]+)?)</xs:documentation>
+    			</xs:annotation></xs:element>
     		<xs:element name="branchPolicies" type="BranchPolicies" minOccurs="0" maxOccurs="1"></xs:element>
     	</xs:sequence>
     </xs:complexType>

@@ -46,6 +46,8 @@ public class ConfigurationSchema {
     public int gitCommitIdLength = 8;
     @XmlElement
     public String nonQualifierBranches = "master";
+    @XmlElement(name="regexVersionTag")
+    public String regexVersionTag;
     @XmlElementWrapper(name = "exclusions")
     @XmlElement(name = "exclusion")
     public List<String> exclusions = new LinkedList<>();
@@ -63,6 +65,7 @@ public class ConfigurationSchema {
         c.useGitCommitId = useGitCommitId;
         c.gitCommitIdLength = gitCommitIdLength;
         c.nonQualifierBranches = nonQualifierBranches;
+        c.regexVersionTag = regexVersionTag;
 
         c.exclusions.addAll(exclusions);
         c.branchPolicies.addAll(branchPolicies.stream().map(BranchPolicySchema::asBranchPolicy).collect(Collectors.toList()));
