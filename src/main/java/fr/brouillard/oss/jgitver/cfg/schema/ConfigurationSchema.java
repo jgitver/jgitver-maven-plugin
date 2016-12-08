@@ -39,6 +39,8 @@ public class ConfigurationSchema {
     @XmlElement
     public boolean useDirty = false;
     @XmlElement
+    public boolean failIfDirty = false;
+    @XmlElement
     public boolean useDefaultBranchingPolicy = true;
     @XmlElement
     public boolean useGitCommitId = false;
@@ -46,7 +48,7 @@ public class ConfigurationSchema {
     public int gitCommitIdLength = 8;
     @XmlElement
     public String nonQualifierBranches = "master";
-    @XmlElement(name="regexVersionTag")
+    @XmlElement(name = "regexVersionTag")
     public String regexVersionTag;
     @XmlElementWrapper(name = "exclusions")
     @XmlElement(name = "exclusion")
@@ -55,12 +57,17 @@ public class ConfigurationSchema {
     @XmlElement(name = "branchPolicy")
     public List<BranchPolicySchema> branchPolicies = new LinkedList<>();
 
+    /**
+     * Converts this instance into a {@link Configuration} one.
+     * @return a non null {@link Configuration} object containing the same values than this instance.
+     */
     public Configuration asConfiguration() {
         Configuration c = new Configuration();
         c.mavenLike = mavenLike;
         c.autoIncrementPatch = autoIncrementPatch;
         c.useCommitDistance = useCommitDistance;
         c.useDirty = useDirty;
+        c.failIfDirty = failIfDirty;
         c.useDefaultBranchingPolicy = useDefaultBranchingPolicy;
         c.useGitCommitId = useGitCommitId;
         c.gitCommitIdLength = gitCommitIdLength;

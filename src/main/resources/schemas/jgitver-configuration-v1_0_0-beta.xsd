@@ -40,6 +40,10 @@
     			<xs:annotation>
     				<xs:documentation>add a 'dirty' qualifier if the version is calculated from a stale git directory (modified files, new files, ...)</xs:documentation>
     			</xs:annotation></xs:element>
+    		<xs:element name="failIfDirty" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false">
+    			<xs:annotation>
+    				<xs:documentation>if true and the dirty state is detected then make the build fail</xs:documentation>
+    			</xs:annotation></xs:element>
     		<xs:element name="useGitCommitId" type="xs:boolean" minOccurs="0" maxOccurs="1">
     			<xs:annotation>
     				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the length is controlled by the property 'gitCommitIdLength' </xs:documentation>

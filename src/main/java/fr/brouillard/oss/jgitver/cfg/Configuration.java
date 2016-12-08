@@ -36,6 +36,8 @@ public class Configuration {
     @XmlElement
     public boolean useDirty = false;
     @XmlElement
+    public boolean failIfDirty = false;
+    @XmlElement
     public boolean useDefaultBranchingPolicy = true;
     @XmlElement
     public boolean useGitCommitId = false;
@@ -43,7 +45,7 @@ public class Configuration {
     public int gitCommitIdLength = 8;
     @XmlElement
     public String nonQualifierBranches = "master";
-    @XmlElement(name="regexVersionTag")
+    @XmlElement(name = "regexVersionTag")
     public String regexVersionTag;
     @XmlElementWrapper(name = "exclusions")
     @XmlElement(name = "exclusion")

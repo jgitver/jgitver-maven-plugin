@@ -47,6 +47,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
 import fr.brouillard.oss.jgitver.cfg.Configuration;
+import fr.brouillard.oss.jgitver.metadata.Metadatas;
 
 /**
  * Replacement ModelProcessor using jgitver while loading POMs in order to adapt versions.
@@ -124,8 +125,18 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                         }
 
                         JGitverVersion jGitverVersion = new JGitverVersion(gitVersionCalculator);
+                        
+                        boolean isDirty = jGitverVersion.getGitVersionCalculator()
+                                .meta(Metadatas.DIRTY)
+                                .map(Boolean::parseBoolean)
+                                .orElse(Boolean.FALSE);
+                        
+                        if (cfg.failIfDirty && isDirty) {
+                            throw new IllegalStateException("repository is dirty");
+                        }
+                        
                         JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), jGitverVersion, logger);
-
+                        
                         workingConfiguration = new JGitverModelProcessorWorkingConfiguration(
                                 jGitverVersion.getCalculatedVersion(),
                                 rootDirectory);

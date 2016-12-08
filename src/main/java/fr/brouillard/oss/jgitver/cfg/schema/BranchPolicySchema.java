@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import fr.brouillard.oss.jgitver.BranchingPolicy.BranchNameTransformations;
-import fr.brouillard.oss.jgitver.cfg.BranchPolicy;;
+import fr.brouillard.oss.jgitver.cfg.BranchPolicy;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -37,10 +37,14 @@ public class BranchPolicySchema {
     @XmlElement(name = "transformation")
     public List<String> transformations = new LinkedList<>(
             Arrays.asList(
-                    BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name()
-                    , BranchNameTransformations.LOWERCASE_EN.name())
+                    BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name(),
+                    BranchNameTransformations.LOWERCASE_EN.name())
             );
 
+    /**
+     * Converts this instance into a {@link BranchPolicy} one.
+     * @return a non null {@link BranchPolicy} object containing the same values than this instance.
+     */
     public BranchPolicy asBranchPolicy() {
         BranchPolicy bp = new BranchPolicy();
         bp.pattern = pattern;

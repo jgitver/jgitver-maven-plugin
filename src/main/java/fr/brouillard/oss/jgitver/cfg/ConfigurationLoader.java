@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
 import fr.brouillard.oss.jgitver.cfg.schema.ConfigurationSchema;
 
 public class ConfigurationLoader {
-    private final static String NAMESPACE = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
+    private static final String NAMESPACE = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
 
     /**
      * Loads a Configuration object from the root directory.
@@ -81,7 +81,8 @@ public class ConfigurationLoader {
             jaxbContext = JAXBContext.newInstance(ConfigurationSchema.class);
 
             StreamSource contentStreamSource = new StreamSource(new StringReader(configurationContent));
-            Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(ConfigurationLoader.class.getResource("/schemas/jgitver-configuration-v1_0_0-beta.xsd"));
+            Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                    .newSchema(ConfigurationLoader.class.getResource("/schemas/jgitver-configuration-v1_0_0-beta.xsd"));
             Validator validator = schema.newValidator();
             validator.validate(contentStreamSource);
             unmarshaller = jaxbContext.createUnmarshaller();
