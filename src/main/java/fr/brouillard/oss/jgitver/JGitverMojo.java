@@ -17,8 +17,10 @@ package fr.brouillard.oss.jgitver;
 
 import java.util.List;
 
+import org.apache.maven.MavenExecutionException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -53,7 +55,11 @@ public class JGitverMojo extends AbstractMojo {
     private Boolean useDirty;
 
     public void execute() throws MojoExecutionException {
-        getLog().warn("the plugin [jgitver-maven-plugin] should not be executed alone," 
-                + " verify <extensions>true</extensions> is set on the plugin configuration");
+        final Log logger = getLog();
+        try {
+            JGitverUtils.failAsOldMechanism(logger::warn);
+        } catch (MavenExecutionException e) {
+            throw new MojoExecutionException("cannot use jgitver as maven plugin anymore", e);
+        }
     }
 }

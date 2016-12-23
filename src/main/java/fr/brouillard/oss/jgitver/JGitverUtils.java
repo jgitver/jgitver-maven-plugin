@@ -28,8 +28,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -232,5 +234,17 @@ public final class JGitverUtils {
             setProjectPomFile(project, newPom, logger);
             logger.debug("    pom file set");
         }
+    }
+
+    public static void failAsOldMechanism(Consumer<? super CharSequence> logger) throws MavenExecutionException {
+        logger.accept("jgitver has changed!");
+        logger.accept("");
+        logger.accept("it now requires the usage of maven core extensions (> 3.3.1) instead of standard plugin extensions.");
+        logger.accept("The plugin must be now declared in a `.mvn/extensions.xml` file.");
+        logger.accept("");
+        logger.accept("    read https://github.com/jgitver/jgitver-maven-plugin for further information");
+        logger.accept("");
+        throw new MavenExecutionException("detection of jgitver old setting mechanism",
+                new IllegalStateException("jgitver must now use maven core extensions only"));
     }
 }
