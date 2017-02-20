@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 /**
  * Works in conjunction with JGitverModelProcessor.
  */
-@Mojo(name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS, defaultPhase = LifecyclePhase.VERIFY,
+@Mojo(name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS,
         instantiationStrategy = InstantiationStrategy.SINGLETON, threadSafe = true)
 public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
     public static final String GOAL_ATTACH_MODIFIED_POMS = "attach-modified-poms";

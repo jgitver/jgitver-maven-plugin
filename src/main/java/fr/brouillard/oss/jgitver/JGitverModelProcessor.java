@@ -232,7 +232,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                     plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
                     plugin2.setVersion(pluginVersion.toString());
 
-                    model.getBuild().getPlugins().add(plugin2);
+                    model.getBuild().getPlugins().add(0, plugin2);
                     return plugin2;
                 });
 
@@ -240,12 +240,13 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                     plugin.setExecutions(new ArrayList<>());
                 }
 
+                String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
                 Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
-                        .filter(x -> "verify".equalsIgnoreCase(x.getPhase())).findFirst();
+                        .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase())).findFirst();
 
                 PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(() -> {
                     PluginExecution pluginExecution2 = new PluginExecution();
-                    pluginExecution2.setPhase("verify");
+                    pluginExecution2.setPhase(pluginRunPhase);
 
                     plugin.getExecutions().add(pluginExecution2);
                     return pluginExecution2;
