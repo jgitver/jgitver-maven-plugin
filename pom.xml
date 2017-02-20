@@ -234,6 +234,8 @@
                         <exclude>**/LICENSE</exclude>
                         <exclude>.*</exclude>
                         <exclude>**/.keepgit</exclude>
+                        <exclude>**/changelog.mustache</exclude>
+                        <exclude>**/CHANGELOG</exclude>
                         <exclude>src/quality/**</exclude>
                         <exclude>src/doc/images/**</exclude>
                         <exclude>src/it/resources/**</exclude>
@@ -392,6 +394,39 @@
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>changelog</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>se.bjurr.gitchangelog</groupId>
+                        <artifactId>git-changelog-maven-plugin</artifactId>
+                        <version>1.39</version>
+                        <executions>
+                            <execution>
+                                <id>GenerateGitChangelog</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>git-changelog</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- A file on filesystem //-->
+                                    <filePath>CHANGELOG.md</filePath>
+                                    <gitHubApi>https://api.github.com/repos/jgitver/jgitver-maven-plugin</gitHubApi>
+                                    <ignoreCommitsWithoutIssue>true</ignoreCommitsWithoutIssue>
+
+                                    <!--<gitHubToken>${GITHUB_OAUTH2TOKEN}</gitHubToken>-->
+
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
