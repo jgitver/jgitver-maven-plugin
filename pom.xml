@@ -232,6 +232,7 @@
                     <excludes>
                         <exclude>**/README</exclude>
                         <exclude>**/LICENSE</exclude>
+                        <exclude>.okhttpcache/**</exclude>
                         <exclude>.*</exclude>
                         <exclude>**/.keepgit</exclude>
                         <exclude>**/changelog.mustache</exclude>

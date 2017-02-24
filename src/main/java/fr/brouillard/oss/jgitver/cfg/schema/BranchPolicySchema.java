@@ -48,6 +48,7 @@ public class BranchPolicySchema {
     public BranchPolicy asBranchPolicy() {
         BranchPolicy bp = new BranchPolicy();
         bp.pattern = pattern;
+        bp.transformations.clear();
         bp.transformations.addAll(transformations);
         return bp;
     }
