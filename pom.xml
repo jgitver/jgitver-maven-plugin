@@ -60,7 +60,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- dependencies versions as properties -->
-        <jgitver.version>0.3.0</jgitver.version>
+        <jgitver.version>0.4.0</jgitver.version>
         <maven-core.version>3.3.9</maven-core.version>
         <plexus-utils.version>3.0.8</plexus-utils.version>
         <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
@@ -454,6 +454,51 @@
                                         <requireReleaseVersion />
                                     </rules>
                                     <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>properties</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <echo>version calculated: ${jgitver.calculated_version}</echo>
+                                        <echo>dirty: ${jgitver.dirty}</echo>
+                                        <echo>head_committer_name: ${jgitver.head_committer_name}</echo>
+                                        <echo>head_commiter_email: ${jgitver.head_commiter_email}</echo>
+                                        <echo>head_commit_datetime: ${jgitver.head_commit_datetime}</echo>
+                                        <echo>git_sha1_full: ${jgitver.git_sha1_full}</echo>
+                                        <echo>git_sha1_8: ${jgitver.git_sha1_8}</echo>
+                                        <echo>branch_name: ${jgitver.branch_name}</echo>
+                                        <echo>head_tags: ${jgitver.head_tags}</echo>
+                                        <echo>head_annotated_tags: ${jgitver.head_annotated_tags}</echo>
+                                        <echo>head_lightweight_tags: ${jgitver.head_lightweight_tags}</echo>
+                                        <echo>base_tag: ${jgitver.base_tag}</echo>
+                                        <echo>base_tag_type: ${jgitver.base_tag_type}</echo>
+                                        <echo>all_tags: ${jgitver.all_tags}</echo>
+                                        <echo>all_annotated_tags: ${jgitver.all_annotated_tags}</echo>
+                                        <echo>all_lightweight_tags: ${jgitver.all_lightweight_tags}</echo>
+                                        <echo>all_version_tags: ${jgitver.all_version_tags}</echo>
+                                        <echo>all_version_annotated_tags: ${jgitver.all_version_annotated_tags}</echo>
+                                        <echo>all_version_lightweight_tags: ${jgitver.all_version_lightweight_tags}</echo>
+                                        <echo>base_version: ${jgitver.base_version}</echo>
+                                        <echo>next_major_version: ${jgitver.next_major_version}</echo>
+                                        <echo>next_minor_version: ${jgitver.next_minor_version}</echo>
+                                        <echo>next_patch_version: ${jgitver.next_patch_version}</echo>
+                                    </tasks>
                                 </configuration>
                             </execution>
                         </executions>
