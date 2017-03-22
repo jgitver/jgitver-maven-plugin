@@ -51,7 +51,7 @@ __manually__
       <extension>
         <groupId>fr.brouillard.oss</groupId>
         <artifactId>jgitver-maven-plugin</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0</version>
       </extension>
     </extensions>
     ```
@@ -100,7 +100,7 @@ Please consult [jgitver](https://github.com/jgitver/jgitver#configuration-modes-
 ### Available properties
 
 Since `0.2.0`, the plugin exposes git calculated properties available during the maven build.
-Those are available under the following properties name: "jgitver.meta" where `meta` is one of [Metadatas](https://github.com/jgitver/jgitver/blob/0.2.0-alpha1/src/main/java/fr/brouillard/oss/jgitver/metadata/Metadatas.java#L25) name in lowercase.
+Those are available under the following properties name: "jgitver.meta" where `meta` is one of [Metadatas](https://github.com/jgitver/jgitver/blob/master/src/main/java/fr/brouillard/oss/jgitver/metadata/Metadatas.java#L25) name in lowercase.
 
 You can then use them as standard maven properties in your build:
 
