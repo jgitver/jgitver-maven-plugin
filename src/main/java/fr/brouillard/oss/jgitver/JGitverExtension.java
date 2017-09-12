@@ -46,26 +46,30 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
     @Override
     public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
-        MavenProject rootProject = mavenSession.getTopLevelProject();
-        List<MavenProject> projects = locateProjects(mavenSession, rootProject.getModules());
+        if (JGitverUtils.shouldSkip(mavenSession)) {
+            logger.info("  jgitver execution has been skipped by request of the user");
+        } else {
+            MavenProject rootProject = mavenSession.getTopLevelProject();
+            List<MavenProject> projects = locateProjects(mavenSession, rootProject.getModules());
 
-        Map<GAV, String> newProjectVersions = new LinkedHashMap<>();
-        final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
+            Map<GAV, String> newProjectVersions = new LinkedHashMap<>();
+            final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
 
-        if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
-            JGitverModelProcessor jGitverModelProcessor = JGitverModelProcessor.class.cast(modelProcessor);
-            JGitverModelProcessorWorkingConfiguration workingConfiguration = jGitverModelProcessor.getWorkingConfiguration();
+            if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
+                JGitverModelProcessor jGitverModelProcessor = JGitverModelProcessor.class.cast(modelProcessor);
+                JGitverModelProcessorWorkingConfiguration workingConfiguration = jGitverModelProcessor.getWorkingConfiguration();
 
-            if (workingConfiguration == null) {
+                if (workingConfiguration == null) {
+                    JGitverUtils.failAsOldMechanism(c);
+                }
+
+                newProjectVersions = workingConfiguration.getNewProjectVersions();
+            } else {
                 JGitverUtils.failAsOldMechanism(c);
             }
-            
-            newProjectVersions = workingConfiguration.getNewProjectVersions();
-        } else {
-            JGitverUtils.failAsOldMechanism(c);
-        }
 
-        newProjectVersions.entrySet().forEach(e -> logger.info("    " + e.getKey().toString() + " -> " + e.getValue()));
+            newProjectVersions.entrySet().forEach(e -> logger.info("    " + e.getKey().toString() + " -> " + e.getValue()));
+        }
     }
 
     private List<MavenProject> locateProjects(MavenSession session, List<String> modules) {

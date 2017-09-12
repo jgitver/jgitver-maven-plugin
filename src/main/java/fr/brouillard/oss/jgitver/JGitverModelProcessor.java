@@ -147,6 +147,11 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
     }
 
     private Model provisionModel(Model model, Map<String, ?> options) throws IOException {
+        if (JGitverUtils.shouldSkip(legacySupport.getSession())) {
+            // don't do anything in case of skip is active
+            return model;
+        }
+
         try {
             calculateVersionIfNecessary();
         } catch (Exception ex) {

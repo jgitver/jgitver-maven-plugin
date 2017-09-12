@@ -245,7 +245,13 @@ build and filter some IT tests
 - `mvn -Poss,release -DskipTests deploy`
 - `git push --follow-tags origin master`
 
-## Known issues
+## Issues
+
+### I want to temporary disable the plugin execution
+
+Since `1.0.0`, it is possible to totally skip the plugin execution by launching te maven build by setting the user property `jgtiver.skip` to `true`, example:
+
+- `mvn clean install -Djgitver.skip=true`
 
 ### maven reports my project version to be 0 (or the one set in the pom.xml)
 
