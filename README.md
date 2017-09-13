@@ -249,7 +249,7 @@ build and filter some IT tests
 
 ### I want to temporary disable the plugin execution
 
-Since `1.0.0`, it is possible to totally skip the plugin execution by launching te maven build by setting the user property `jgtiver.skip` to `true`, example:
+Since `1.0.0`, it is possible to totally skip the plugin execution by launching maven with the user property `jgtiver.skip` set to `true`, example:
 
 - `mvn clean install -Djgitver.skip=true`
 
