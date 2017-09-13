@@ -397,7 +397,7 @@
                     <plugin>
                         <groupId>se.bjurr.gitchangelog</groupId>
                         <artifactId>git-changelog-maven-plugin</artifactId>
-                        <version>1.39</version>
+                        <version>1.49</version>
                         <executions>
                             <execution>
                                 <id>GenerateGitChangelog</id>
@@ -408,6 +408,7 @@
                                 <configuration>
                                     <!-- A file on filesystem //-->
                                     <filePath>CHANGELOG.md</filePath>
+                                    <templateFile>src/doc/changelog.mustache</templateFile>
                                     <gitHubApi>https://api.github.com/repos/jgitver/jgitver-maven-plugin</gitHubApi>
                                     <ignoreCommitsWithoutIssue>true</ignoreCommitsWithoutIssue>
 
