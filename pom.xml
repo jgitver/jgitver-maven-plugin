@@ -214,7 +214,7 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <X-Git-CommitId>${git.revision}</X-Git-CommitId>
+                            <X-Git-CommitId>${jgitver.git_sha1_full}</X-Git-CommitId>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -251,20 +251,6 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>ru.concerteza.buildnumber</groupId>
-                <artifactId>maven-jgit-buildnumber-plugin</artifactId>
-                <version>1.2.9</version>
-                <executions>
-                    <execution>
-                        <id>git-buildnumber</id>
-                        <goals>
-                            <goal>extract-buildnumber</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
                     </execution>
                 </executions>
             </plugin>
