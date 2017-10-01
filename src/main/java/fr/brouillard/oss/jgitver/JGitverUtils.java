@@ -51,6 +51,7 @@ public final class JGitverUtils {
     public static final String EXTENSION_PREFIX = "jgitver";
     public static final String EXTENSION_GROUP_ID = "fr.brouillard.oss";
     public static final String EXTENSION_ARTIFACT_ID = "jgitver-maven-plugin";
+    public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
 
     private JGitverUtils() {
     }
@@ -236,6 +237,11 @@ public final class JGitverUtils {
         }
     }
 
+    /**
+     * fail the build by throwing a {@link MavenExecutionException} and logging a failure message
+     * @param logger the logger to log information
+     * @throws MavenExecutionException to make the build fail
+     */
     public static void failAsOldMechanism(Consumer<? super CharSequence> logger) throws MavenExecutionException {
         logger.accept("jgitver has changed!");
         logger.accept("");
@@ -246,5 +252,19 @@ public final class JGitverUtils {
         logger.accept("");
         throw new MavenExecutionException("detection of jgitver old setting mechanism",
                 new IllegalStateException("jgitver must now use maven core extensions only"));
+    }
+
+    /**
+     * Tells if this jgitver extension should be skipped for the given maven session execution.
+     * To skip execution launch maven with a user property
+     * <pre>
+     *     mvn -Djgitver.skip=true/false
+     * </pre>
+     * The value of the property is evaluated using @{@link java.lang.Boolean#parseBoolean(String)}.
+     * @param s a running maven session
+     * @return true if jgitver extension should be skipped
+     */
+    public static boolean shouldSkip(MavenSession s) {
+        return Boolean.parseBoolean(s.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
     }
 }

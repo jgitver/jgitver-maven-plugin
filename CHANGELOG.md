@@ -1,6 +1,72 @@
 # jgitver-maven-plugin changelog
 
-generated with [git-changelog-maven-plugin](https://github.com/tomasbjerre/git-changelog-maven-plugin).
+Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
+
+## 1.0.0
+### GitHub [#44](https://github.com/jgitver/jgitver-maven-plugin/issues/44) allow to fail build when dirty
+
+**add failIfDirty configuration parameter, closes #44**
+
+
+[80f2d5d876f38cb](https://github.com/jgitver/jgitver-maven-plugin/commit/80f2d5d876f38cb) Matthieu Brouillard *2016-12-08 21:36:41*
+
+
+### GitHub [#47](https://github.com/jgitver/jgitver-maven-plugin/issues/47) cleanup old plugin code
+
+**cleanup for old plugin usage, fixes #47**
+
+
+[1f065e535a627ab](https://github.com/jgitver/jgitver-maven-plugin/commit/1f065e535a627ab) Matthieu Brouillard *2016-12-23 11:03:29*
+
+
+### GitHub [#48](https://github.com/jgitver/jgitver-maven-plugin/issues/48) Release Notes
+
+**introduce CHANGELOG.md, fix #48**
+
+
+[e4cec66c86da310](https://github.com/jgitver/jgitver-maven-plugin/commit/e4cec66c86da310) Matthieu Brouillard *2017-02-23 17:43:51*
+
+
+### GitHub [#50](https://github.com/jgitver/jgitver-maven-plugin/issues/50) Run &quot;attach-modified-poms&quot; earlier
+
+**run goal 'attach-modified-poms' as first plugin of 'prepare-package' phase**
+
+ * by default goal &#39;attach-modified-poms&#39; is now run during phase &#39;prepare-package&#39;
+ * System property &quot;jgitver.pom-replacement-phase&quot;, allows to control this default phase.
+ * For example running: mvn install -Djgitver.pom-replacement-phase=validate will execute
+ * the goal as the very first goal during a normal build flow.
+ * fix #50
+
+[60a5b787b2253a0](https://github.com/jgitver/jgitver-maven-plugin/commit/60a5b787b2253a0) Matthieu Brouillard *2017-02-20 17:05:52*
+
+
+### GitHub [#51](https://github.com/jgitver/jgitver-maven-plugin/issues/51) IDENTITY BranchNameTransformation still replaces dashes with underscores in branchname
+
+**correct loading of BranchPolicy objects when an XML schema is used**
+
+ * fix #51
+
+[3792fa3ee435152](https://github.com/jgitver/jgitver-maven-plugin/commit/3792fa3ee435152) Matthieu Brouillard *2017-02-24 11:51:34*
+
+
+### GitHub [#58](https://github.com/jgitver/jgitver-maven-plugin/issues/58) Running jgitver should be optional
+
+**introduce 'jgitver.skip' user property to skip plugin execution**
+
+ * By launching maven with &#39;-Djgitver.skip=true&#39;, you can totally skip the plugin execution.
+ * fixes #58
+
+[770992b382c3d2d](https://github.com/jgitver/jgitver-maven-plugin/commit/770992b382c3d2d) Matthieu Brouillard *2017-09-12 07:11:11*
+
+
+### GitHub [#59](https://github.com/jgitver/jgitver-maven-plugin/issues/59) Remove maven-jgit-buildnumber-plugin usage
+
+**use jgitver property 'jgitver.git_sha1_full' for git SHA1 jar manifest entry**
+
+ * fixes #59
+
+[80154c263f2d589](https://github.com/jgitver/jgitver-maven-plugin/commit/80154c263f2d589) Matthieu Brouillard *2017-09-13 05:56:00*
+
 
 ## 0.4.0
 ### GitHub [#37](https://github.com/jgitver/jgitver-maven-plugin/issues/37) It would be helpful to have .xsd for jgitver.config.xml
