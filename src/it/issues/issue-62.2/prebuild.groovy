@@ -17,19 +17,13 @@
 def log = new PrintWriter( new File(basedir, "prebuild.log").newWriter("UTF-8"), true )
 log.println( "Prebuild started at: " + new Date() + " in: " + basedir )
 
-// Let's create an ignore file
-//def toIgnore = ["prebuild.log", "build.log"];
-//def gitIgnore = new PrintWriter( new File(basedir, ".gitignore").newWriter("UTF-8"), true )
-//toIgnore.each { gitIgnore.println(it) }
-//gitIgnore.close()
-
 [
   "git --version",
   "rm -rf .git",
   "git init",
   "git config user.name nobody",
   "git config user.email nobody@nowhere.com",
-  "echo A > content",
+  "dd if=/dev/urandom of=content bs=512 count=2",
   "git add .",
   "git commit --message=initial_commit",
   "git status",

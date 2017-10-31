@@ -23,14 +23,14 @@ log.println( "Prebuild started at: " + new Date() + " in: " + basedir )
   "git init",
   "git config user.name nobody",
   "git config user.email nobody@nowhere.com",
-  "echo A > content",
+  "dd if=/dev/urandom of=content bs=512 count=2",
   "git add .",
   "git commit --message=initial_commit",
   "git tag -a 1.0.0 --message=release_1.0.0",
-  "echo B > content",
+  "dd if=/dev/urandom of=content bs=512 count=2",
   "git add -u",
   "git commit --message=added_b",
-  "echo C > content",
+  "dd if=/dev/urandom of=content bs=512 count=2",
   "git status",
   "git log --graph --oneline"
 ].each{ command ->

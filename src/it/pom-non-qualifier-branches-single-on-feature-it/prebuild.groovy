@@ -13,42 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-def baseDir = new File("$basedir")
-def isWindows = {
-    return System.properties['os.name'].toLowerCase().contains('windows')
-}
 
-def toFilePath = { filename ->
-    isWindows() ? filename : "$basedir/" + filename
-}
+def log = new PrintWriter( new File(basedir, "prebuild.log").newWriter("UTF-8"), true )
+log.println( "Prebuild started at: " + new Date() + " in: " + basedir )
 
-def runCommand = { command, basedir ->
-    def commandToExecute = isWindows() ? command : command.replace('"', '\'')
-    def proc = commandToExecute.execute(null, basedir) 
+[
+    "git --version",
+    "git init",
+    "git config user.name \"nobody\"",
+    "git config user.email \"nobody@nowhere.com\"",
+    "dd if=/dev/urandom of=content bs=512 count=2",
+    "git add .",
+    "git commit --message=initial_commit",
+    "git tag -a 1.0.0 --message=release_1.0.0",
+    "dd if=/dev/urandom of=content bs=512 count=2",
+    "git add -u",
+    "git commit --message=added_B_data",
+    "git checkout -b feature",
+    "git log --graph --oneline"
+].each{ command ->
+
+    def proc = command.execute(null, basedir)
     def sout = new StringBuilder(), serr = new StringBuilder()
     proc.waitForProcessOutput(sout, serr)
-    return commandToExecute + "\n" + "out:\n" + sout.toString() + "err:\n" + serr.toString()
+
+    log.println( "cmd: " + command )
+    log.println( "out:" ) ; log.println( sout.toString().trim() )
+    log.println( "err:" ) ; log.println( serr.toString().trim() )
+    log.println( "ret: " + proc.exitValue() )
+
+    assert proc.exitValue() == 0
 }
 
-File actions = new File(baseDir, "actions-prebuild.log")
-actions.write "Actions started at: " + new Date() + " in: $basedir\n"
-
-actions << runCommand("git --version", baseDir)
-actions << runCommand("git init", baseDir)
-actions << runCommand("git config user.name \"nobody\"", baseDir) 
-actions << runCommand("git config user.email \"nobody@nowhere.com\"", baseDir) 
-actions << runCommand("echo A > " + toFilePath("content"), baseDir) 
-actions << runCommand("git add " + toFilePath("."), baseDir)
-actions << runCommand("git commit --message=initial_commit", baseDir)
-actions << runCommand("git tag -a 1.0.0 --message=release_1.0.0", baseDir) 
-actions << runCommand("echo B > " + toFilePath("content"), baseDir)
-actions << runCommand("git add -u", baseDir)
-actions << runCommand("git commit --message=added_B_data", baseDir)
-actions << runCommand("git checkout -b feature", baseDir)
-actions << runCommand("git log --graph --oneline", basedir)
-
-// $ git lg
-// * d86e12c - (4 minutes ago) added B data - Matthieu Brouillard (HEAD -> master)
-// * 9103c75 - (4 minutes ago) initial commit - Matthieu Brouillard (tag: 1.0.0)
-
+log.println( "Prebuild completed at: " + new Date() )
+log.close()
 return true
+
