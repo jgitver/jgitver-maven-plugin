@@ -18,10 +18,10 @@ def log = new PrintWriter( new File(basedir, "prebuild.log").newWriter("UTF-8"),
 log.println( "Prebuild started at: " + new Date() + " in: " + basedir )
 
 // Let's create an ignore file
-def toIgnore = ["prebuild.log", "build.log"];
-def gitIgnore = new PrintWriter( new File(basedir, ".gitignore").newWriter("UTF-8"), true )
-toIgnore.each { gitIgnore.println(it) }
-gitIgnore.close()
+//def toIgnore = ["prebuild.log", "build.log"];
+//def gitIgnore = new PrintWriter( new File(basedir, ".gitignore").newWriter("UTF-8"), true )
+//toIgnore.each { gitIgnore.println(it) }
+//gitIgnore.close()
 
 [
   "git --version",

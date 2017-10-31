@@ -353,6 +353,7 @@
                         <configuration>
                             <debug>false</debug>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <cloneAllFiles>true</cloneAllFiles>
                             <setupIncludes>
                                 <setupInclude>issues/*-pre/pom.xml</setupInclude>
                                 <setupInclude>*-pre/pom.xml</setupInclude>
@@ -375,9 +376,19 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>integration-test</id>
+                                <id>invoker-install</id>
                                 <goals>
                                     <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <extraArtifacts>
+                                        <extraArtifact>org.apache.maven.plugins:maven-antrun-plugin:1.3:maven-plugin</extraArtifact>
+                                    </extraArtifacts>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
