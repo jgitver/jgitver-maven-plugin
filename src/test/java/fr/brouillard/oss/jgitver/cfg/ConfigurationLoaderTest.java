@@ -15,6 +15,7 @@
  */
 package fr.brouillard.oss.jgitver.cfg;
 
+import static fr.brouillard.oss.jgitver.cfg.ResourceConfigurationProvider.fromResource;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -42,8 +43,8 @@ public class ConfigurationLoaderTest {
     
     @Test
     public void can_load_a_simple_configuration() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/simple.cfg.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+        try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
             assertThat(cfg, notNullValue());
             
             assertThat(cfg.mavenLike, is(false));
@@ -53,8 +54,8 @@ public class ConfigurationLoaderTest {
     
     @Test
     public void can_load_a_simple_configuration_with_xml_schema() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/simple.cfg.with.schema.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+        try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.with.schema.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
             assertThat(cfg, notNullValue());
             
             assertThat(cfg.useCommitDistance, is(true));
@@ -63,18 +64,18 @@ public class ConfigurationLoaderTest {
     }
     
     @SuppressWarnings("unused")
-    @Test (expected=MavenExecutionException.class)
+    @Test (expected = MavenExecutionException.class)
     public void must_fail_loading_an_invalid_configuration_with_xml_schema() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/invalid-with-schema.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+        try (ResourceConfigurationProvider res = fromResource("/config/invalid-with-schema.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
             fail("should have failed loading an erroneous file");
         }
     }
     
     @Test
     public void can_load_a_complex_configuration_with_branching_policy() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/complex-branch.cfg.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
+        try (ResourceConfigurationProvider res = fromResource("/config/complex-branch.cfg.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
             assertThat(cfg, notNullValue());
             
             assertThat(cfg.mavenLike, is(false));

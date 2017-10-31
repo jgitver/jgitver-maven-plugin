@@ -22,18 +22,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.building.Source;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -46,8 +43,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
-import fr.brouillard.oss.jgitver.cfg.Configuration;
-import fr.brouillard.oss.jgitver.metadata.Metadatas;
+import fr.brouillard.oss.jgitver.mojos.JGitverAttachModifiedPomsMojo;
+
+;
 
 /**
  * Replacement ModelProcessor using jgitver while loading POMs in order to adapt versions.
@@ -63,14 +61,11 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
     @Requirement
     private JGitverConfiguration configurationProvider;
 
-    private volatile JGitverModelProcessorWorkingConfiguration workingConfiguration;
+    @Requirement
+    private JGitverSessionHolder jgitverSession;
 
     public JGitverModelProcessor() {
         super();
-    }
-
-    public JGitverModelProcessorWorkingConfiguration getWorkingConfiguration() {
-        return workingConfiguration;
     }
 
     @Override
@@ -88,212 +83,150 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         return provisionModel(super.read(input, options), options);
     }
 
-    private void calculateVersionIfNecessary() throws Exception {
-        if (workingConfiguration == null) {
-            synchronized (this) {
-                if (workingConfiguration == null) {
-                    logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
+    private Model provisionModel(Model model, Map<String, ?> options) throws IOException {
+        Optional<JGitverSession> optSession = jgitverSession.session();
+        if (!optSession.isPresent()) {
+            // don't do anything in case no jgitver is there (execution could have been skipped)
+            return model;
+        } else {
 
-                    MavenSession mavenSession = legacySupport.getSession();
-                    final File rootDirectory = mavenSession.getRequest().getMultiModuleProjectDirectory();
+            Source source = (Source) options.get(ModelProcessor.SOURCE);
+            if (source == null) {
+                return model;
+            }
 
-                    logger.debug("using " + JGitverUtils.EXTENSION_PREFIX + " on directory: " + rootDirectory);
-                    
-                    Configuration cfg = configurationProvider.getConfiguration();
+            File location = new File(source.getLocation());
+            if (!location.isFile()) {
+                // their JavaDoc says Source.getLocation "could be a local file path, a URI or just an empty string."
+                // if it doesn't resolve to a file then calling .getParentFile will throw an exception,
+                // but if it doesn't resolve to a file then it isn't under getMultiModuleProjectDirectory,
+                return model; // therefore the model shouldn't be modified.
+            }
 
-                    try (GitVersionCalculator gitVersionCalculator = GitVersionCalculator.location(rootDirectory)) {
-                        gitVersionCalculator
-                            .setMavenLike(cfg.mavenLike)
-                            .setAutoIncrementPatch(cfg.autoIncrementPatch)
-                            .setUseDirty(cfg.useDirty)
-                            .setUseDistance(cfg.useCommitDistance)
-                            .setUseGitCommitId(cfg.useGitCommitId)
-                            .setGitCommitIdLength(cfg.gitCommitIdLength)
-                            .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
-                            .setNonQualifierBranches(cfg.nonQualifierBranches);
-                        
-                        if (cfg.regexVersionTag != null) {
-                            gitVersionCalculator.setFindTagVersionPattern(cfg.regexVersionTag);
-                        }
-                        
-                        if (cfg.branchPolicies != null && !cfg.branchPolicies.isEmpty()) {
-                            List<BranchingPolicy> policies = cfg.branchPolicies.stream()
-                                    .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))
-                                    .collect(Collectors.toList());
-                            
-                            gitVersionCalculator.setQualifierBranchingPolicies(policies);
-                        }
+            if (configurationProvider.ignore(location)) {
+                logger.debug("file " + location + " ignored by configuration");
+                return model;
+            }
 
-                        JGitverVersion jGitverVersion = new JGitverVersion(gitVersionCalculator);
-                        
-                        boolean isDirty = jGitverVersion.getGitVersionCalculator()
-                                .meta(Metadatas.DIRTY)
-                                .map(Boolean::parseBoolean)
-                                .orElse(Boolean.FALSE);
-                        
-                        if (cfg.failIfDirty && isDirty) {
-                            throw new IllegalStateException("repository is dirty");
-                        }
-                        
-                        JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), jGitverVersion, logger);
-                        
-                        workingConfiguration = new JGitverModelProcessorWorkingConfiguration(
-                                jGitverVersion.getCalculatedVersion(),
-                                rootDirectory);
+            JGitverSession jgitverSession = optSession.get();
+            File relativePath = location.getParentFile().getCanonicalFile();
+            File multiModuleDirectory = jgitverSession.getMultiModuleDirectory();
+            String calculatedVersion = jgitverSession.getVersion();
+
+            if (StringUtils.containsIgnoreCase(relativePath.getCanonicalPath(),
+                    multiModuleDirectory.getCanonicalPath())) {
+                logger.debug("handling version of project Model from " + location);
+
+                jgitverSession.addProject(GAV.from(model.clone()));
+
+                if (Objects.nonNull(model.getVersion())) {
+                    // TODO evaluate how to set the version only when it was originally set in the pom file
+                    model.setVersion(calculatedVersion);
+                }
+
+                if (Objects.nonNull(model.getParent())) {
+                    // if the parent is part of the multi module project, let's update the parent version
+                    File relativePathParent = new File(
+                            relativePath.getCanonicalPath() + File.separator + model.getParent().getRelativePath())
+                            .getParentFile().getCanonicalFile();
+                    if (StringUtils.containsIgnoreCase(relativePathParent.getCanonicalPath(),
+                            multiModuleDirectory.getCanonicalPath())) {
+                        model.getParent().setVersion(calculatedVersion);
                     }
                 }
+
+                // we should only register the plugin once, on the main project
+                if (relativePath.getCanonicalPath().equals(multiModuleDirectory.getCanonicalPath())) {
+                    if (Objects.isNull(model.getBuild())) {
+                        model.setBuild(new Build());
+                    }
+
+                    if (Objects.isNull(model.getBuild().getPlugins())) {
+                        model.getBuild().setPlugins(new ArrayList<>());
+                    }
+
+                    Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
+                            .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                                    && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+                            .findFirst();
+
+                    StringBuilder pluginVersion = new StringBuilder();
+
+                    try (InputStream inputStream = getClass()
+                            .getResourceAsStream("/META-INF/maven/" + JGitverUtils.EXTENSION_GROUP_ID + "/"
+                                    + JGitverUtils.EXTENSION_ARTIFACT_ID + "/pom" + ".properties")) {
+                        Properties properties = new Properties();
+                        properties.load(inputStream);
+                        pluginVersion.append(properties.getProperty("version"));
+                    } catch (IOException ignored) {
+                        // TODO we should not ignore in case we have to reuse it
+                        logger.warn(ignored.getMessage(), ignored);
+                    }
+
+                    Plugin plugin = pluginOptional.orElseGet(() -> {
+                        Plugin plugin2 = new Plugin();
+                        plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
+                        plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
+                        plugin2.setVersion(pluginVersion.toString());
+
+                        model.getBuild().getPlugins().add(0, plugin2);
+                        return plugin2;
+                    });
+
+                    if (Objects.isNull(plugin.getExecutions())) {
+                        plugin.setExecutions(new ArrayList<>());
+                    }
+
+                    String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
+                    Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
+                            .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase())).findFirst();
+
+                    PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(() -> {
+                        PluginExecution pluginExecution2 = new PluginExecution();
+                        pluginExecution2.setPhase(pluginRunPhase);
+
+                        plugin.getExecutions().add(pluginExecution2);
+                        return pluginExecution2;
+                    });
+
+                    if (Objects.isNull(pluginExecution.getGoals())) {
+                        pluginExecution.setGoals(new ArrayList<>());
+                    }
+
+                    if (!pluginExecution.getGoals().contains(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS)) {
+                        pluginExecution.getGoals().add(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS);
+                    }
+
+                    if (Objects.isNull(plugin.getDependencies())) {
+                        plugin.setDependencies(new ArrayList<>());
+                    }
+
+                    Optional<Dependency> dependencyOptional = plugin.getDependencies().stream()
+                            .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                                    && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+                            .findFirst();
+
+                    dependencyOptional.orElseGet(() -> {
+                        Dependency dependency = new Dependency();
+                        dependency.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
+                        dependency.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
+                        dependency.setVersion(pluginVersion.toString());
+
+                        plugin.getDependencies().add(dependency);
+                        return dependency;
+                    });
+                }
+
+                try {
+                    legacySupport.getSession().getUserProperties().put(
+                            JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY,
+                            JGitverSession.serializeTo(jgitverSession));
+                } catch (JAXBException ex) {
+                    throw new IOException("cannot serialize JGitverSession", ex);
+                }
+            } else {
+                logger.debug("skipping Model from " + location);
             }
-        }
-    }
-
-    private Model provisionModel(Model model, Map<String, ?> options) throws IOException {
-        if (JGitverUtils.shouldSkip(legacySupport.getSession())) {
-            // don't do anything in case of skip is active
-            return model;
-        }
-
-        try {
-            calculateVersionIfNecessary();
-        } catch (Exception ex) {
-            logger.error("failure while calculating version", ex);
-            throw new IOException("cannot build a Model object using jgitver", ex);
-        }
-
-        Source source = (Source) options.get(ModelProcessor.SOURCE);
-        if (source == null) {
-            return model;
-        }
-
-        File location = new File(source.getLocation());
-        if (!location.isFile()) {
-            // their JavaDoc says Source.getLocation "could be a local file path, a URI or just an empty string."
-            // if it doesn't resolve to a file then calling .getParentFile will throw an exception,
-            // but if it doesn't resolve to a file then it isn't under getMultiModuleProjectDirectory,
-            return model; // therefore the model shouldn't be modified.
-        }
-        
-        if (configurationProvider.ignore(location)) {
-            logger.debug("file " + location + " ignored by configuration");
-            return model;
-        }
-
-        File relativePath = location.getParentFile().getCanonicalFile();
-
-
-        if (StringUtils.containsIgnoreCase(relativePath.getCanonicalPath(),
-                workingConfiguration.getMultiModuleProjectDirectory().getCanonicalPath())) {
-            logger.debug("handling version of project Model from " + location);
-            
-            workingConfiguration.getNewProjectVersions().put(
-                    GAV.from(model.clone()), workingConfiguration.getCalculatedVersion());
-
-            if (Objects.nonNull(model.getVersion())) {
-                // TODO evaluate how to set the version only when it was originally set in the pom file
-                model.setVersion(workingConfiguration.getCalculatedVersion());
-            }
-
-            if (Objects.nonNull(model.getParent())) {
-                // if the parent is part of the multi module project, let's update the parent version 
-                File relativePathParent = new File(
-                        relativePath.getCanonicalPath() + File.separator + model.getParent().getRelativePath())
-                                .getParentFile().getCanonicalFile();
-                if (StringUtils.containsIgnoreCase(relativePathParent.getCanonicalPath(),
-                        workingConfiguration.getMultiModuleProjectDirectory().getCanonicalPath())) {
-                    model.getParent().setVersion(workingConfiguration.getCalculatedVersion());
-                }
-            } 
-            
-            // we should only register the plugin once, on the main project
-            if (relativePath.getCanonicalPath().equals(workingConfiguration.getMultiModuleProjectDirectory().getCanonicalPath())) { 
-                if (Objects.isNull(model.getBuild())) {
-                    model.setBuild(new Build());
-                }
-
-                if (Objects.isNull(model.getBuild().getPlugins())) {
-                    model.getBuild().setPlugins(new ArrayList<>());
-                }
-
-                Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
-                        .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                                && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-                        .findFirst();
-
-                StringBuilder pluginVersion = new StringBuilder();
-
-                try (InputStream inputStream = getClass()
-                        .getResourceAsStream("/META-INF/maven/" + JGitverUtils.EXTENSION_GROUP_ID + "/"
-                                + JGitverUtils.EXTENSION_ARTIFACT_ID + "/pom" + ".properties")) {
-                    Properties properties = new Properties();
-                    properties.load(inputStream);
-                    pluginVersion.append(properties.getProperty("version"));
-                } catch (IOException ignored) {
-                    // TODO we should not ignore in case we have to reuse it
-                    logger.warn(ignored.getMessage(), ignored);
-                }
-
-                Plugin plugin = pluginOptional.orElseGet(() -> {
-                    Plugin plugin2 = new Plugin();
-                    plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
-                    plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
-                    plugin2.setVersion(pluginVersion.toString());
-
-                    model.getBuild().getPlugins().add(0, plugin2);
-                    return plugin2;
-                });
-
-                if (Objects.isNull(plugin.getExecutions())) {
-                    plugin.setExecutions(new ArrayList<>());
-                }
-
-                String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
-                Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
-                        .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase())).findFirst();
-
-                PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(() -> {
-                    PluginExecution pluginExecution2 = new PluginExecution();
-                    pluginExecution2.setPhase(pluginRunPhase);
-
-                    plugin.getExecutions().add(pluginExecution2);
-                    return pluginExecution2;
-                });
-
-                if (Objects.isNull(pluginExecution.getGoals())) {
-                    pluginExecution.setGoals(new ArrayList<>());
-                }
-
-                if (!pluginExecution.getGoals().contains(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS)) {
-                    pluginExecution.getGoals().add(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS);
-                }
-
-                if (Objects.isNull(plugin.getDependencies())) {
-                    plugin.setDependencies(new ArrayList<>());
-                }
-
-                Optional<Dependency> dependencyOptional = plugin.getDependencies().stream()
-                        .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                                && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-                        .findFirst();
-
-                dependencyOptional.orElseGet(() -> {
-                    Dependency dependency = new Dependency();
-                    dependency.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
-                    dependency.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
-                    dependency.setVersion(pluginVersion.toString());
-
-                    plugin.getDependencies().add(dependency);
-                    return dependency;
-                });
-            }
-
-            try {
-                legacySupport.getSession().getUserProperties().put(
-                        JGitverModelProcessorWorkingConfiguration.class.getName(),
-                        JGitverModelProcessorWorkingConfiguration.serializeTo(workingConfiguration));
-            } catch (JAXBException ex) {
-                throw new IOException("unexpected Model serialization issue", ex);
-            }
-        } else {
-            logger.debug("skipping Model from " + location);
         }
 
         return model;

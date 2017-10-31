@@ -17,21 +17,22 @@
 // @formatter:on
 package fr.brouillard.oss.jgitver;
 
-import java.util.LinkedHashMap;
+import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelProcessor;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+
+import fr.brouillard.oss.jgitver.cfg.Configuration;
+import fr.brouillard.oss.jgitver.metadata.Metadatas;
 
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "jgitver")
 public class JGitverExtension extends AbstractMavenLifecycleParticipant {
@@ -44,60 +45,87 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
     @Requirement
     private ModelProcessor modelProcessor;
 
+    @Requirement
+    private JGitverSessionHolder sessionHolder;
+
+    @Requirement
+    private JGitverConfiguration configurationProvider;
+
     @Override
-    public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
+    public void afterSessionStart(MavenSession mavenSession) throws MavenExecutionException {
         if (JGitverUtils.shouldSkip(mavenSession)) {
             logger.info("  jgitver execution has been skipped by request of the user");
+            sessionHolder.setSession(null);
         } else {
-            MavenProject rootProject = mavenSession.getTopLevelProject();
-            List<MavenProject> projects = locateProjects(mavenSession, rootProject.getModules());
+            final File rootDirectory = mavenSession.getRequest().getMultiModuleProjectDirectory();
 
-            Map<GAV, String> newProjectVersions = new LinkedHashMap<>();
+            logger.debug("using " + JGitverUtils.EXTENSION_PREFIX + " on directory: " + rootDirectory);
+
+            Configuration cfg = configurationProvider.getConfiguration();
+
+            try (GitVersionCalculator gitVersionCalculator = GitVersionCalculator.location(rootDirectory)) {
+                gitVersionCalculator
+                        .setMavenLike(cfg.mavenLike)
+                        .setAutoIncrementPatch(cfg.autoIncrementPatch)
+                        .setUseDirty(cfg.useDirty)
+                        .setUseDistance(cfg.useCommitDistance)
+                        .setUseGitCommitId(cfg.useGitCommitId)
+                        .setGitCommitIdLength(cfg.gitCommitIdLength)
+                        .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
+                        .setNonQualifierBranches(cfg.nonQualifierBranches);
+
+                if (cfg.regexVersionTag != null) {
+                    gitVersionCalculator.setFindTagVersionPattern(cfg.regexVersionTag);
+                }
+
+                if (cfg.branchPolicies != null && !cfg.branchPolicies.isEmpty()) {
+                    List<BranchingPolicy> policies = cfg.branchPolicies.stream()
+                            .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))
+                            .collect(Collectors.toList());
+
+                    gitVersionCalculator.setQualifierBranchingPolicies(policies);
+                }
+
+                boolean isDirty = gitVersionCalculator
+                        .meta(Metadatas.DIRTY)
+                        .map(Boolean::parseBoolean)
+                        .orElse(Boolean.FALSE);
+
+                if (cfg.failIfDirty && isDirty) {
+                    throw new IllegalStateException("repository is dirty");
+                }
+
+                JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), gitVersionCalculator, logger);
+                sessionHolder.setSession(new JGitverSession(gitVersionCalculator.getVersion(), rootDirectory));
+            } catch (Exception ex) {
+                logger.warn("cannot autoclose GitVersionCalculator object for project: " + rootDirectory, ex);
+            }
+        }
+    }
+
+    @Override
+    public void afterSessionEnd(MavenSession session) throws MavenExecutionException {
+        sessionHolder.setSession(null);
+    }
+
+    @Override
+    public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
+        if (!JGitverUtils.shouldSkip(mavenSession)) {
             final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
 
             if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
-                JGitverModelProcessor jGitverModelProcessor = JGitverModelProcessor.class.cast(modelProcessor);
-                JGitverModelProcessorWorkingConfiguration workingConfiguration = jGitverModelProcessor.getWorkingConfiguration();
-
-                if (workingConfiguration == null) {
+                if (!mavenSession.getUserProperties().containsKey(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY)) {
                     JGitverUtils.failAsOldMechanism(c);
                 }
-
-                newProjectVersions = workingConfiguration.getNewProjectVersions();
             } else {
                 JGitverUtils.failAsOldMechanism(c);
             }
 
-            newProjectVersions.entrySet().forEach(e -> logger.info("    " + e.getKey().toString() + " -> " + e.getValue()));
-        }
-    }
+            sessionHolder.session().ifPresent(jgitverSession -> {
+                logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
 
-    private List<MavenProject> locateProjects(MavenSession session, List<String> modules) {
-        List<MavenProject> projects;
-        projects = session.getProjects();
-        List<MavenProject> allProjects = null;
-        boolean multiModule = (modules != null) && (modules.size() > 0);
-        try {
-            allProjects = session.getAllProjects();
-            if (allProjects != null) {
-                projects = allProjects;
-            }
-        } catch (Throwable error) {
-            if ((error instanceof NoSuchMethodError) || (error instanceof NoSuchMethodException)) {
-                logger.warn("your maven version is <= 3.2.0 ; you should upgrade to enable jgitver-maven-plugin full "
-                        + "integration");
-            } else {
-                // rethrow
-                throw error;
-            }
+                jgitverSession.getProjects().forEach(gav -> logger.info("    " + gav.toString() + " -> " + jgitverSession.getVersion()));
+            });
         }
-
-        if (allProjects == null && multiModule) {
-            // warn only in case of multimodules
-            logger.warn("maven object model partially initialized, " + "jgitver-maven-plugin will use filtered list "
-                    + "of maven projects in case reactor was filtered " + "with -pl");
-        }
-
-        return projects;
     }
 }

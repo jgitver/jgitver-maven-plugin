@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 // @formatter:on
-package fr.brouillard.oss.jgitver;
+package fr.brouillard.oss.jgitver.mojos;
 
 import java.io.IOException;
 import java.util.Objects;
+
 import javax.xml.bind.JAXBException;
 
 import org.apache.maven.execution.MavenSession;
@@ -26,11 +27,13 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
+import fr.brouillard.oss.jgitver.JGitverSession;
+import fr.brouillard.oss.jgitver.JGitverUtils;
 
 /**
  * Works in conjunction with JGitverModelProcessor.
@@ -45,29 +48,24 @@ public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        String className = JGitverModelProcessorWorkingConfiguration.class.getName();
-
-        if (Objects.isNull(mavenSession.getUserProperties().get(className))) {
+        if (Objects.isNull(mavenSession.getUserProperties().get(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY))) {
             getLog().warn(GOAL_ATTACH_MODIFIED_POMS + "shouldn't be executed alone. The Mojo "
                     + "is a part of the plugin and executed automatically.");
             return;
         }
 
-        String content = mavenSession.getUserProperties().getProperty((className));
+        String content = mavenSession.getUserProperties().getProperty((JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY));
         if ("-".equalsIgnoreCase(content)) {
             // We don't need to attach modified poms anymore.
             return;
         }
 
         try {
-            JGitverModelProcessorWorkingConfiguration jGitverModelProcessorWorkingConfiguration =
-                    JGitverModelProcessorWorkingConfiguration.serializeFrom(content);
-
+            JGitverSession jgitverSession = JGitverSession.serializeFrom(content);
             JGitverUtils.attachModifiedPomFilesToTheProject(mavenSession.getAllProjects(),
-                    jGitverModelProcessorWorkingConfiguration.getNewProjectVersions(), mavenSession, new
+                    jgitverSession.getProjects(), jgitverSession.getVersion(), new
                             ConsoleLogger());
-
-            mavenSession.getUserProperties().setProperty(className, "-");
+            mavenSession.getUserProperties().setProperty(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY, "-");
         } catch (XmlPullParserException | IOException | JAXBException ex) {
             throw new MojoExecutionException("Unable to execute goal: "
                     + JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS, ex);

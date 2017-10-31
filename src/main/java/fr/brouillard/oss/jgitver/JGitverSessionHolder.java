@@ -1,4 +1,3 @@
-// @formatter:off
 /**
  * Copyright (C) 2016 Matthieu Brouillard [http://oss.brouillard.fr/jgitver-maven-plugin] (matthieu@brouillard.fr)
  *
@@ -14,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// @formatter:on
 package fr.brouillard.oss.jgitver;
 
-/**
- * TODO remove.
- */
-public class JGitverVersion {
-    private final GitVersionCalculator gitVersionCalculator;
-    private final String calculatedVersion;
+import java.util.Optional;
 
-    public JGitverVersion(GitVersionCalculator gitVersionCalculator) {
-        this.gitVersionCalculator = gitVersionCalculator;
-        this.calculatedVersion = gitVersionCalculator.getVersion();
+import org.codehaus.plexus.component.annotations.Component;
+
+@Component(role = JGitverSessionHolder.class, instantiationStrategy = "singleton")
+public class JGitverSessionHolder {
+    private JGitverSession session = null;
+
+    public void setSession(JGitverSession session) {
+        this.session = session;
     }
 
-    public GitVersionCalculator getGitVersionCalculator() {
-        return gitVersionCalculator;
-    }
-
-    public String getCalculatedVersion() {
-        return calculatedVersion;
+    public Optional<JGitverSession> session() {
+        return Optional.ofNullable(session);
     }
 }

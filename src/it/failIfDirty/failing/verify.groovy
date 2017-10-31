@@ -18,6 +18,7 @@ def log = new PrintWriter( new File(basedir, "verify.log").newWriter("UTF-8"), t
 log.println( "Verify started at: " + new Date() + " in: " + basedir )
 
 [
+  "chmod -R 755 .git",
   "rm -rf .git"
 ].each{ command ->
 
