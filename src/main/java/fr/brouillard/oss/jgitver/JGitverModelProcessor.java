@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +38,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
+import org.apache.maven.model.Scm;
 import org.apache.maven.model.building.DefaultModelProcessor;
 import org.apache.maven.model.building.ModelProcessor;
 import org.apache.maven.plugin.LegacySupport;
@@ -43,6 +46,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
+import fr.brouillard.oss.jgitver.metadata.Metadatas;
 import fr.brouillard.oss.jgitver.mojos.JGitverAttachModifiedPomsMojo;
 
 ;
@@ -137,84 +141,8 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
                 // we should only register the plugin once, on the main project
                 if (relativePath.getCanonicalPath().equals(multiModuleDirectory.getCanonicalPath())) {
-                    if (Objects.isNull(model.getBuild())) {
-                        model.setBuild(new Build());
-                    }
-
-                    if (Objects.isNull(model.getBuild().getPlugins())) {
-                        model.getBuild().setPlugins(new ArrayList<>());
-                    }
-
-                    Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
-                            .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                                    && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-                            .findFirst();
-
-                    StringBuilder pluginVersion = new StringBuilder();
-
-                    try (InputStream inputStream = getClass()
-                            .getResourceAsStream("/META-INF/maven/" + JGitverUtils.EXTENSION_GROUP_ID + "/"
-                                    + JGitverUtils.EXTENSION_ARTIFACT_ID + "/pom" + ".properties")) {
-                        Properties properties = new Properties();
-                        properties.load(inputStream);
-                        pluginVersion.append(properties.getProperty("version"));
-                    } catch (IOException ignored) {
-                        // TODO we should not ignore in case we have to reuse it
-                        logger.warn(ignored.getMessage(), ignored);
-                    }
-
-                    Plugin plugin = pluginOptional.orElseGet(() -> {
-                        Plugin plugin2 = new Plugin();
-                        plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
-                        plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
-                        plugin2.setVersion(pluginVersion.toString());
-
-                        model.getBuild().getPlugins().add(0, plugin2);
-                        return plugin2;
-                    });
-
-                    if (Objects.isNull(plugin.getExecutions())) {
-                        plugin.setExecutions(new ArrayList<>());
-                    }
-
-                    String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
-                    Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
-                            .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase())).findFirst();
-
-                    PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(() -> {
-                        PluginExecution pluginExecution2 = new PluginExecution();
-                        pluginExecution2.setPhase(pluginRunPhase);
-
-                        plugin.getExecutions().add(pluginExecution2);
-                        return pluginExecution2;
-                    });
-
-                    if (Objects.isNull(pluginExecution.getGoals())) {
-                        pluginExecution.setGoals(new ArrayList<>());
-                    }
-
-                    if (!pluginExecution.getGoals().contains(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS)) {
-                        pluginExecution.getGoals().add(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS);
-                    }
-
-                    if (Objects.isNull(plugin.getDependencies())) {
-                        plugin.setDependencies(new ArrayList<>());
-                    }
-
-                    Optional<Dependency> dependencyOptional = plugin.getDependencies().stream()
-                            .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                                    && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-                            .findFirst();
-
-                    dependencyOptional.orElseGet(() -> {
-                        Dependency dependency = new Dependency();
-                        dependency.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
-                        dependency.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
-                        dependency.setVersion(pluginVersion.toString());
-
-                        plugin.getDependencies().add(dependency);
-                        return dependency;
-                    });
+                    addAttachPomMojo(model);
+                    updateSCMTag(jgitverSession.getCalculator(), model);
                 }
 
                 try {
@@ -230,5 +158,103 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         }
 
         return model;
+    }
+
+    private void updateSCMTag(GitVersionCalculator calculator, Model model) {
+        if (model.getScm() != null) {
+            Scm scm = model.getScm();
+            if (isVersionFromTag(calculator)) {
+                scm.setTag(calculator.getVersion());
+            } else {
+                calculator.meta(Metadatas.GIT_SHA1_FULL).ifPresent(scm::setTag);
+            }
+        }
+    }
+
+    private boolean isVersionFromTag(GitVersionCalculator calculator) {
+        List<String> versionTagsOnHead = Arrays.asList(calculator.meta(Metadatas.HEAD_VERSION_ANNOTATED_TAGS).orElse("").split(","));
+        String baseTag = calculator.meta(Metadatas.BASE_TAG).orElse("");
+        return versionTagsOnHead.contains(baseTag);
+    }
+
+    private void addAttachPomMojo(Model model) {
+        if (Objects.isNull(model.getBuild())) {
+            model.setBuild(new Build());
+        }
+
+        if (Objects.isNull(model.getBuild().getPlugins())) {
+            model.getBuild().setPlugins(new ArrayList<>());
+        }
+
+        Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
+                .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                        && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+                .findFirst();
+
+        StringBuilder pluginVersion = new StringBuilder();
+
+        try (InputStream inputStream = getClass()
+                .getResourceAsStream("/META-INF/maven/" + JGitverUtils.EXTENSION_GROUP_ID + "/"
+                        + JGitverUtils.EXTENSION_ARTIFACT_ID + "/pom" + ".properties")) {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            pluginVersion.append(properties.getProperty("version"));
+        } catch (IOException ignored) {
+            // TODO we should not ignore in case we have to reuse it
+            logger.warn(ignored.getMessage(), ignored);
+        }
+
+        Plugin plugin = pluginOptional.orElseGet(() -> {
+            Plugin plugin2 = new Plugin();
+            plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
+            plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
+            plugin2.setVersion(pluginVersion.toString());
+
+            model.getBuild().getPlugins().add(0, plugin2);
+            return plugin2;
+        });
+
+        if (Objects.isNull(plugin.getExecutions())) {
+            plugin.setExecutions(new ArrayList<>());
+        }
+
+        String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
+        Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
+                .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase())).findFirst();
+
+        PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(() -> {
+            PluginExecution pluginExecution2 = new PluginExecution();
+            pluginExecution2.setPhase(pluginRunPhase);
+
+            plugin.getExecutions().add(pluginExecution2);
+            return pluginExecution2;
+        });
+
+        if (Objects.isNull(pluginExecution.getGoals())) {
+            pluginExecution.setGoals(new ArrayList<>());
+        }
+
+        if (!pluginExecution.getGoals().contains(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS)) {
+            pluginExecution.getGoals().add(JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS);
+        }
+
+        if (Objects.isNull(plugin.getDependencies())) {
+            plugin.setDependencies(new ArrayList<>());
+        }
+
+        Optional<Dependency> dependencyOptional = plugin.getDependencies().stream()
+                .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                        && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+                .findFirst();
+
+        dependencyOptional.orElseGet(() -> {
+            Dependency dependency = new Dependency();
+            dependency.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
+            dependency.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
+            dependency.setVersion(pluginVersion.toString());
+
+            plugin.getDependencies().add(dependency);
+            return dependency;
+        });
     }
 }

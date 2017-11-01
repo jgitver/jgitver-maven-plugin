@@ -176,6 +176,10 @@ public final class JGitverUtils {
 
             if (gavs.contains(initalProjectGAV)) {
                 model.setVersion(version);
+
+                if (model.getScm() != null && project.getModel().getScm() != null) {
+                    model.getScm().setTag(project.getModel().getScm().getTag());
+                }
             }
 
             if (model.getParent() != null) {

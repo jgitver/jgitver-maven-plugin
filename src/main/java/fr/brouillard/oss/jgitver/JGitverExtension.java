@@ -96,7 +96,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                 }
 
                 JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), gitVersionCalculator, logger);
-                sessionHolder.setSession(new JGitverSession(gitVersionCalculator.getVersion(), rootDirectory));
+                sessionHolder.setSession(new JGitverSession(gitVersionCalculator, rootDirectory));
             } catch (Exception ex) {
                 logger.warn("cannot autoclose GitVersionCalculator object for project: " + rootDirectory, ex);
             }

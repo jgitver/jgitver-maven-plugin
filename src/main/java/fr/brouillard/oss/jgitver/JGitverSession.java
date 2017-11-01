@@ -33,10 +33,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "jgitver")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JGitverSession {
+    @XmlTransient
+    private GitVersionCalculator calculator;
     @XmlElement(name = "calculatedVersion")
     private String version;
     @XmlElement(name = "multiModuleProjectDirectory")
@@ -48,13 +51,18 @@ public class JGitverSession {
     JGitverSession() {
     }
 
-    public JGitverSession(String version, File multiModuleDirectory) {
-        this.version = version;
+    public JGitverSession(GitVersionCalculator gitVersionCalculator, File multiModuleDirectory) {
+        this.version = gitVersionCalculator.getVersion();
+        this.calculator = gitVersionCalculator;
         this.multiModuleDirectory = multiModuleDirectory;
     }
 
     public String getVersion() {
         return version;
+    }
+
+    public GitVersionCalculator getCalculator() {
+        return calculator;
     }
 
     public File getMultiModuleDirectory() {
