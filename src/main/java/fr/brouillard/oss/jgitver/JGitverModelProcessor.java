@@ -142,7 +142,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                 // we should only register the plugin once, on the main project
                 if (relativePath.getCanonicalPath().equals(multiModuleDirectory.getCanonicalPath())) {
                     addAttachPomMojo(model);
-                    updateSCMTag(jgitverSession.getCalculator(), model);
+                    updateScmTag(jgitverSession.getCalculator(), model);
                 }
 
                 try {
@@ -160,7 +160,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         return model;
     }
 
-    private void updateSCMTag(GitVersionCalculator calculator, Model model) {
+    private void updateScmTag(GitVersionCalculator calculator, Model model) {
         if (model.getScm() != null) {
             Scm scm = model.getScm();
             if (isVersionFromTag(calculator)) {

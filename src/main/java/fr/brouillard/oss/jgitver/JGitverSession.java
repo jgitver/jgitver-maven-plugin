@@ -51,6 +51,12 @@ public class JGitverSession {
     JGitverSession() {
     }
 
+    /**
+     * Standard constructor using mandatory fields.
+     * The class does not use final attributes dues to its jaxb nature that requires an empty constructor.
+     * @param gitVersionCalculator the jgitver computation
+     * @param multiModuleDirectory the base maven directory
+     */
     public JGitverSession(GitVersionCalculator gitVersionCalculator, File multiModuleDirectory) {
         this.version = gitVersionCalculator.getVersion();
         this.calculator = gitVersionCalculator;
