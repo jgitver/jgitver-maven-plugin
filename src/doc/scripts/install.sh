@@ -17,7 +17,7 @@
 
 
 JGITVER_LATEST_VERSION=`curl -s "http://search.maven.org/solrsearch/select?q=g:%22fr.brouillard.oss%22+AND+a:%22jgitver-maven-plugin%22&core=gav&rows=1&wt=json" | python -mjson.tool \
- | grep '"v"' | tr -d '"' | tr -d ' ' | cut -d ':' -f 2`
+ | grep '"v"' | tr -d '", ' | cut -d ':' -f 2`
 
 
 if [ ! -d "$PWD/.mvn" ]; then
