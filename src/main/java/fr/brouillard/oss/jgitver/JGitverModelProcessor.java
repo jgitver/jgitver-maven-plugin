@@ -109,7 +109,6 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
             if (configurationProvider.ignore(location)) {
                 logger.debug("file " + location + " ignored by configuration");
-                legacySupport.getSession().getUserProperties().put(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY, "-");
                 return model;
             }
 

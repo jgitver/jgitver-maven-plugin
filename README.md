@@ -230,7 +230,7 @@ For that purpose you can use [grip](https://github.com/joeyespo/grip).
 
 or using docker
 
-- `docker run -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 mvn -Prun-its clean verify`
+- `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 ./src/ci/build-with-external-it-fallback.sh`
 
 build and filter some IT tests
 

@@ -18,6 +18,7 @@
 package fr.brouillard.oss.jgitver;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -111,21 +112,31 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
     @Override
     public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
         if (!JGitverUtils.shouldSkip(mavenSession)) {
-            final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
+            File projectBaseDir = mavenSession.getCurrentProject().getBasedir();
+            try {
+                if (!configurationProvider.ignore(projectBaseDir)) {
+                    final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
 
-            if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
-                if (!mavenSession.getUserProperties().containsKey(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY)) {
-                    JGitverUtils.failAsOldMechanism(c);
+                    if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
+
+                        if (!mavenSession.getUserProperties().containsKey(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY)) {
+                            JGitverUtils.failAsOldMechanism(c);
+                        }
+                    } else {
+                        JGitverUtils.failAsOldMechanism(c);
+                    }
+
+                    sessionHolder.session().ifPresent(jgitverSession -> {
+                        logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
+
+                        jgitverSession.getProjects().forEach(
+                            gav -> logger.info("    " + gav.toString() + " -> " + jgitverSession.getVersion())
+                        );
+                    });
                 }
-            } else {
-                JGitverUtils.failAsOldMechanism(c);
+            } catch (IOException ex) {
+                new MavenExecutionException("cannot evaluate if jgitver should ignore base project directory: " + projectBaseDir, ex);
             }
-
-            sessionHolder.session().ifPresent(jgitverSession -> {
-                logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
-
-                jgitverSession.getProjects().forEach(gav -> logger.info("    " + gav.toString() + " -> " + jgitverSession.getVersion()));
-            });
         }
     }
 }

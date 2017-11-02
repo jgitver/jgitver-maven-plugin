@@ -14,27 +14,12 @@
 # limitations under the License.
 #
 
-machine:
-  services:
-    - docker
-  java:
-    version: oraclejdk8
+#/bin/bash
 
-checkout:
-  post:
-    - chmod 755 ./src/ci/build-with-external-it-fallback.sh
-
-dependencies:
-  pre:
-    - echo dependencies pre
-
-  override:
-    - echo dependencies override
-
-test:
-  override:
-    - docker run -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 ./src/ci/build-with-external-it-fallback.sh
-
-  post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/target/invoker-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+# this build:
+#   - first run the IT tests in place in a sub directory of current project
+#     meaning that a .mvn/extensions.xml file will always be found, testing the default ignore settings of current project
+#     when there are refactoring in the way exclusions are handled and as a build run on CI
+#   - if the first run has failed, relaunch a build by externalizing the integration test directory in a safe place
+#     without any interference of the jgitver-maven-plugin version referenced by the current .mvn/extensions.xml file
+mvn -Prun-its clean install || mvn -Prun-its clean install -Dit.directory=/tmp/jgitver-it

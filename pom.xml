@@ -58,6 +58,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <it.directory>${project.build.directory}</it.directory>
 
         <!-- dependencies versions as properties -->
         <jgitver.version>0.4.0</jgitver.version>
@@ -74,6 +75,7 @@
         <plexus-component-metadata.version>1.6</plexus-component-metadata.version>
         <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+        <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
     </properties>
 
     <developers>
@@ -284,6 +286,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven-clean-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${it.directory}</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -352,7 +374,7 @@
                         <version>1.10</version>   <!--  minimal 1.10 because of MINVOKER-186 -->
                         <configuration>
                             <debug>false</debug>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <cloneProjectsTo>${it.directory}/it</cloneProjectsTo>
                             <cloneAllFiles>true</cloneAllFiles>
                             <setupIncludes>
                                 <setupInclude>issues/*-pre/pom.xml</setupInclude>
@@ -368,7 +390,7 @@
                             </pomExcludes>
                             <mavenOpts>-Dmaven.colors.skip=true</mavenOpts> <!-- avoid strange output in build.log by using https://github.com/rmannibucau/maven-color -->
                             <postBuildHookScript>verify</postBuildHookScript>
-                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                            <localRepositoryPath>${it.directory}/local-repo</localRepositoryPath>
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <goals>
                                 <goal>install</goal>
