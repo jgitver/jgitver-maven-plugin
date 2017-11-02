@@ -2,6 +2,16 @@
 
 Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
 
+## 1.1.3
+### GitHub [#64](https://github.com/jgitver/jgitver-maven-plugin/issues/64) it-tests are failing for issue-30-* tests
+
+**correct test for failure for files being ignored by configuration**
+
+ * fixes #64
+
+[212187df5ff070d](https://github.com/jgitver/jgitver-maven-plugin/commit/212187df5ff070d) Matthieu Brouillard *2017-11-02 12:27:16*
+
+
 ## 1.1.0
 ### GitHub [#35](https://github.com/jgitver/jgitver-maven-plugin/issues/35) Add support for SCM tag node update in POM files
 
