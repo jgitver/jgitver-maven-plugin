@@ -2,6 +2,56 @@
 
 Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
 
+## 1.1.0
+### GitHub [#35](https://github.com/jgitver/jgitver-maven-plugin/issues/35) Add support for SCM tag node update in POM files
+
+**handle project>scm>tag in pom**
+
+ * fixes #35
+
+[b6f7438f7853e9d](https://github.com/jgitver/jgitver-maven-plugin/commit/b6f7438f7853e9d) Matthieu Brouillard *2017-11-01 12:22:37*
+
+
+### GitHub [#62](https://github.com/jgitver/jgitver-maven-plugin/issues/62) Enable profile if release (of if dirty)
+
+**standardize & correct it tests**
+
+ * use .gitgnore in it tests
+ * replace non working redirections in prebuild.groovy files with random file
+ * generation
+ * closes #62
+
+[5408a5aa2859709](https://github.com/jgitver/jgitver-maven-plugin/commit/5408a5aa2859709) Matthieu Brouillard *2017-10-31 17:58:41*
+
+**provide tests for #62**
+
+
+[881603d3deca0da](https://github.com/jgitver/jgitver-maven-plugin/commit/881603d3deca0da) Matthieu Brouillard *2017-10-31 15:31:06*
+
+**refactoring to prepare #62**
+
+
+[5abc77b6dd9d28d](https://github.com/jgitver/jgitver-maven-plugin/commit/5abc77b6dd9d28d) Matthieu Brouillard *2017-10-31 13:31:13*
+
+
+### GitHub [#63](https://github.com/jgitver/jgitver-maven-plugin/issues/63) JGITVER_LATEST_VERSION is incorrectly calculated in install.sh
+
+**update fetch version command for python3 compatibility**
+
+ * json formatting in python3 adds an unexpected comma that is now removed
+ * fixes #63
+
+[7682c25c9862980](https://github.com/jgitver/jgitver-maven-plugin/commit/7682c25c9862980) Matthieu Brouillard *2017-11-01 08:54:44*
+
+
+### Jira issue-62 
+
+**use .gitignore in issue-62.2 it test**
+
+
+[2156d6a3c143916](https://github.com/jgitver/jgitver-maven-plugin/commit/2156d6a3c143916) Matthieu Brouillard *2017-10-31 16:57:00*
+
+
 ## 1.0.0
 ### GitHub [#44](https://github.com/jgitver/jgitver-maven-plugin/issues/44) allow to fail build when dirty
 
