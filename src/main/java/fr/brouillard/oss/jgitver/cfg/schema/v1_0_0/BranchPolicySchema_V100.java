@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.brouillard.oss.jgitver.cfg.schema;
+package fr.brouillard.oss.jgitver.cfg.schema.v1_0_0;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ import fr.brouillard.oss.jgitver.cfg.BranchPolicy;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BranchPolicySchema {
+public class BranchPolicySchema_V100 {
     @XmlElement(name = "pattern")
     public String pattern;
     @XmlElementWrapper(name = "transformations")

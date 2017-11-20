@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2016 Matthieu Brouillard [http://oss.brouillard.fr/jgitver-maven-plugin] (matthieu@brouillard.fr)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	targetNamespace="http://jgitver.github.io/maven/configuration/1.0.0"
+	xmlns="http://jgitver.github.io/maven/configuration/1.0.0">
+
+    <xs:complexType name="Configuration">
+    	<xs:sequence>
+    		<xs:element name="mavenLike" type="xs:boolean" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                	<xs:documentation>add '-SNAPSHOT' to all versions that do not correspond to a release</xs:documentation>
+                </xs:annotation>
+    		</xs:element>
+    		<xs:element name="autoIncrementPatch" type="xs:boolean" minOccurs="0" maxOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation>control how a base version is ued to calculate the new version, here the patch number of the version will be incremented. If version X.Y.Z is found as base version, then X.Y.(Z+1) will be used for the new version. </xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="useCommitDistance" type="xs:boolean" minOccurs="0" maxOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation>add a distance number from the base version as a version qualifier. For example if HEAD is 3 commit ahead the base version 1.0.0 then calculated version will be 1.0.0-3</xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="useDirty" type="xs:boolean" minOccurs="0" maxOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation>add a 'dirty' qualifier if the version is calculated from a stale git directory (modified files, new files, ...)</xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="failIfDirty" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false">
+    			<xs:annotation>
+    				<xs:documentation>if true and the dirty state is detected then make the build fail</xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="useGitCommitId" type="xs:boolean" minOccurs="0" maxOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the length is controlled by the property 'gitCommitIdLength' </xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="gitCommitIdLength" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="useGitCommitTimestamp" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false">
+    		    <xs:annotation>
+    		        <xs:documentation>appends a qualifier with a git HEAD commit timestamp</xs:documentation>
+    		    </xs:annotation>
+    		</xs:element>
+			<xs:element name="nonQualifierBranches" type="xs:string" minOccurs="0" maxOccurs="1">
+    			<xs:annotation>
+    				<xs:documentation>comma separated list of branches for which no qualifier should be defined</xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="exclusions" type="Exclusions" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="useDefaultBranchingPolicy" type="xs:boolean" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="regexVersionTag" type="xs:string" minOccurs="0" maxOccurs="1" nillable="false">
+    			<xs:annotation>
+    				<xs:documentation>java regular expression to find tags to extract version from, if omitted default value is used: v?([0-9]+(?:\.[0-9]+){0,2}(?:-[a-zA-Z0-9\-_]+)?)</xs:documentation>
+    			</xs:annotation></xs:element>
+    		<xs:element name="branchPolicies" type="BranchPolicies" minOccurs="0" maxOccurs="1"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+
+	<xs:complexType name="Exclusions">
+		<xs:sequence>
+			<xs:element name="exclusion" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>relative path to a directory to be excluded by jgitver. Paths are relative to the base multi module directory of the maven project.</xs:documentation>
+				</xs:annotation></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BranchPolicies">
+		<xs:sequence>
+			<xs:element name="branchPolicy" type="BranchPolicy" minOccurs="1" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BranchPolicy">
+		<xs:sequence>
+            <xs:annotation>
+            	<xs:documentation></xs:documentation>
+            </xs:annotation>
+            <xs:element name="pattern" type="xs:string" minOccurs="1" maxOccurs="1">
+            	<xs:annotation>
+            		<xs:documentation>java regex pattern that will match branch name. The regex pattern to be valid MUST contain a unique group selection.</xs:documentation>
+            	</xs:annotation></xs:element>
+			<xs:element name="transformations" type="Transformations" minOccurs="0" maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Transformations">
+		<xs:sequence>
+			<xs:element name="transformation" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>a transformation to apply, value taken from fr.brouillard.oss.jgitver.BranchingPolicy#BranchNameTransformations</xs:documentation>
+				</xs:annotation></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+    <xs:element name="configuration" type="Configuration"></xs:element>
+</xs:schema>

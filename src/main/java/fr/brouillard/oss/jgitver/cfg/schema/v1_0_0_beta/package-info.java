@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 @XmlSchema(namespace = "http://jgitver.github.io/maven/configuration/1.0.0-beta", elementFormDefault = XmlNsForm.QUALIFIED)
-package fr.brouillard.oss.jgitver.cfg.schema;
+package fr.brouillard.oss.jgitver.cfg.schema.v1_0_0_beta;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

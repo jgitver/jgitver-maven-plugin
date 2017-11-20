@@ -35,9 +35,14 @@ import org.codehaus.plexus.logging.Logger;
 import org.xml.sax.SAXException;
 
 import fr.brouillard.oss.jgitver.cfg.schema.ConfigurationSchema;
+import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0.BranchPolicySchema_V100;
+import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0.ConfigurationSchema_V100;
+import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0_beta.BranchPolicySchema_V100beta;
+import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0_beta.ConfigurationSchema_V100beta;
 
 public class ConfigurationLoader {
-    private static final String NAMESPACE = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
+    private static final String NAMESPACE_1_0_0_beta = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
+    private static final String NAMESPACE_1_0_0 = "http://jgitver.github.io/maven/configuration/1.0.0";
 
     /**
      * Loads a Configuration object from the root directory.
@@ -77,22 +82,42 @@ public class ConfigurationLoader {
         JAXBContext jaxbContext;
         Unmarshaller unmarshaller;
 
-        if (configurationContent.contains(NAMESPACE)) {
-            jaxbContext = JAXBContext.newInstance(ConfigurationSchema.class);
-
-            StreamSource contentStreamSource = new StreamSource(new StringReader(configurationContent));
-            Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                    .newSchema(ConfigurationLoader.class.getResource("/schemas/jgitver-configuration-v1_0_0-beta.xsd"));
-            Validator validator = schema.newValidator();
-            validator.validate(contentStreamSource);
-            unmarshaller = jaxbContext.createUnmarshaller();
-            unmarshaller.setSchema(schema);
-            ConfigurationSchema cs = (ConfigurationSchema) unmarshaller.unmarshal(new StringReader(configurationContent));
-            return cs.asConfiguration();
+        if (configurationContent.contains(NAMESPACE_1_0_0_beta)) {
+            return loadConfigurationFromSchema(
+                    configurationContent
+                    , "/schemas/jgitver-configuration-v1_0_0-beta.xsd"
+                    , ConfigurationSchema_V100beta.class
+            );
+        }else if (configurationContent.contains(NAMESPACE_1_0_0)) {
+            return loadConfigurationFromSchema(
+                    configurationContent
+                    , "/schemas/jgitver-configuration-v1_0_0.xsd"
+                    , ConfigurationSchema_V100.class
+            );
         } else {
             jaxbContext = JAXBContext.newInstance(Configuration.class);
             unmarshaller = jaxbContext.createUnmarshaller();
             return (Configuration) unmarshaller.unmarshal(new StringReader(configurationContent));
         }
+    }
+
+    private static Configuration loadConfigurationFromSchema(
+            String configurationContent
+            , String schemaResource
+            , Class<?> ... jaxbClasses
+    ) throws JAXBException, SAXException, IOException {
+        JAXBContext jaxbContext;
+        Unmarshaller unmarshaller;
+        jaxbContext = JAXBContext.newInstance(jaxbClasses);
+
+        StreamSource contentStreamSource = new StreamSource(new StringReader(configurationContent));
+        Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                .newSchema(ConfigurationLoader.class.getResource(schemaResource));
+        Validator validator = schema.newValidator();
+        validator.validate(contentStreamSource);
+        unmarshaller = jaxbContext.createUnmarshaller();
+        unmarshaller.setSchema(schema);
+        ConfigurationSchema cs = (ConfigurationSchema) unmarshaller.unmarshal(new StringReader(configurationContent));
+        return cs.asConfiguration();
     }
 }
