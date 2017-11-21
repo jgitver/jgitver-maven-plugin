@@ -1,18 +1,10 @@
-language: bash
+language: java
+sudo: false
+dist: trusty
 
-sudo: required
+jdk: oraclejdk8
 
-services:
-  - docker
-
-before_script:
-  - chmod a+x src/ci/build-with-external-it-fallback.sh
-
-script:
-  - docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 ./src/ci/build-with-external-it-fallback.sh
-
-after_failure:
-  - find target/it -name *.log -exec echo {} \; -exec cat {} \;
+script: mvn -Prun-its clean install 
 
 branches:
     except:
