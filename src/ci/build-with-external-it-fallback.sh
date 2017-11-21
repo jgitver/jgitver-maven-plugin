@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright (C) 2016 Matthieu Brouillard [http://oss.brouillard.fr/jgitver-maven-plugin] (matthieu@brouillard.fr)
 #
@@ -14,12 +15,12 @@
 # limitations under the License.
 #
 
-#/bin/bash
-
+# # # # # # # # # # # # # # # # # # # # 
 # this build:
 #   - first run the IT tests in place in a sub directory of current project
 #     meaning that a .mvn/extensions.xml file will always be found, testing the default ignore settings of current project
 #     when there are refactoring in the way exclusions are handled and as a build run on CI
 #   - if the first run has failed, relaunch a build by externalizing the integration test directory in a safe place
 #     without any interference of the jgitver-maven-plugin version referenced by the current .mvn/extensions.xml file
+# # # # # # # # # # # # # # # # # # # # 
 mvn -Prun-its clean install || mvn -Prun-its clean install -Dit.directory=/tmp/jgitver-it
