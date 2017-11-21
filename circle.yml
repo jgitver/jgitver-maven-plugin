@@ -33,7 +33,7 @@ dependencies:
 
 test:
   override:
-    - docker run -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 ./src/ci/build-with-external-it-fallback.sh
+    - docker run -v $(pwd):/root/sources -w /root/sources goyalzz/ubuntu-java-8-maven-docker-image ./src/ci/build-with-external-it-fallback.sh
 
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
