@@ -18,6 +18,7 @@ package fr.brouillard.oss.jgitver.mojos;
 import java.util.List;
 
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -56,13 +57,18 @@ public class JGitverMojo extends AbstractMojo {
     @Parameter(property = "jgitver.useDirty", defaultValue = "false")
     private Boolean useDirty;
 
+    @Parameter(defaultValue = "${session}", readonly = true)
+    private MavenSession mavenSession;
+
     @Override
     public void execute() throws MojoExecutionException {
         final Log logger = getLog();
-        try {
-            JGitverUtils.failAsOldMechanism(logger::warn);
-        } catch (MavenExecutionException ex) {
-            throw new MojoExecutionException("cannot use jgitver as maven plugin anymore", ex);
+        if (!JGitverUtils.shouldSkip(mavenSession)) {
+            try {
+                JGitverUtils.failAsOldMechanism(logger::warn);
+            } catch (MavenExecutionException ex) {
+                throw new MojoExecutionException("cannot use jgitver as maven plugin anymore", ex);
+            }
         }
     }
 }
