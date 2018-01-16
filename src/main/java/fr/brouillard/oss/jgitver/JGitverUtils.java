@@ -228,6 +228,6 @@ public final class JGitverUtils {
      * @return true if jgitver extension should be skipped
      */
     public static boolean shouldSkip(MavenSession session) {
-        return Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
+        return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_SKIP, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
     }
 }
