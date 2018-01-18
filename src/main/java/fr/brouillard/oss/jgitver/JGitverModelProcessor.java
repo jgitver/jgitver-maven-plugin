@@ -130,10 +130,12 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
                 if (Objects.nonNull(model.getParent())) {
                     // if the parent is part of the multi module project, let's update the parent version
+                    String modelParentRelativePath = model.getParent().getRelativePath();
                     File relativePathParent = new File(
-                            relativePath.getCanonicalPath() + File.separator + model.getParent().getRelativePath())
+                            relativePath.getCanonicalPath() + File.separator + modelParentRelativePath)
                             .getParentFile().getCanonicalFile();
-                    if (StringUtils.containsIgnoreCase(relativePathParent.getCanonicalPath(),
+                    if (StringUtils.isNotBlank(modelParentRelativePath) 
+                            && StringUtils.containsIgnoreCase(relativePathParent.getCanonicalPath(),
                             multiModuleDirectory.getCanonicalPath())) {
                         model.getParent().setVersion(calculatedVersion);
                     }
