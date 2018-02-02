@@ -69,13 +69,20 @@ public class ConfigurationLoader {
 
         try {
             logger.info("using jgitver configuration file: " + configurationXml);
-            String configurationContent = Files.readAllLines(configurationXml.toPath()).stream().collect(Collectors.joining("\n"));
-
-            Configuration c = loadConfiguration(configurationContent);
+            Configuration c = SimpleConfigurationLoader.loadFromFile(configurationXml);
             return c;
-        } catch (JAXBException | IOException | SAXException ex) {
+        } catch (Exception ex) {
             throw new MavenExecutionException("cannot read configuration file " + configurationXml, ex);
         }
+//        try {
+//            logger.info("using jgitver configuration file: " + configurationXml);
+//            String configurationContent = Files.readAllLines(configurationXml.toPath()).stream().collect(Collectors.joining("\n"));
+//
+//            Configuration c = loadConfiguration(configurationContent);
+//            return c;
+//        } catch (JAXBException | IOException | SAXException ex) {
+//            throw new MavenExecutionException("cannot read configuration file " + configurationXml, ex);
+//        }
     }
 
     private static Configuration loadConfiguration(String configurationContent) throws JAXBException, SAXException, IOException {
