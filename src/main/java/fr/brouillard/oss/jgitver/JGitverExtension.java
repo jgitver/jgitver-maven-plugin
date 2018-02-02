@@ -128,6 +128,11 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     }
 
                     sessionHolder.session().ifPresent(jgitverSession -> {
+                        logger.info(String.format(
+                                "jgitver-maven-plugin [%s] (sha1: %s)",
+                                JGitverProperties.getVersion(),
+                                JGitverProperties.getSHA1())
+                        );
                         logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
 
                         jgitverSession.getProjects().forEach(

@@ -147,6 +147,8 @@ public final class JGitverUtils {
         logger.debug(EXTENSION_PREFIX + " calculated version number: " + calculatedVersion);
         properties.put(EXTENSION_PREFIX + ".calculated_version", calculatedVersion);
 
+        properties.put(EXTENSION_PREFIX + ".plugin-version", JGitverProperties.getVersion());
+
         Arrays.asList(Metadatas.values()).stream().forEach(metaData -> {
             Optional<String> metaValue = gitVersionCalculator.meta(metaData);
             String propertyName = EXTENSION_PREFIX + "." + metaData.name().toLowerCase(Locale.ENGLISH);
