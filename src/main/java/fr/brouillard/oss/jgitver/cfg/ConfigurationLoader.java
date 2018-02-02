@@ -15,30 +15,14 @@
  */
 package fr.brouillard.oss.jgitver.cfg;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import org.apache.maven.MavenExecutionException;
 import org.codehaus.plexus.logging.Logger;
-import org.xml.sax.SAXException;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.convert.AnnotationStrategy;
+import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
 
-import fr.brouillard.oss.jgitver.cfg.schema.ConfigurationSchema;
-import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0.BranchPolicySchema_V100;
-import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0.ConfigurationSchema_V100;
-import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0_beta.BranchPolicySchema_V100beta;
-import fr.brouillard.oss.jgitver.cfg.schema.v1_0_0_beta.ConfigurationSchema_V100beta;
+import java.io.File;
 
 public class ConfigurationLoader {
     private static final String NAMESPACE_1_0_0_beta = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
@@ -69,62 +53,21 @@ public class ConfigurationLoader {
 
         try {
             logger.info("using jgitver configuration file: " + configurationXml);
-            Configuration c = SimpleConfigurationLoader.loadFromFile(configurationXml);
+            Configuration c = loadFromFile(configurationXml);
             return c;
         } catch (Exception ex) {
             throw new MavenExecutionException("cannot read configuration file " + configurationXml, ex);
         }
-//        try {
-//            logger.info("using jgitver configuration file: " + configurationXml);
-//            String configurationContent = Files.readAllLines(configurationXml.toPath()).stream().collect(Collectors.joining("\n"));
-//
-//            Configuration c = loadConfiguration(configurationContent);
-//            return c;
-//        } catch (JAXBException | IOException | SAXException ex) {
-//            throw new MavenExecutionException("cannot read configuration file " + configurationXml, ex);
-//        }
     }
 
-    private static Configuration loadConfiguration(String configurationContent) throws JAXBException, SAXException, IOException {
-        JAXBContext jaxbContext;
-        Unmarshaller unmarshaller;
+    private static Configuration loadFromFile(File configurationXml) throws MavenExecutionException {
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
 
-        if (configurationContent.contains(NAMESPACE_1_0_0_beta)) {
-            return loadConfigurationFromSchema(
-                    configurationContent
-                    , "/schemas/jgitver-configuration-v1_0_0-beta.xsd"
-                    , ConfigurationSchema_V100beta.class
-            );
-        }else if (configurationContent.contains(NAMESPACE_1_0_0)) {
-            return loadConfigurationFromSchema(
-                    configurationContent
-                    , "/schemas/jgitver-configuration-v1_0_0.xsd"
-                    , ConfigurationSchema_V100.class
-            );
-        } else {
-            jaxbContext = JAXBContext.newInstance(Configuration.class);
-            unmarshaller = jaxbContext.createUnmarshaller();
-            return (Configuration) unmarshaller.unmarshal(new StringReader(configurationContent));
+        try {
+            return serializer.read(Configuration.class, configurationXml);
+        } catch (Exception e) {
+            throw new MavenExecutionException("failure reading " + configurationXml, e);
         }
-    }
-
-    private static Configuration loadConfigurationFromSchema(
-            String configurationContent
-            , String schemaResource
-            , Class<?> ... jaxbClasses
-    ) throws JAXBException, SAXException, IOException {
-        JAXBContext jaxbContext;
-        Unmarshaller unmarshaller;
-        jaxbContext = JAXBContext.newInstance(jaxbClasses);
-
-        StreamSource contentStreamSource = new StreamSource(new StringReader(configurationContent));
-        Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                .newSchema(ConfigurationLoader.class.getResource(schemaResource));
-        Validator validator = schema.newValidator();
-        validator.validate(contentStreamSource);
-        unmarshaller = jaxbContext.createUnmarshaller();
-        unmarshaller.setSchema(schema);
-        ConfigurationSchema cs = (ConfigurationSchema) unmarshaller.unmarshal(new StringReader(configurationContent));
-        return cs.asConfiguration();
     }
 }
