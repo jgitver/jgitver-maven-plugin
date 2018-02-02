@@ -73,7 +73,7 @@
         <simple-xml.version>2.7.1</simple-xml.version>
 
         <!-- plugins versions as properties -->
-        <plexus-component-metadata.version>1.6</plexus-component-metadata.version>
+        <plexus-component-metadata.version>1.7.1</plexus-component-metadata.version>
         <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
