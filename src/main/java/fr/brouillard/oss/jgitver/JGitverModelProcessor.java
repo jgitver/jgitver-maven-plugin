@@ -29,8 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.building.Source;
 import org.apache.maven.model.Build;
@@ -151,7 +149,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                     legacySupport.getSession().getUserProperties().put(
                             JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY,
                             JGitverSession.serializeTo(jgitverSession));
-                } catch (JAXBException ex) {
+                } catch (Exception ex) {
                     throw new IOException("cannot serialize JGitverSession", ex);
                 }
             } else {

@@ -15,36 +15,28 @@
  */
 package fr.brouillard.oss.jgitver;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import org.simpleframework.xml.*;
+import org.simpleframework.xml.convert.AnnotationStrategy;
+import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-@XmlRootElement(name = "jgitver")
-@XmlAccessorType(XmlAccessType.FIELD)
+@Root(name = "jgitver")
+@Default(DefaultType.FIELD)
 public class JGitverSession {
-    @XmlTransient
+    @Transient
     private GitVersionCalculator calculator;
-    @XmlElement(name = "calculatedVersion")
+    @Element(name = "calculatedVersion")
     private String version;
-    @XmlElement(name = "multiModuleProjectDirectory")
+    @Element(name = "multiModuleProjectDirectory")
     private File multiModuleDirectory;
-    @XmlElement(name = "projectsGAV")
+    @ElementList(name = "projects", entry = "gav")
     private Set<GAV> projects = new LinkedHashSet<>();
 
     /* jaxb constructor */
@@ -87,42 +79,26 @@ public class JGitverSession {
      * Serializes as a String the given configuration object.
      * @param session the object to serialize
      * @return a non null String representation of the given object serialized
-     * @throws JAXBException in case the given object could not be serialized by JAXB
      * @throws IOException if the serialized form cannot be written
      * @see JGitverSession#serializeFrom(String)
      */
-    public static String serializeTo(JGitverSession session) throws
-            JAXBException, IOException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(JGitverSession.class, GAV.class);
-        Marshaller marshaller = jaxbContext.createMarshaller();
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream)) {
-            marshaller.marshal(session, bufferedOutputStream);
-        }
-
-        return byteArrayOutputStream.toString();
+    public static String serializeTo(JGitverSession session) throws Exception {
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+        StringWriter sw = new StringWriter();
+        serializer.write(session, sw);
+        return sw.toString();
     }
 
     /**
      * De-serializes the given string as a {@link JGitverSession}.
      * @param content the string to de-serialize
      * @return a non null configuration object
-     * @throws JAXBException if the given string could not be interpreted by JAXB
-     * @throws IOException if the content of the serialized object could not be read in memory
+     * @throws Exception if the given string could not be interpreted by simplexml
      */
-    public static JGitverSession serializeFrom(String content) throws JAXBException,
-            IOException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(JGitverSession.class, GAV.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-        JGitverSession session;
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content.getBytes());
-
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream)) {
-            session = (JGitverSession) unmarshaller.unmarshal(bufferedInputStream);
-        }
-
-        return session;
+    public static JGitverSession serializeFrom(String content) throws Exception {
+        Strategy strategy = new AnnotationStrategy();
+        Serializer serializer = new Persister(strategy);
+        return serializer.read(JGitverSession.class, content);
     }
 }
