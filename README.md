@@ -97,6 +97,11 @@ Here is an example configuration file:
 
 Please consult [jgitver](https://github.com/jgitver/jgitver#configuration-modes--strategies) documentation to fully understand what the parameters do.
 
+#### Command line arguments
+
+- `-Djgitver.skip=true` : skips totally jgitver usage
+- `-Djgitver.config=FILE` : overrides default config file and uses FILE instead
+
 ### Available properties
 
 Since `0.2.0`, the plugin exposes git calculated properties available during the maven build.

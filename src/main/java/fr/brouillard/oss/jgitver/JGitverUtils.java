@@ -51,6 +51,10 @@ public final class JGitverUtils {
     public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
     public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
 
+    public interface CLI {
+        String OVERRIDE_CONFIG_FILE = EXTENSION_PREFIX + ".config";
+    }
+
     private JGitverUtils() {
     }
 
