@@ -45,13 +45,13 @@ __manually__
 1. Create file `.mvn/extensions.xml`
 1. Put the following content to `.mvn/extensions.xml` (adapt to [latest version](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22fr.brouillard.oss%22%20a%3A%22jgitver-maven-plugin%22)).
 
-    ``` xml
+    ```xml
     <extensions xmlns="http://maven.apache.org/EXTENSIONS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://maven.apache.org/EXTENSIONS/1.0.0 http://maven.apache.org/xsd/core-extensions-1.0.0.xsd">
       <extension>
         <groupId>fr.brouillard.oss</groupId>
         <artifactId>jgitver-maven-plugin</artifactId>
-        <version>1.1.4</version>
+        <version>1.2.0</version>
       </extension>
     </extensions>
     ```
