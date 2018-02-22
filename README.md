@@ -101,6 +101,7 @@ Please consult [jgitver](https://github.com/jgitver/jgitver#configuration-modes-
 
 - `-Djgitver.skip=true` : skips totally jgitver usage
 - `-Djgitver.config=FILE` : overrides default config file and uses FILE instead
+- `-Djgitver.use-version=VERSION` : execute jgitver but finally uses VERSION as the project version 
 
 ### Available properties
 
@@ -120,6 +121,7 @@ You can then use them as standard maven properties in your build:
             </goals>
             <configuration>
                 <tasks>
+                    <echo>used version: ${jgitver.used_version}</echo>
                     <echo>version calculated: ${jgitver.calculated_version}</echo>
                     <echo>dirty: ${jgitver.dirty}</echo>
                     <echo>head_committer_name: ${jgitver.head_committer_name}</echo>
@@ -149,6 +151,7 @@ resulted in my case
 
 ```
 [INFO] Executing tasks
+     [echo] used version: 0.2.0-SNAPSHOT
      [echo] version calculated: 0.2.0-SNAPSHOT
      [echo] dirty: true
      [echo] head_committer_name: Matthieu Brouillard

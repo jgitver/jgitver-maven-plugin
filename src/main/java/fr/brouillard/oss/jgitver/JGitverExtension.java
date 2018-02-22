@@ -19,6 +19,7 @@ package fr.brouillard.oss.jgitver;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -97,8 +98,14 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     throw new IllegalStateException("repository is dirty");
                 }
 
-                JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), gitVersionCalculator, logger);
-                sessionHolder.setSession(new JGitverSession(gitVersionCalculator, rootDirectory));
+                JGitverInformationProvider infoProvider = Providers.decorate(gitVersionCalculator);
+                JGitverInformationProvider finalInfoProvider = infoProvider;
+                infoProvider = JGitverUtils.versionOverride(mavenSession)
+                        .map(version -> Providers.fixVersion(version, finalInfoProvider))
+                        .orElse(infoProvider);
+
+                JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), infoProvider, logger);
+                sessionHolder.setSession(new JGitverSession(infoProvider, rootDirectory));
             } catch (Exception ex) {
                 logger.warn("cannot autoclose GitVersionCalculator object for project: " + rootDirectory, ex);
             }

@@ -160,7 +160,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         return model;
     }
 
-    private void updateScmTag(GitVersionCalculator calculator, Model model) {
+    private void updateScmTag(JGitverInformationProvider calculator, Model model) {
         if (model.getScm() != null) {
             Scm scm = model.getScm();
             if (isVersionFromTag(calculator)) {
@@ -171,7 +171,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         }
     }
 
-    private boolean isVersionFromTag(GitVersionCalculator calculator) {
+    private boolean isVersionFromTag(JGitverInformationProvider calculator) {
         List<String> versionTagsOnHead = Arrays.asList(calculator.meta(Metadatas.HEAD_VERSION_ANNOTATED_TAGS).orElse("").split(","));
         String baseTag = calculator.meta(Metadatas.BASE_TAG).orElse("");
         return versionTagsOnHead.contains(baseTag);

@@ -31,7 +31,7 @@ import java.util.Set;
 @Default(DefaultType.FIELD)
 public class JGitverSession {
     @Transient
-    private GitVersionCalculator calculator;
+    private JGitverInformationProvider calculator;
     @Element(name = "calculatedVersion")
     private String version;
     @Element(name = "multiModuleProjectDirectory")
@@ -49,7 +49,7 @@ public class JGitverSession {
      * @param gitVersionCalculator the jgitver computation
      * @param multiModuleDirectory the base maven directory
      */
-    public JGitverSession(GitVersionCalculator gitVersionCalculator, File multiModuleDirectory) {
+    public JGitverSession(JGitverInformationProvider gitVersionCalculator, File multiModuleDirectory) {
         this.version = gitVersionCalculator.getVersion();
         this.calculator = gitVersionCalculator;
         this.multiModuleDirectory = multiModuleDirectory;
@@ -59,7 +59,7 @@ public class JGitverSession {
         return version;
     }
 
-    public GitVersionCalculator getCalculator() {
+    public JGitverInformationProvider getCalculator() {
         return calculator;
     }
 

@@ -49,6 +49,7 @@ public final class JGitverUtils {
     public static final String EXTENSION_GROUP_ID = "fr.brouillard.oss";
     public static final String EXTENSION_ARTIFACT_ID = "jgitver-maven-plugin";
     public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
+    public static final String EXTENSION_USE_VERSION = EXTENSION_PREFIX + ".use-version";
     public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
 
     public interface CLI {
@@ -143,18 +144,18 @@ public final class JGitverUtils {
      * Fill properties from meta data.
      *
      * @param properties     properties.
-     * @param gitVersionCalculator gitVersionCalculator.
+     * @param informationProvider the jgitver to extract information from.
      * @param logger         logger.
      */
-    public static void fillPropertiesFromMetadatas(Properties properties, GitVersionCalculator gitVersionCalculator, Logger logger) {
-        String calculatedVersion = gitVersionCalculator.getVersion();
+    public static void fillPropertiesFromMetadatas(Properties properties, JGitverInformationProvider informationProvider, Logger logger) {
+        String calculatedVersion = informationProvider.getVersion();
         logger.debug(EXTENSION_PREFIX + " calculated version number: " + calculatedVersion);
-        properties.put(EXTENSION_PREFIX + ".calculated_version", calculatedVersion);
+        properties.put(EXTENSION_PREFIX + ".used_version", calculatedVersion);
 
         properties.put(EXTENSION_PREFIX + ".plugin-version", JGitverProperties.getVersion());
 
         Arrays.asList(Metadatas.values()).stream().forEach(metaData -> {
-            Optional<String> metaValue = gitVersionCalculator.meta(metaData);
+            Optional<String> metaValue = informationProvider.meta(metaData);
             String propertyName = EXTENSION_PREFIX + "." + metaData.name().toLowerCase(Locale.ENGLISH);
             String value = metaValue.orElse("");
             properties.put(propertyName, value);
@@ -235,5 +236,14 @@ public final class JGitverUtils {
      */
     public static boolean shouldSkip(MavenSession session) {
         return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_SKIP, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
+    }
+
+    /**
+     * Provides the version to use if defined as System property
+     * @param session a running maven session
+     * @return an Optional containing the version to use if the corresponding system property has been defined
+     */
+    public static Optional<String> versionOverride(MavenSession session) {
+        return Optional.ofNullable(session.getSystemProperties().getProperty(EXTENSION_USE_VERSION));
     }
 }
