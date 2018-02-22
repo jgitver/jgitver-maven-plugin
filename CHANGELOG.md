@@ -2,6 +2,104 @@
 
 Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
 
+## 1.2.0
+### GitHub [#75](https://github.com/jgitver/jgitver-maven-plugin/issues/75) support for configuration options from command line
+
+**add support for external configuration file**
+
+ * by using `-Djgitver.config=PATH_TO_CONFIG_FILE` default configuration file
+ * can be overriden in favor of another file
+ * fixes #75
+
+[b09df632a763d72](https://github.com/jgitver/jgitver-maven-plugin/commit/b09df632a763d72) Matthieu Brouillard *2018-02-08 18:19:52*
+
+
+### GitHub [#76](https://github.com/jgitver/jgitver-maven-plugin/issues/76) expose jgitver-maven-plugin version inside the build
+
+**expose jgitver-maven-plugin version**
+
+ * fixes #76
+
+[48d47dbd374d195](https://github.com/jgitver/jgitver-maven-plugin/commit/48d47dbd374d195) Matthieu Brouillard *2018-02-02 13:53:43*
+
+
+### GitHub [#74](https://github.com/jgitver/jgitver-maven-plugin/issues/74) Plugin not compatible with java 9
+
+**update plexus-component-metadata with a java 9 compliant version**
+
+ * fixes #74
+
+[5b7e68e91a7bcd0](https://github.com/jgitver/jgitver-maven-plugin/commit/5b7e68e91a7bcd0) Matthieu Brouillard *2018-02-02 13:00:58*
+
+
+## 1.1.7
+### GitHub [#70](https://github.com/jgitver/jgitver-maven-plugin/issues/70) Intellij + jgitver + multi-module reports problem &quot;detection of jgitver old setting mechanism&quot;
+
+**skip evaluation also looks system properties**
+
+ * closes #70
+
+[55e14cbc032e4f2](https://github.com/jgitver/jgitver-maven-plugin/commit/55e14cbc032e4f2) Matthieu Brouillard *2018-01-16 07:25:16*
+
+
+## 1.1.6
+### GitHub [#70](https://github.com/jgitver/jgitver-maven-plugin/issues/70) Intellij + jgitver + multi-module reports problem &quot;detection of jgitver old setting mechanism&quot;
+
+**support skip parameter even on old plugin mechanism**
+
+ * allows to bypass jgitver in IDE not supporting it while loading the projects
+ * in the IDE.
+ * By setting `jgitver.skip`, no failure is raised anymore.
+ * For Intellij IDEA:
+ * - go into Settings &gt; Buld, Execution, Deployment &gt; Build Tools &gt; Maven &gt; Importing
+ * - in VM options for importer add &quot;-Djgitver.skip=true&quot;
+ * fixes #70
+
+[93723b213426c5a](https://github.com/jgitver/jgitver-maven-plugin/commit/93723b213426c5a) Matthieu Brouillard *2017-12-12 07:35:41*
+
+
+## 1.1.5
+### GitHub [#69](https://github.com/jgitver/jgitver-maven-plugin/issues/69) Nice to have jgitver.commit_distance
+
+**introduce COMMIT_DISTANCE as exposed properties**
+
+ * update to jgitver-0.5.1
+ * fixes #69
+
+[1fb73a87737160d](https://github.com/jgitver/jgitver-maven-plugin/commit/1fb73a87737160d) Matthieu Brouillard *2017-12-05 18:47:45*
+
+
+### Jira jgitver-0 
+
+**introduce COMMIT_DISTANCE as exposed properties**
+
+ * update to jgitver-0.5.1
+ * fixes #69
+
+[1fb73a87737160d](https://github.com/jgitver/jgitver-maven-plugin/commit/1fb73a87737160d) Matthieu Brouillard *2017-12-05 18:47:45*
+
+
+## 1.1.4
+### GitHub [#65](https://github.com/jgitver/jgitver-maven-plugin/issues/65) Use commit timestamp in version
+
+**allow usage of commit timestamp as version qualifier**
+
+ * update to jgitver 0.5.0
+ * enhance configuration to use version 1.0.0 of xml schema
+ * fixes #65
+
+[f6978c916e6ac0d](https://github.com/jgitver/jgitver-maven-plugin/commit/f6978c916e6ac0d) Matthieu Brouillard *2017-11-20 19:44:20*
+
+
+### GitHub [#66](https://github.com/jgitver/jgitver-maven-plugin/issues/66) docker build need a very recent version of git
+
+**simplify travis build, remove docker**
+
+ * fixes #66
+
+[dc658912fec682f](https://github.com/jgitver/jgitver-maven-plugin/commit/dc658912fec682f) Matthieu Brouillard *2017-11-21 08:43:51*
+
+
 ## 1.1.3
 ### GitHub [#64](https://github.com/jgitver/jgitver-maven-plugin/issues/64) it-tests are failing for issue-30-* tests
 
