@@ -21,7 +21,8 @@ Here is an illustration of the capabilities of the plugin
 
 ### Activation by maven core extension
 
-Since version `0.3.0` [jgitver-maven-plugin](#jgitver-maven-plugin) needs to be run as a maven core extension
+Since version `0.3.0` [jgitver-maven-plugin](#jgitver-maven-plugin) needs to be run as a maven core extension.  
+The installation scripts below will use the latest version available ; if you are updating find the latest version [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22fr.brouillard.oss%22%20AND%20a%3A%22jgitver-maven-plugin%22) or [there](http://search.maven.org/solrsearch/select?q=g:%22fr.brouillard.oss%22+AND+a:%22jgitver-maven-plugin%22&core=gav&rows=1&wt=json).
 
 __via curl__
 
