@@ -104,6 +104,18 @@ Please consult [jgitver](https://github.com/jgitver/jgitver#configuration-modes-
 - `-Djgitver.config=FILE` : overrides default config file and uses FILE instead
 - `-Djgitver.use-version=VERSION` : execute jgitver but finally uses VERSION as the project version 
 
+#### Working on a detached HEAD
+
+When working on a detached HEAD, no branch information exists anymore from git.  
+Since `1.3.0` it now possible to provide externally the _branch_ information via a system property or an envrionement variable.
+
+- `-Djgitver.branch=SOME_BRANCH_NAME`
+- `JGITVER_BRANCH=SOME_BRANCH_NAME && mvn validate` for bash like shells
+- `SET JGITVER_BRANCH=SOME_BRANCH_NAME`  
+    `mvn validate`  
+    for windows CMD (I don't know a one iner solution)
+
+
 ### Available properties
 
 Since `0.2.0`, the plugin exposes git calculated properties available during the maven build.
