@@ -279,6 +279,24 @@ Since `1.0.0`, it is possible to totally skip the plugin execution by launching 
 If your version is not calculated correctly by maven/jgitver, there are good chances that the plugin is not active.  
 Please verify that you are using maven >= 3.3.2.
 
+### build fail because all project plugins & dependencies resolve to the same version
+
+if during a build all the plugins & dependencies are resolved to the exacts same version then chances are high that you have the _local maven repository_ as a subdirectory of your jgitver handled project.
+
+To overcome this problem you have 2 possibilities:
+
+- separate correctly your project from the MLR and make sure the MLR is not a subdirectory of your jgitver managed project
+- configure jgitver (using `.mvn/jgitver.config.xml`) to ignore your subdirectory MLR, see the [configuration](#Configuration) paragraph
+    ``` xml
+    <configuration>
+        <exclusions>
+            <exclusion>path_to_your_mlr</exclusion>    <!-- can be .m2, .repository or something else -->
+        </exclusions>
+    </configuration>
+    ```
+
+see also [#90](https://github.com/jgitver/jgitver-maven-plugin/issues/90) && [#91](https://github.com/jgitver/jgitver-maven-plugin/issues/91) for discussions on this topic.
+  
 ### the invoker tests of my maven plugin project do not work anymore
 
 If you develop a maven plugin project, you normally run maven-invoker-plugin to test your plugin.  
