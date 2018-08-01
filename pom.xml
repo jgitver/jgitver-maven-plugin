@@ -63,7 +63,7 @@
         <!-- dependencies versions as properties -->
         <jgitver.version>0.6.1</jgitver.version>
         <maven-core.version>3.3.9</maven-core.version>
-        <plexus-utils.version>3.0.8</plexus-utils.version>
+        <plexus-utils.version>3.1.0</plexus-utils.version>
         <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
         <maven-plugin-api.version>2.0</maven-plugin-api.version>
         <plexus-component-annotations.version>1.5.5</plexus-component-annotations.version>
@@ -372,6 +372,11 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonatype.ossindex.maven</groupId>
+                    <artifactId>ossindex-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -487,6 +492,19 @@
                                     </rules>
                                     <fail>true</fail>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.ossindex.maven</groupId>
+                        <artifactId>ossindex-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>audit-dependencies</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>audit</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
