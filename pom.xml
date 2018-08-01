@@ -61,7 +61,7 @@
         <it.directory>${project.build.directory}</it.directory>
 
         <!-- dependencies versions as properties -->
-        <jgitver.version>0.6.1</jgitver.version>
+        <jgitver.version>0.7.0</jgitver.version>
         <maven-core.version>3.3.9</maven-core.version>
         <plexus-utils.version>3.1.0</plexus-utils.version>
         <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>

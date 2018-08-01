@@ -66,8 +66,13 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
             Configuration cfg = configurationProvider.getConfiguration();
 
             try (GitVersionCalculator gitVersionCalculator = GitVersionCalculator.location(rootDirectory)) {
+                if (cfg.strategy != null) {
+                    gitVersionCalculator.setStrategy(cfg.strategy);
+                } else {
+                    gitVersionCalculator.setMavenLike(cfg.mavenLike);
+                }
+
                 gitVersionCalculator
-                        .setMavenLike(cfg.mavenLike)
                         .setAutoIncrementPatch(cfg.autoIncrementPatch)
                         .setUseDirty(cfg.useDirty)
                         .setUseDistance(cfg.useCommitDistance)
@@ -75,7 +80,9 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setUseGitCommitId(cfg.useGitCommitId)
                         .setGitCommitIdLength(cfg.gitCommitIdLength)
                         .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
-                        .setNonQualifierBranches(cfg.nonQualifierBranches);
+                        .setNonQualifierBranches(cfg.nonQualifierBranches)
+                        .setVersionPattern(cfg.versionPattern)
+                        .setTagVersionPattern(cfg.tagVersionPattern);
 
                 if (cfg.regexVersionTag != null) {
                     gitVersionCalculator.setFindTagVersionPattern(cfg.regexVersionTag);

@@ -20,11 +20,15 @@ import org.simpleframework.xml.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import fr.brouillard.oss.jgitver.Strategies;
+
 @Root
 @Default(DefaultType.FIELD)
 public class Configuration {
     @Element(name = "mavenLike", required = false)
     public boolean mavenLike = true;
+    @Element(name = "strategy", required = false)
+    public Strategies strategy;
     @Element(required = false)
     public boolean autoIncrementPatch = true;
     @Element(required = false)
@@ -45,6 +49,10 @@ public class Configuration {
     public String nonQualifierBranches = "master";
     @Element(required = false)
     public String regexVersionTag;
+    @Element(required = false)
+    public String versionPattern;
+    @Element(required = false)
+    public String tagVersionPattern;
     @ElementList(name = "exclusions", entry = "exclusion", required = false)
     public List<String> exclusions = new LinkedList<>();
     @ElementList(name = "branchPolicies", entry = "branchPolicy", required = false)
