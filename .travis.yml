@@ -1,10 +1,15 @@
 language: java
-sudo: false
-dist: trusty
 
 jdk: oraclejdk8
 
-script: ./mvnw -Prun-its clean install
+before_script:
+    # reset correct branch information
+    - ./travis-set-branch.sh
+    # evaluate if we are building against a SNAPSHOT version of jgitver
+    # in which case we need to also look into Sonatype OSS snapshot repository
+    - export MVN_SETTINGS= ;  cat pom.xml | grep /jgitver.version | grep -v SNAPSHOT || export MVN_SETTINGS="-s snapshot-settings.xml"
+script:
+    - ./mvnw $MVN_SETTINGS -Prun-its clean install
 
 branches:
     except:
