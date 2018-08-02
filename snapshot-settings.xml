@@ -21,10 +21,7 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <profiles>
         <profile>
-            <id>snapshot</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>sonatype-repositories</id>
             <repositories>
                 <repository>
                     <id>sonatype-snapshots</id>
@@ -41,4 +38,7 @@
             </repositories>
         </profile>
     </profiles>
+    <activeProfiles>
+        <activeProfile>sonatype-repositories</activeProfile>
+    </activeProfiles>
 </settings>
