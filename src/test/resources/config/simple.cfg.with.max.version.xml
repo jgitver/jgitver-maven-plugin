@@ -1,0 +1,5 @@
+<configuration>
+    <mavenLike>false</mavenLike>
+    <useCommitDistance>true</useCommitDistance>
+    <useMaxVersion>true</useMaxVersion>
+</configuration>

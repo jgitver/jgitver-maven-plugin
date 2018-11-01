@@ -48,6 +48,9 @@ public class JGitverMojo extends AbstractMojo {
     @Parameter(property = "jgitver.gitCommitIdLength", defaultValue = "8")
     private Integer gitCommitIdLength;
 
+    @Parameter(property = "jgitver.userMaxVersion", defaultValue = "false")
+    private Boolean useMaxVersion;
+
     @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
     private String nonQualifierBranches;
 

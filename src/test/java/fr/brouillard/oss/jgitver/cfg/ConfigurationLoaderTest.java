@@ -49,9 +49,19 @@ public class ConfigurationLoaderTest {
             
             assertThat(cfg.mavenLike, is(false));
             assertThat(cfg.useCommitDistance, is(true));
+            assertThat(cfg.useMaxVersion, is(false));
         }
     }
-    
+
+    @Test
+    public void can_load_a_simple_configuration_with_use_max_version() throws MavenExecutionException, IOException {
+        try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.with.max.version.xml")) {
+            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
+            assertThat(cfg, notNullValue());
+            assertThat(cfg.useMaxVersion, is(true));
+        }
+    }
+
     @Test
     public void can_load_a_simple_configuration_with_xml_schema() throws MavenExecutionException, IOException {
         try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.with.schema.xml")) {

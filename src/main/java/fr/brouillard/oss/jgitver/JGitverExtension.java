@@ -17,13 +17,13 @@
 // @formatter:on
 package fr.brouillard.oss.jgitver;
 
+import fr.brouillard.oss.jgitver.cfg.Configuration;
+import fr.brouillard.oss.jgitver.metadata.Metadatas;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
@@ -32,9 +32,6 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-
-import fr.brouillard.oss.jgitver.cfg.Configuration;
-import fr.brouillard.oss.jgitver.metadata.Metadatas;
 
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "jgitver")
 public class JGitverExtension extends AbstractMavenLifecycleParticipant {
@@ -79,6 +76,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setUseGitCommitTimestamp(cfg.useGitCommitTimestamp)
                         .setUseGitCommitId(cfg.useGitCommitId)
                         .setGitCommitIdLength(cfg.gitCommitIdLength)
+                        .setUseMaxVersion(cfg.useMaxVersion)
                         .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                         .setNonQualifierBranches(cfg.nonQualifierBranches)
                         .setVersionPattern(cfg.versionPattern)
@@ -155,7 +153,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     });
                 }
             } catch (IOException ex) {
-                new MavenExecutionException("cannot evaluate if jgitver should ignore base project directory: " + projectBaseDir, ex);
+                throw new MavenExecutionException("cannot evaluate if jgitver should ignore base project directory: " + projectBaseDir, ex);
             }
         }
     }

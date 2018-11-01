@@ -49,6 +49,11 @@
     				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the length is controlled by the property 'gitCommitIdLength' </xs:documentation>
     			</xs:annotation></xs:element>
     		<xs:element name="gitCommitIdLength" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="useMaxVersion" type="xs:boolean" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>finds all version tags and chooses max visible version for version calculation</xs:documentation>
+					</xs:annotation>
+				</xs:element>
     		<xs:element name="useGitCommitTimestamp" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false">
     		    <xs:annotation>
     		        <xs:documentation>appends a qualifier with a git HEAD commit timestamp</xs:documentation>
