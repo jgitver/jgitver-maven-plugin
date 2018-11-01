@@ -51,6 +51,9 @@ public class JGitverMojo extends AbstractMojo {
     @Parameter(property = "jgitver.userMaxVersion", defaultValue = "false")
     private Boolean useMaxVersion;
 
+    @Parameter(property = "jgitver.maxVersionSearchDepth", defaultValue = "1000")
+    private Integer maxVersionSearchDepth;
+
     @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
     private String nonQualifierBranches;
 

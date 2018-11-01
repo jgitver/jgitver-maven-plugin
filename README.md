@@ -75,6 +75,7 @@ Here is an example configuration file:
     <useGitCommitId>true/false</useGitCommitId>
     <gitCommitIdLength>integer</gitCommitIdLength>  <!-- between [8,40] -->
     <useMaxVersion>false</useMaxVersion>
+    <maxVersionSearchDepth>1000/false</maxVersionSearchDepth>
     <nonQualifierBranches>master</nonQualifierBranches> <!-- comma separated, example "master,integration" -->
     <regexVersionTag>r([0-9]+)</regexVersionTag>  <!-- a java regular expression with a capture group matching only 
                                                        tags of the form r0, r1, ..., r34-->

@@ -48,6 +48,8 @@ public class Configuration {
     @Element(required = false)
     public boolean useMaxVersion = false;
     @Element(required = false)
+    public int maxVersionSearchDepth = 200;
+    @Element(required = false)
     public String nonQualifierBranches = "master";
     @Element(required = false)
     public String regexVersionTag;

@@ -59,6 +59,7 @@ public class ConfigurationLoaderTest {
             Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
             assertThat(cfg, notNullValue());
             assertThat(cfg.useMaxVersion, is(true));
+            assertThat(cfg.maxVersionSearchDepth, is(1234));
         }
     }
 

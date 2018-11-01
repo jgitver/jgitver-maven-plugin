@@ -54,6 +54,11 @@
 						<xs:documentation>finds all version tags and chooses max visible version for version calculation</xs:documentation>
 					</xs:annotation>
 				</xs:element>
+    		<xs:element name="maxVersionSearchDepth" type="xs:integer" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>maximum number of tags to consider in maxVersion lookup</xs:documentation>
+					</xs:annotation>
+				</xs:element>
     		<xs:element name="useGitCommitTimestamp" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false">
     		    <xs:annotation>
     		        <xs:documentation>appends a qualifier with a git HEAD commit timestamp</xs:documentation>

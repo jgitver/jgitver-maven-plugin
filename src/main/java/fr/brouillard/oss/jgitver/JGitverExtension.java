@@ -77,6 +77,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setUseGitCommitId(cfg.useGitCommitId)
                         .setGitCommitIdLength(cfg.gitCommitIdLength)
                         .setUseMaxVersion(cfg.useMaxVersion)
+                        .setMaxVersionSearchDepth(cfg.maxVersionSearchDepth)
                         .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                         .setNonQualifierBranches(cfg.nonQualifierBranches)
                         .setVersionPattern(cfg.versionPattern)

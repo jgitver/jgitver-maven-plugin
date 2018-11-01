@@ -2,4 +2,5 @@
     <mavenLike>false</mavenLike>
     <useCommitDistance>true</useCommitDistance>
     <useMaxVersion>true</useMaxVersion>
+    <maxVersionSearchDepth>1234</maxVersionSearchDepth>
 </configuration>
