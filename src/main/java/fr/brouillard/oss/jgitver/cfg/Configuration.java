@@ -59,4 +59,6 @@ public class Configuration {
     public List<BranchPolicy> branchPolicies = new LinkedList<>();
     @Attribute(required = false)
     public String schemaLocation;
+    @Element(required = false)
+    public boolean skipPomUpdate = false;
 }

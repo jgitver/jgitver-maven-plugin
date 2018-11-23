@@ -23,18 +23,23 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.MavenExecutionException;
 import org.apache.maven.building.Source;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginConfiguration;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.building.DefaultModelProcessor;
@@ -43,6 +48,8 @@ import org.apache.maven.plugin.LegacySupport;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
 import fr.brouillard.oss.jgitver.mojos.JGitverAttachModifiedPomsMojo;
@@ -54,12 +61,14 @@ import fr.brouillard.oss.jgitver.mojos.JGitverAttachModifiedPomsMojo;
  */
 @Component(role = ModelProcessor.class)
 public class JGitverModelProcessor extends DefaultModelProcessor {
+    public static final String FLATTEN_MAVEN_PLUGIN = "flatten-maven-plugin";
+    public static final String ORG_CODEHAUS_MOJO = "org.codehaus.mojo";
     @Requirement
     private Logger logger = null;
 
     @Requirement
     private LegacySupport legacySupport = null;
-    
+
     @Requirement
     private JGitverConfiguration configurationProvider;
 
@@ -86,6 +95,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
     }
 
     private Model provisionModel(Model model, Map<String, ?> options) throws IOException {
+        MavenSession session = legacySupport.getSession();
         Optional<JGitverSession> optSession = jgitverSession.session();
         if (!optSession.isPresent()) {
             // don't do anything in case no jgitver is there (execution could have been skipped)
@@ -132,7 +142,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
                     File relativePathParent = new File(
                             relativePath.getCanonicalPath() + File.separator + modelParentRelativePath)
                             .getParentFile().getCanonicalFile();
-                    if (StringUtils.isNotBlank(modelParentRelativePath) 
+                    if (StringUtils.isNotBlank(modelParentRelativePath)
                             && StringUtils.containsIgnoreCase(relativePathParent.getCanonicalPath(),
                             multiModuleDirectory.getCanonicalPath())) {
                         model.getParent().setVersion(calculatedVersion);
@@ -141,12 +151,26 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
                 // we should only register the plugin once, on the main project
                 if (relativePath.getCanonicalPath().equals(multiModuleDirectory.getCanonicalPath())) {
-                    addAttachPomMojo(model);
+                    if (JGitverUtils.shouldUseFlattenPlugin(session)) {
+                        if (shouldSkipPomUpdate(model)) {
+                            logger.info("skipPomUpdate property is activated, jgitver will not define any maven-flatten-plugin execution");
+                        } else {
+                            if (isFlattenPluginDirectlyUsed(model)) {
+                                logger.info("maven-flatten-plugin detected, jgitver will not define it's own execution");
+                            } else {
+                                logger.info("adding maven-flatten-plugin execution with jgitver defaults");
+                                addFlattenPlugin(model);
+                            }
+                        }
+                    } else {
+                        addAttachPomMojo(model);
+                    }
+
                     updateScmTag(jgitverSession.getCalculator(), model);
                 }
 
                 try {
-                    legacySupport.getSession().getUserProperties().put(
+                    session.getUserProperties().put(
                             JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY,
                             JGitverSession.serializeTo(jgitverSession));
                 } catch (Exception ex) {
@@ -158,6 +182,93 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         }
 
         return model;
+    }
+
+    private void addFlattenPlugin(Model model) {
+        ensureBuildWithPluginsExistInModel(model);
+
+        Plugin flattenPlugin = new Plugin();
+        flattenPlugin.setGroupId(ORG_CODEHAUS_MOJO);
+        flattenPlugin.setArtifactId(FLATTEN_MAVEN_PLUGIN);
+        flattenPlugin.setVersion(System.getProperty("jgitver.flatten.version", "1.0.1"));
+
+        PluginExecution flattenPluginExecution = new PluginExecution();
+        flattenPluginExecution.setId("jgitver-flatten-pom");
+        flattenPluginExecution.addGoal("flatten");
+        flattenPluginExecution.setPhase(System.getProperty("jgitver.pom-replacement-phase", "validate"));
+
+        flattenPlugin.getExecutions().add(flattenPluginExecution);
+
+        Xpp3Dom executionConfiguration = buildFlattenPluginConfiguration();
+        flattenPluginExecution.setConfiguration(executionConfiguration);
+        model.getBuild().getPlugins().add(flattenPlugin);
+    }
+
+    private void ensureBuildWithPluginsExistInModel(Model model) {
+        if (Objects.isNull(model.getBuild())) {
+            model.setBuild(new Build());
+        }
+
+        if (Objects.isNull(model.getBuild().getPlugins())) {
+            model.getBuild().setPlugins(new ArrayList<>());
+        }
+    }
+
+    private Xpp3Dom buildFlattenPluginConfiguration() {
+        Xpp3Dom configuration = new Xpp3Dom("configuration");
+
+        Xpp3Dom flattenMode = new Xpp3Dom("flattenMode");
+        flattenMode.setValue("defaults");
+
+        Xpp3Dom updatePomFile = new Xpp3Dom("updatePomFile");
+        updatePomFile.setValue("true");
+
+        Xpp3Dom pomElements = new Xpp3Dom("pomElements");
+
+        Xpp3Dom dependencyManagement = new Xpp3Dom("dependencyManagement");
+        dependencyManagement.setValue("keep");
+        pomElements.addChild(dependencyManagement);
+
+        List<String> pomElementsName = Arrays.asList(
+            "build", "ciManagement", "contributors", "dependencies", "description", "developers",
+            "distributionManagement", "inceptionYear", "issueManagement", "mailingLists", "modules", "name",
+            "organization", "parent", "pluginManagement", "pluginRepositories",
+            "prerequisites", "profiles", "properties", "reporting", "repositories", "scm", "url", "version"
+        );
+
+        pomElementsName.forEach(elementName -> {
+            Xpp3Dom node = new Xpp3Dom(elementName);
+            node.setValue("resolve");
+            pomElements.addChild(node);
+        });
+
+        configuration.addChild(flattenMode);
+        configuration.addChild(updatePomFile);
+        configuration.addChild(pomElements);
+
+        return configuration;
+    }
+
+    private boolean shouldSkipPomUpdate(Model model) throws IOException {
+        try {
+            return configurationProvider.getConfiguration().skipPomUpdate;
+        } catch (MavenExecutionException mee) {
+            throw new IOException("cannot load jgitver configuration", mee);
+        }
+    }
+
+    private boolean isFlattenPluginDirectlyUsed(Model model) {
+        Predicate<Plugin> isFlattenPlugin = p -> ORG_CODEHAUS_MOJO.equals(p.getGroupId()) && FLATTEN_MAVEN_PLUGIN.equals(p.getArtifactId());
+
+        List<Plugin> pluginList = Optional.ofNullable(model.getBuild())
+                .map(Build::getPlugins)
+                .orElse(Collections.emptyList());
+
+        return pluginList
+                .stream()
+                .filter(isFlattenPlugin)
+                .findAny()
+                .isPresent();
     }
 
     private void updateScmTag(JGitverInformationProvider calculator, Model model) {
@@ -177,14 +288,9 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         return versionTagsOnHead.contains(baseTag);
     }
 
-    private void addAttachPomMojo(Model model) {
-        if (Objects.isNull(model.getBuild())) {
-            model.setBuild(new Build());
-        }
 
-        if (Objects.isNull(model.getBuild().getPlugins())) {
-            model.getBuild().setPlugins(new ArrayList<>());
-        }
+    private void addAttachPomMojo(Model model) {
+        ensureBuildWithPluginsExistInModel(model);
 
         Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
                 .filter(x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())

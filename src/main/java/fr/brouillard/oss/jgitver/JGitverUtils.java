@@ -49,6 +49,7 @@ public final class JGitverUtils {
     public static final String EXTENSION_GROUP_ID = "fr.brouillard.oss";
     public static final String EXTENSION_ARTIFACT_ID = "jgitver-maven-plugin";
     public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
+    public static final String EXTENSION_FLATTEN = EXTENSION_PREFIX + ".flatten";
     public static final String EXTENSION_USE_VERSION = EXTENSION_PREFIX + ".use-version";
     public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
 
@@ -236,6 +237,20 @@ public final class JGitverUtils {
      */
     public static boolean shouldSkip(MavenSession session) {
         return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_SKIP, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
+    }
+
+    /**
+     * Tells if this jgitver extension should use maven-flatten-plugin instead of its own mechanism.
+     * To activate flatten plugin
+     * <pre>
+     *     mvn -Djgitver.flatten=true/false
+     * </pre>
+     * The value of the property is evaluated using @{@link java.lang.Boolean#parseBoolean(String)}.
+     * @param session a running maven session
+     * @return true if jgitver extension should use flatten
+     */
+    public static boolean shouldUseFlattenPlugin(MavenSession session) {
+        return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_FLATTEN, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_FLATTEN, "false"));
     }
 
     /**
