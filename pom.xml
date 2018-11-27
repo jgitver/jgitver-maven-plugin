@@ -54,6 +54,11 @@
         <url>https://github.com/jgitver/jgitver-maven-plugin/issues</url>
     </issueManagement>
 
+    <ciManagement>
+        <url>https://travis-ci.org/jgitver/jgitver-maven-plugin</url>
+        <system>travis-ci</system>
+    </ciManagement>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
