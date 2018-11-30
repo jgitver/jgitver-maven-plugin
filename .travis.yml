@@ -8,6 +8,10 @@ jdk: oraclejdk8
 
 install:
   - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "echo ignore modifications done by maven wrapper"
+  - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.properties"
+  - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.jar"
+  - "git update-index --assume-unchanged .mvn/wrapper/MavenWrapperDownloader.java"
   - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 before_script:
     # reset correct branch information
