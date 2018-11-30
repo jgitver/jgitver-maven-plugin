@@ -7,7 +7,7 @@ env:
 jdk: oraclejdk8
 
 install:
-  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
   - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 before_script:
     # reset correct branch information
