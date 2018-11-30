@@ -7,12 +7,12 @@ env:
 jdk: oraclejdk8
 
 install:
-  - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "mvn --show-version -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
   - "echo ignore modifications done by maven wrapper"
   - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.properties"
   - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.jar"
   - "git update-index --assume-unchanged .mvn/wrapper/MavenWrapperDownloader.java"
-  - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+  - "./mvnw --show-version install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 before_script:
     # reset correct branch information
     - "./travis-set-branch.sh"
@@ -20,7 +20,7 @@ before_script:
     # in which case we need to also look into Sonatype OSS snapshot repository
     - "export MVN_SETTINGS= ;  cat pom.xml | grep /jgitver.version | grep -v SNAPSHOT || export MVN_SETTINGS=\"-s snapshot-settings.xml\""
 script:
-    - "./mvnw $MVN_SETTINGS -Prun-its clean install"
+    - "./mvnw --show-version $MVN_SETTINGS -Prun-its clean install"
 
 cache:
   directories:
