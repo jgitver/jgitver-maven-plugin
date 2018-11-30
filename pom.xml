@@ -261,6 +261,7 @@
                         <email>matthieu@brouillard.fr</email>
                     </properties>
                     <excludes>
+                        <exclude>.mvn/wrapper/**</exclude>
                         <exclude>**/README</exclude>
                         <exclude>**/LICENSE</exclude>
                         <exclude>.okhttpcache/**</exclude>

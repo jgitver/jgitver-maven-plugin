@@ -6,3 +6,4 @@ target/
 .idea/
 .okhttpcache/
 *.iml
+.mvn/wrapper
