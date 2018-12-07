@@ -2,6 +2,139 @@
 
 Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
 
+## 1.4.4
+### GitHub [#101](https://github.com/jgitver/jgitver-maven-plugin/issues/101) &gt;=1.4.0 freezes in life-lock when trying to edit configuration
+
+**allow to configure the maximum search depth in commit graph**
+
+ * for big repositories with plenty of path without tags the look for tags action will stop at this depth
+ * #fixes #101
+
+[f7ed5bc143004e2](https://github.com/jgitver/jgitver-maven-plugin/commit/f7ed5bc143004e2) Matthieu Brouillard *2018-12-07 08:20:43*
+
+
+### GitHub [#102](https://github.com/jgitver/jgitver-maven-plugin/issues/102) study usage of maven-flatten-plugin
+
+**introduce alternative usage of maven-flatten-plugin**
+
+ * via activation of -Djgitver.flatten=true, maven-flatten-plugin will be used instead of
+ * the own jgitver mechanism to materialize the pom from the POM (object model)
+ * jgitver configuration `skipPomUpdate`, will additionally allow to users to tell jgitver
+ * not to try to add its own maven-flatten-plugin execution. this parameter is usefull when
+ * for example you have a parent pom defining maven-flatten-plugin
+ * if jgitver.flatten=true and skipPomUpdate=false, then jgitver will look your pom to find
+ * for an already defined maven-flatten-plugin execution, if one is found it stop there
+ * otherwise jgitver will add its own execution to publish the pom.xml
+ * fixes #102
+
+[e851ee7c3e081ab](https://github.com/jgitver/jgitver-maven-plugin/commit/e851ee7c3e081ab) Matthieu Brouillard *2018-11-30 15:21:17*
+
+
+### GitHub [#106](https://github.com/jgitver/jgitver-maven-plugin/issues/106) compilation failure on java 11
+
+**add a dependency to jaxb-api to have the annotations in the classpath to be able to build to build on java11**
+
+ * fixes #106
+
+[01d6f38743f2cd4](https://github.com/jgitver/jgitver-maven-plugin/commit/01d6f38743f2cd4) Matthieu Brouillard *2018-11-30 07:29:12*
+
+
+### GitHub [#107](https://github.com/jgitver/jgitver-maven-plugin/issues/107) switch dependency checks from ossindex to snyk.io
+
+**replace ossindex by snyk.io**
+
+ * fixes #107
+
+[826043a0f29ac4f](https://github.com/jgitver/jgitver-maven-plugin/commit/826043a0f29ac4f) Matthieu Brouillard *2018-11-30 14:03:30*
+
+
+## 1.4.2
+### GitHub [#61](https://github.com/jgitver/jgitver-maven-plugin/issues/61) Java 1.7
+
+**update jgitver dependency to 0.8.4 due to jgitver/jgitver#61**
+
+
+[a883627a1f878dc](https://github.com/jgitver/jgitver-maven-plugin/commit/a883627a1f878dc) Matthieu Brouillard *2018-11-05 19:54:16*
+
+
+## 1.4.1
+### GitHub [#100](https://github.com/jgitver/jgitver-maven-plugin/issues/100) add enforce rule to force JDK8 when releasing
+
+**add enforcer rules to protect releases**
+
+ * fixes #99
+ * fixes #100
+
+[9d223d34a02facb](https://github.com/jgitver/jgitver-maven-plugin/commit/9d223d34a02facb) Matthieu Brouillard *2018-11-05 06:35:32*
+
+
+### GitHub [#99](https://github.com/jgitver/jgitver-maven-plugin/issues/99) add enforce rule to publish without branch qualifier when releasing
+
+**add enforcer rules to protect releases**
+
+ * fixes #99
+ * fixes #100
+
+[9d223d34a02facb](https://github.com/jgitver/jgitver-maven-plugin/commit/9d223d34a02facb) Matthieu Brouillard *2018-11-05 06:35:32*
+
+
+## 1.4.0
+### GitHub [#91](https://github.com/jgitver/jgitver-maven-plugin/issues/91) Add default exclude / warning for &quot;.m2&quot; and/or &quot;repository&quot;
+
+**add some documentation on ignoring subdiroctories with MLR**
+
+ * fixes #91
+
+[3dd317b9a6fee27](https://github.com/jgitver/jgitver-maven-plugin/commit/3dd317b9a6fee27) Matthieu Brouillard *2018-07-09 08:40:06*
+
+
+### GitHub [#92](https://github.com/jgitver/jgitver-maven-plugin/issues/92) update to jgitver 0.6.1
+
+**update to jgitver 0.6.1**
+
+ * fixes #92
+
+[099c2b581d222a0](https://github.com/jgitver/jgitver-maven-plugin/commit/099c2b581d222a0) Matthieu Brouillard *2018-07-10 05:55:33*
+
+
+### GitHub [#98](https://github.com/jgitver/jgitver-maven-plugin/issues/98) support merges and max version resolution with jgitver-0.8.2
+
+**correct support of merges with usage of jgitver 0.8.2**
+
+ * fixes #98
+
+[f3e7eab307bd10b](https://github.com/jgitver/jgitver-maven-plugin/commit/f3e7eab307bd10b) Matthieu Brouillard *2018-11-04 11:20:40*
+
+
+## 1.3.0
+### GitHub [#88](https://github.com/jgitver/jgitver-maven-plugin/issues/88) NPE when run without pom.xml
+
+**ignoring jgitver results when project has no basedir**
+
+ * fixes #88
+
+[6a65666ff2aa32b](https://github.com/jgitver/jgitver-maven-plugin/commit/6a65666ff2aa32b) Matthieu Brouillard *2018-07-02 17:21:46*
+
+
+### GitHub [#89](https://github.com/jgitver/jgitver-maven-plugin/issues/89) document external branch name on detached HEAD
+
+**enhance README with external branch name providing on detached HEAD**
+
+ * fixes #89
+
+[ef8eec9f820d662](https://github.com/jgitver/jgitver-maven-plugin/commit/ef8eec9f820d662) Matthieu Brouillard *2018-07-05 09:04:58*
+
+
+## 1.2.1
+### GitHub [#79](https://github.com/jgitver/jgitver-maven-plugin/issues/79) allow to use externally defined version
+
+**support external version definition**
+
+ * fixes #79
+
+[d28befa79d11d1c](https://github.com/jgitver/jgitver-maven-plugin/commit/d28befa79d11d1c) Matthieu Brouillard *2018-02-22 14:52:20*
+
+
 ## 1.2.0
 ### GitHub [#75](https://github.com/jgitver/jgitver-maven-plugin/issues/75) support for configuration options from command line
 
@@ -23,6 +156,7 @@ Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plu
 [48d47dbd374d195](https://github.com/jgitver/jgitver-maven-plugin/commit/48d47dbd374d195) Matthieu Brouillard *2018-02-02 13:53:43*
 
 
+## v1.2.0
 ### GitHub [#74](https://github.com/jgitver/jgitver-maven-plugin/issues/74) Plugin not compatible with java 9
 
 **update plexus-component-metadata with a java 9 compliant version**
