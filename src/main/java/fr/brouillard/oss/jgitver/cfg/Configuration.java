@@ -46,6 +46,8 @@ public class Configuration {
     @Element(required = false)
     public int gitCommitIdLength = 8;
     @Element(required = false)
+    public int maxSearchDepth = UNSET_DEPTH;
+    @Element(required = false)
     public String nonQualifierBranches = "master";
     @Element(required = false)
     public String regexVersionTag;
@@ -61,4 +63,6 @@ public class Configuration {
     public String schemaLocation;
     @Element(required = false)
     public boolean skipPomUpdate = false;
+
+    public final static int UNSET_DEPTH = -1;
 }

@@ -74,6 +74,7 @@ Here is an example configuration file:
     <useDirty>true/false</useDirty>
     <useGitCommitId>true/false</useGitCommitId>
     <gitCommitIdLength>integer</gitCommitIdLength>  <!-- between [8,40] -->
+    <maxSearchDepth>integer</maxSearchDepth>  <!-- upper or equal to 1, ommited otherwise, default to infinite -->
     <nonQualifierBranches>master</nonQualifierBranches> <!-- comma separated, example "master,integration" -->
     <regexVersionTag>r([0-9]+)</regexVersionTag>  <!-- a java regular expression with a capture group matching only 
                                                        tags of the form r0, r1, ..., r34-->

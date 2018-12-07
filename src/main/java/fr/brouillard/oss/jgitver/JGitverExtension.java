@@ -84,6 +84,11 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setVersionPattern(cfg.versionPattern)
                         .setTagVersionPattern(cfg.tagVersionPattern);
 
+                if (cfg.maxSearchDepth >= 1 && cfg.maxSearchDepth != Configuration.UNSET_DEPTH) {
+                    // keep redundant test in case we change UNSET_DEPTH value
+                    gitVersionCalculator.setMaxDepth(cfg.maxSearchDepth);
+                }
+
                 if (cfg.regexVersionTag != null) {
                     gitVersionCalculator.setFindTagVersionPattern(cfg.regexVersionTag);
                 }
