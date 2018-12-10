@@ -49,6 +49,7 @@
     				<xs:documentation>appends a qualifier with the git sha1 of the HEAD commit, the length is controlled by the property 'gitCommitIdLength' </xs:documentation>
     			</xs:annotation></xs:element>
     		<xs:element name="gitCommitIdLength" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
+    		<xs:element name="maxSearchDepth" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
     		<xs:element name="nonQualifierBranches" type="xs:string" minOccurs="0" maxOccurs="1">
     			<xs:annotation>
     				<xs:documentation>comma separated list of branches for which no qualifier should be defined</xs:documentation>
