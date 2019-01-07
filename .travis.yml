@@ -16,11 +16,8 @@ install:
 before_script:
     # reset correct branch information
     - "./travis-set-branch.sh"
-    # evaluate if we are building against a SNAPSHOT version of jgitver
-    # in which case we need to also look into Sonatype OSS snapshot repository
-    - "export MVN_SETTINGS= ;  cat pom.xml | grep /jgitver.version | grep -v SNAPSHOT || export MVN_SETTINGS=\"-s snapshot-settings.xml\""
 script:
-    - "./mvnw --show-version $MVN_SETTINGS -Prun-its clean install"
+    - "./mvnw --show-version -Prun-its clean install"
 
 cache:
   directories:

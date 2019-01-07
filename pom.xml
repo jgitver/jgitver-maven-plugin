@@ -264,6 +264,8 @@
                         <exclude>mvnw</exclude>
                         <exclude>mvnw.cmd</exclude>
                         <exclude>.mvn/wrapper/**</exclude>
+                        <exclude>.mvn/jvm.config</exclude>
+                        <exclude>.mvn/maven.config</exclude>
                         <exclude>**/README</exclude>
                         <exclude>**/LICENSE</exclude>
                         <exclude>.okhttpcache/**</exclude>
