@@ -697,5 +697,22 @@
                 </repository>
             </distributionManagement>
         </profile>
+        <profile>
+            <id>sonatype</id>
+            <repositories>
+                <repository>
+                    <id>sonatype</id>
+                    <url>https://oss.sonatype.org/content/groups/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
     </profiles>
 </project>
