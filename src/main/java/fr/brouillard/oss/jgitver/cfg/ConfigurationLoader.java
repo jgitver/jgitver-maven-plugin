@@ -56,12 +56,12 @@ public class ConfigurationLoader {
             logger.debug("trying to load configuration from: " + cfgFile);
             Configuration c = loadFromFile(cfgFile, logger);
             if (c != null) {
-                logger.info("using jgitver configuration file: " + cfgFile);
+                logger.info("Using jgitver configuration file: " + cfgFile);
                 return c;
             }
         }
 
-        logger.info("no suitable configuration file found, using defaults");
+        logger.info("No suitable configuration file found, using defaults");
         return new Configuration();
     }
 

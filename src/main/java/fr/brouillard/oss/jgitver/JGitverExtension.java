@@ -101,6 +101,18 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     gitVersionCalculator.setQualifierBranchingPolicies(policies);
                 }
 
+                logger.info(String.format(
+                        "Using jgitver-maven-plugin [%s] (sha1: %s)",
+                        JGitverProperties.getVersion(),
+                        JGitverProperties.getSHA1())
+                );
+                long start = System.currentTimeMillis();
+
+                String computedVersion = gitVersionCalculator.getVersion();
+                long duration = System.currentTimeMillis() - start;
+                logger.info(String.format("    version '%s' computed in %d ms", computedVersion, duration));
+                logger.info("");
+
                 boolean isDirty = gitVersionCalculator
                         .meta(Metadatas.DIRTY)
                         .map(Boolean::parseBoolean)
@@ -117,7 +129,9 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .orElse(infoProvider);
 
                 JGitverUtils.fillPropertiesFromMetadatas(mavenSession.getUserProperties(), infoProvider, logger);
-                sessionHolder.setSession(new JGitverSession(infoProvider, rootDirectory));
+
+                JGitverSession session = new JGitverSession(infoProvider, rootDirectory);
+                sessionHolder.setSession(session);
             } catch (Exception ex) {
                 logger.warn("cannot autoclose GitVersionCalculator object for project: " + rootDirectory, ex);
             }
@@ -147,11 +161,6 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     }
 
                     sessionHolder.session().ifPresent(jgitverSession -> {
-                        logger.info(String.format(
-                                "Using jgitver-maven-plugin [%s] (sha1: %s)",
-                                JGitverProperties.getVersion(),
-                                JGitverProperties.getSHA1())
-                        );
                         logger.info("jgitver-maven-plugin is about to change project(s) version(s)");
 
                         jgitverSession.getProjects().forEach(
