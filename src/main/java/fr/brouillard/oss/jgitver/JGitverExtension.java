@@ -71,6 +71,10 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     gitVersionCalculator.setMavenLike(cfg.mavenLike);
                 }
 
+                if (cfg.policy != null) {
+                    gitVersionCalculator.setLookupPolicy(cfg.policy);
+                }
+
                 gitVersionCalculator
                         .setAutoIncrementPatch(cfg.autoIncrementPatch)
                         .setUseDirty(cfg.useDirty)

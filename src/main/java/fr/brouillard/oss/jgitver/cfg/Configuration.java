@@ -20,6 +20,7 @@ import org.simpleframework.xml.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import fr.brouillard.oss.jgitver.LookupPolicy;
 import fr.brouillard.oss.jgitver.Strategies;
 
 @Root
@@ -29,6 +30,8 @@ public class Configuration {
     public boolean mavenLike = true;
     @Element(name = "strategy", required = false)
     public Strategies strategy;
+    @Element(name = "policy", required = false)
+    public LookupPolicy policy;
     @Element(required = false)
     public boolean autoIncrementPatch = true;
     @Element(required = false)
