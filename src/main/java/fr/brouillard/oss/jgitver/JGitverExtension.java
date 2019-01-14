@@ -19,7 +19,6 @@ package fr.brouillard.oss.jgitver;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -103,8 +102,8 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
                 logger.info(String.format(
                         "Using jgitver-maven-plugin [%s] (sha1: %s)",
-                        JGitverProperties.getVersion(),
-                        JGitverProperties.getSHA1())
+                        JGitverMavenPluginProperties.getVersion(),
+                        JGitverMavenPluginProperties.getSHA1())
                 );
                 long start = System.currentTimeMillis();
 

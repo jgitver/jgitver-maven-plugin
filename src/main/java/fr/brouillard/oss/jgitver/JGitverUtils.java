@@ -153,7 +153,7 @@ public final class JGitverUtils {
         logger.debug(EXTENSION_PREFIX + " calculated version number: " + calculatedVersion);
         properties.put(EXTENSION_PREFIX + ".used_version", calculatedVersion);
 
-        properties.put(EXTENSION_PREFIX + ".plugin-version", JGitverProperties.getVersion());
+        properties.put(EXTENSION_PREFIX + ".plugin-version", JGitverMavenPluginProperties.getVersion());
 
         Arrays.asList(Metadatas.values()).stream().forEach(metaData -> {
             Optional<String> metaValue = informationProvider.meta(metaData);

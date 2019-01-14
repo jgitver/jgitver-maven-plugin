@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class JGitverProperties {
+public class JGitverMavenPluginProperties {
     static Properties p = new Properties();
     static {
         try {
-            InputStream is = JGitverProperties.class.getResourceAsStream("/META-INF/project.properties");
+            InputStream is = JGitverMavenPluginProperties.class.getResourceAsStream("/META-INF/jgitver-maven-plugin-project.properties");
             if (is != null) {
                 p.load(is);
             }
