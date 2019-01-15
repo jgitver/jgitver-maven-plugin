@@ -60,15 +60,17 @@ __manually__
 
 In order to control [jgitver-maven-plugin](#jgitver-maven-plugin) behavior, you can provide a configuration
 file under `$rootProjectDir/.mvn/jgitver.config.xml`.
-The configuration file must be compliant with the [xml-schemas](https://jgitver.github.io) supported. 
+The configuration file must be compliant with the latest [jgitver-configuration-v1_1_0.xsd](https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_1_0.xsd) xml schema.
 
 Here is an example configuration file:
 
 ``` xml
-<configuration xmlns="http://jgitver.github.io/maven/configuration/1.0.0-beta"
+<configuration xmlns="http://jgitver.github.io/maven/configuration/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://jgitver.github.io/maven/configuration/1.0.0-beta https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_0_0-beta.xsd ">
-    <mavenLike>true/false</mavenLike>
+	xsi:schemaLocation="http://jgitver.github.io/maven/configuration/1.1.0 https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_1_0.xsd">
+    <mavenLike>true/false</mavenLike>   <!-- deprecated, use 'strategy' instead -->
+    <strategy>MAVEN|CONFIGURABLE|PATTERN</strategy>
+    <policy>MAX|LATEST|NEAREST</policy>    <!-- LookupPolicy to select the base tag/commit for the version computation -->
     <autoIncrementPatch>true/false</autoIncrementPatch>
     <useCommitDistance>true/false</useCommitDistance>
     <useDirty>true/false</useDirty>
@@ -97,6 +99,8 @@ Here is an example configuration file:
 ```
 
 Please consult [jgitver](https://github.com/jgitver/jgitver#configuration-modes--strategies) documentation to fully understand what the parameters do.
+
+_[Old](https://jgitver.github.io/maven/configuration/) xml schemas are kept for reference._
 
 #### Command line arguments
 
