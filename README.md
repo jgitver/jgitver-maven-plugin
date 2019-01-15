@@ -251,11 +251,16 @@ For that purpose you can use [grip](https://github.com/joeyespo/grip).
 
 or using docker
 
-- `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.3.9-jdk-8 ./src/ci/build-with-external-it-fallback.sh`
+- _Linux_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.5.4-jdk-8 mvn -Prun-its clean install`
+- _Windows_: `docker run --rm -v %CD%:/root/sources -w /root/sources maven:3.5.4-jdk-8 mvn -Prun-its clean install`
+- _Old linux command_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.5.4-jdk-8 ./src/ci/build-with-external-it-fallback.sh`
 
 build and filter some IT tests
 
 - `mvn -Prun-its clean install "-Dinvoker.test=issues/issue-36*"`
+
+If needed, one can also add in above docker command a volume sharing 
+with the maven local repository by adding something like `-v MLR_LOCATION:/root/.m2/repository` for example `-v D:\dev\mlr:/root/.m2/repository`.
 
 ### Release
 
