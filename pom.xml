@@ -83,6 +83,8 @@
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-invoker-plugin.version>1.10</maven-invoker-plugin.version>
     </properties>
 
     <developers>
@@ -340,6 +342,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -454,7 +469,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
-                        <version>1.10</version>   <!--  minimal 1.10 because of MINVOKER-186 -->
+                        <version>${maven-invoker-plugin.version}</version>   <!--  minimal 1.10 because of MINVOKER-186 -->
                         <configuration>
                             <debug>false</debug>
                             <cloneProjectsTo>${it.directory}/it</cloneProjectsTo>
