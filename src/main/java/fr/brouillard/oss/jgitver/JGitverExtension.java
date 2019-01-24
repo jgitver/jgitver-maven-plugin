@@ -127,7 +127,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
                 JGitverInformationProvider infoProvider = Providers.decorate(gitVersionCalculator);
                 JGitverInformationProvider finalInfoProvider = infoProvider;
-                infoProvider = JGitverUtils.versionOverride(mavenSession)
+                infoProvider = JGitverUtils.versionOverride(mavenSession, logger)
                         .map(version -> Providers.fixVersion(version, finalInfoProvider))
                         .orElse(infoProvider);
 

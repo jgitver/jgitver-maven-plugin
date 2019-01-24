@@ -70,11 +70,11 @@
         <maven-core.version>3.3.9</maven-core.version>
         <plexus-utils.version>3.1.0</plexus-utils.version>
         <maven-plugin-annotations.version>3.2</maven-plugin-annotations.version>
-        <maven-plugin-api.version>2.0</maven-plugin-api.version>
         <plexus-component-annotations.version>1.5.5</plexus-component-annotations.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <guava.version>27.0.1-jre</guava.version>
         <junit.version>4.8.2</junit.version>
+        <easymock.version>4.0.2</easymock.version>
         <simple-xml.version>2.7.1</simple-xml.version>
 
         <!-- plugins versions as properties -->
@@ -132,7 +132,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>${maven-plugin-api.version}</version>
+            <version>${maven-core.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -184,6 +184,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>${easymock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -281,6 +287,7 @@
                         <exclude>src/it/**/invoker.properties</exclude>
                         <exclude>src/test/resources/**</exclude>
                         <exclude>src/main/resources/**</exclude>
+                        <exclude>src/test/java/fr/brouillard/oss/jgitver/JGitverUtilsTest.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>

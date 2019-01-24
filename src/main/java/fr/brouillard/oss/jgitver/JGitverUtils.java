@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
@@ -254,11 +255,89 @@ public final class JGitverUtils {
     }
 
     /**
-     * Provides the version to use if defined as System property
+     * Provides the version to use if defined as user or system property.
      * @param session a running maven session
-     * @return an Optional containing the version to use if the corresponding system property has been defined
+     * @param logger logger
+     * @return an Optional containing the version to use if the corresponding user or system property has been defined
      */
-    public static Optional<String> versionOverride(MavenSession session) {
-        return Optional.ofNullable(session.getSystemProperties().getProperty(EXTENSION_USE_VERSION));
+    public static Optional<String> versionOverride(final MavenSession session, final Logger logger) {
+        return getProperty(session, EXTENSION_USE_VERSION, logger);
+    }
+
+    /**
+     * Tries to get the property from the user properties ({@link MavenSession#getUserProperties()}) or from the
+     * system properties ({@link MavenSession#getSystemProperties()}).
+     *
+     * <p>The variable can be defined with it's exact name or with it's
+     * IEEE Std 1003.1-2001 compliant version ({@link #normalizeSystemPropertyName(String)}).
+     *
+     * <p>User properties have higher priority than all other properties. Environment properties have higher priority
+     * than system properties. Exact matches have higher priority than IEEE Std 1003.1-2001 compliant versions.
+     *
+     * @param session A running maven session.
+     * @param propertyName The name of the property to retrieve.
+     * @param logger logger.
+     * @return The value of the property of empty if it has not been defined.
+     */
+    public static Optional<String> getProperty(final MavenSession session, final String propertyName, final Logger logger) {
+        final String normalizedSystemPropertyName = normalizeSystemPropertyName(propertyName);
+
+        String value;
+
+        value = session.getUserProperties().getProperty(propertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in user properties", propertyName, value));
+            return Optional.of(value);
+        }
+
+        value = session.getUserProperties().getProperty(normalizedSystemPropertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in user properties", normalizedSystemPropertyName, value));
+            return Optional.of(value);
+        }
+
+        final String envPrefix = "env.";
+        value = session.getSystemProperties().getProperty(envPrefix + propertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in system properties (as env property)", propertyName, value));
+            return Optional.of(value);
+        }
+
+        value = session.getSystemProperties().getProperty(envPrefix + normalizedSystemPropertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in system properties (as env property)", normalizedSystemPropertyName, value));
+            return Optional.of(value);
+        }
+
+        value = session.getSystemProperties().getProperty(propertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in system properties (as system property)", propertyName, value));
+            return Optional.of(value);
+        }
+
+        value = session.getSystemProperties().getProperty(normalizedSystemPropertyName);
+        if (value != null) {
+            logger.debug(String.format("Found '%s'='%s' in system properties (as system property)", normalizedSystemPropertyName, value));
+            return Optional.of(value);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Derives an IEEE Std 1003.1-2001 compliant property name by replacing all non-compliant characters with underscore.
+     *
+     * <p>In IEEE Std 1003.1-2001 it was defined that the variable name consist solely of uppercase letters, digits, and the '_' (underscore)
+     * from the characters defined in Portable Character Set and do not begin with a digit. Although IEEE Std 1003.1-2008 / IEEE POSIX P1003.2/ISO 9945.2
+     * doesn't define a lexical convention for variable names, most bash implementations use `[a-zA-Z_]+[a-zA-Z0-9_]*`.
+     *
+     * @return A derived IEEE Std 1003.1-2001 compliant property name.
+     */
+    public static String normalizeSystemPropertyName(final String mavenPropertyName) {
+        if (StringUtils.isBlank(mavenPropertyName)) {
+            throw new IllegalStateException("It's not possible to normalize a blank name into a compliant name");
+        }
+
+        return StringUtils.replacePattern(StringUtils.replacePattern(mavenPropertyName, "[^a-zA-Z0-9_]", "_"), "^[0-9]", "_");
     }
 }
