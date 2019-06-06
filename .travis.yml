@@ -3,21 +3,17 @@ language: java
 env:
   - MAVEN_VERSION=3.3.9
   - MAVEN_VERSION=3.5.4
+  - MAVEN_VERSION=3.6.1
 
 jdk: oraclejdk8
 
 install:
-  - "mvn --show-version -N -Psonatype io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
-  - "echo ignore modifications done by maven wrapper"
-  - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.properties"
-  - "git update-index --assume-unchanged .mvn/wrapper/maven-wrapper.jar"
-  - "git update-index --assume-unchanged .mvn/wrapper/MavenWrapperDownloader.java"
-  - "./mvnw --show-version -Psonatype install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+  - "mvn --show-version -Psonatype install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 before_script:
     # reset correct branch information
     - "./travis-set-branch.sh"
 script:
-    - "./mvnw --show-version -Psonatype -Prun-its clean install"
+    - "mvn --show-version -Psonatype -Prun-its clean install"
 
 cache:
   directories:
