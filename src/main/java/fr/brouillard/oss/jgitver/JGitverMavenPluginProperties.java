@@ -1,4 +1,3 @@
-// @formatter:off
 /**
  * Copyright (C) 2016 Matthieu Brouillard [http://oss.brouillard.fr/jgitver-maven-plugin] (matthieu@brouillard.fr)
  *
@@ -14,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// @formatter:on
 package fr.brouillard.oss.jgitver;
 
 import java.io.IOException;
