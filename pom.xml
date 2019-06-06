@@ -270,6 +270,9 @@
                         <owner>Matthieu Brouillard [http://oss.brouillard.fr/jgitver-maven-plugin]</owner>
                         <email>matthieu@brouillard.fr</email>
                     </properties>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
                     <excludes>
                         <exclude>mvnw</exclude>
                         <exclude>mvnw.cmd</exclude>

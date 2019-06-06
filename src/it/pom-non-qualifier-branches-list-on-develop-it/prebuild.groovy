@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 def log = new PrintWriter( new File(basedir, "prebuild.log").newWriter("UTF-8"), true )
 log.println( "Prebuild started at: " + new Date() + " in: " + basedir )
 [
