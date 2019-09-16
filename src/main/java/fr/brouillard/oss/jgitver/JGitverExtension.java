@@ -152,12 +152,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                 if (projectBaseDir != null && !configurationProvider.ignore(new File(projectBaseDir, "pom.xml"))) {
                     final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
 
-                    if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
-
-                        if (!mavenSession.getUserProperties().containsKey(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY)) {
-                            JGitverUtils.failAsOldMechanism(c);
-                        }
-                    } else {
+                    if (!JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
                         JGitverUtils.failAsOldMechanism(c);
                     }
 
