@@ -5,7 +5,7 @@ env:
   - MAVEN_VERSION=3.5.4
   - MAVEN_VERSION=3.6.1
 
-jdk: oraclejdk8
+jdk: openjdk8
 
 install:
   - "mvn --show-version -Psonatype install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
