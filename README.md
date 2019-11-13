@@ -75,6 +75,7 @@ Here is an example configuration file:
     <useCommitDistance>true/false</useCommitDistance>
     <useDirty>true/false</useDirty>
     <useGitCommitId>true/false</useGitCommitId>
+    <useSnapshot>true/false</useSnapshot> <!-- use -SNAPSHOT in CONFIGURABLE strategy -->
     <gitCommitIdLength>integer</gitCommitIdLength>  <!-- between [8,40] -->
     <maxSearchDepth>integer</maxSearchDepth>  <!-- upper or equal to 1, ommited otherwise, default to infinite -->
     <nonQualifierBranches>master</nonQualifierBranches> <!-- comma separated, example "master,integration" -->
