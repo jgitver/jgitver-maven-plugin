@@ -47,6 +47,8 @@ public class Configuration {
     @Element(required = false)
     public boolean useGitCommitId = false;
     @Element(required = false)
+    public boolean useSnapshot = false;
+    @Element(required = false)
     public int gitCommitIdLength = 8;
     @Element(required = false)
     public int maxSearchDepth = UNSET_DEPTH;

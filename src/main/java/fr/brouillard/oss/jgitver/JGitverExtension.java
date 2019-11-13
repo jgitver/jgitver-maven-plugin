@@ -79,6 +79,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setUseDistance(cfg.useCommitDistance)
                         .setUseGitCommitTimestamp(cfg.useGitCommitTimestamp)
                         .setUseGitCommitId(cfg.useGitCommitId)
+                        .setUseSnapshot(cfg.useSnapshot)
                         .setGitCommitIdLength(cfg.gitCommitIdLength)
                         .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                         .setNonQualifierBranches(cfg.nonQualifierBranches)
