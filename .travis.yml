@@ -1,19 +1,14 @@
 language: java
 
-env:
-  - MAVEN_VERSION=3.3.9
-  - MAVEN_VERSION=3.5.4
-  - MAVEN_VERSION=3.6.1
-
 jdk: openjdk8
 
 install:
-  - "mvn --show-version -Psonatype install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+  - "./mvnw --show-version -Psonatype install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 before_script:
     # reset correct branch information
     - "./travis-set-branch.sh"
 script:
-    - "mvn --show-version -Psonatype -Prun-its clean install"
+    - "./mvnw --show-version -Psonatype -Prun-its clean install"
 
 cache:
   directories:
