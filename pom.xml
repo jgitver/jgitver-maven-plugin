@@ -76,7 +76,7 @@
         <junit.version>4.8.2</junit.version>
         <easymock.version>4.0.2</easymock.version>
         <simple-xml.version>2.7.1</simple-xml.version>
-        <checkstyle.version>8.21</checkstyle.version>
+        <checkstyle.version>8.29</checkstyle.version>
 
         <!-- plugins versions as properties -->
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
