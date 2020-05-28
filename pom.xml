@@ -76,10 +76,10 @@
         <junit.version>4.8.2</junit.version>
         <easymock.version>4.0.2</easymock.version>
         <simple-xml.version>2.7.1</simple-xml.version>
-        <checkstyle.version>8.21</checkstyle.version>
+        <checkstyle.version>8.32</checkstyle.version>
 
         <!-- plugins versions as properties -->
-        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
         <plexus-component-metadata.version>1.7.1</plexus-component-metadata.version>
         <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>

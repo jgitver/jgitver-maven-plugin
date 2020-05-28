@@ -31,6 +31,11 @@
     <module name="FileTabCharacter">
         <property name="eachLine" value="true" />
     </module>
+    
+    <module name="LineLength">
+        <property name="max" value="140" />
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://|Pattern\.compile" />
+    </module>
 
     <module name="TreeWalker">
         <module name="SuppressionCommentFilter">
@@ -50,10 +55,6 @@
             <property name="allowEscapesForControlCharacters" value="true" />
             <property name="allowByTailComment" value="true" />
             <property name="allowNonPrintableEscapes" value="true" />
-        </module>
-        <module name="LineLength">
-            <property name="max" value="140" />
-            <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://|Pattern\.compile" />
         </module>
         <module name="AvoidStarImport" />
         <module name="OneTopLevelClass" />
@@ -191,12 +192,10 @@
         </module>
         <module name="JavadocMethod">
             <property name="scope" value="public" />
+            <property name="validateThrows" value="true" />
             <property name="allowMissingParamTags" value="true" />
-            <property name="allowMissingThrowsTags" value="true" />
             <property name="allowMissingReturnTag" value="true" />
-            <property name="minLineCount" value="2" />
             <property name="allowedAnnotations" value="Override, Test" />
-            <property name="allowThrowsTagsForSubclasses" value="true" />
         </module>
         <module name="MethodName">
             <property name="id" value="MethodNameRegular" />
