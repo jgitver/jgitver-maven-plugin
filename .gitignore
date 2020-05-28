@@ -7,3 +7,4 @@ target/
 .okhttpcache/
 *.iml
 **/.flattened-pom.xml
+.factorypath
