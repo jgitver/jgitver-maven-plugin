@@ -84,7 +84,9 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                         .setUseDefaultBranchingPolicy(cfg.useDefaultBranchingPolicy)
                         .setNonQualifierBranches(cfg.nonQualifierBranches)
                         .setVersionPattern(cfg.versionPattern)
-                        .setTagVersionPattern(cfg.tagVersionPattern);
+                        .setTagVersionPattern(cfg.tagVersionPattern)
+                        .setScript(cfg.script)
+                        .setScriptType(cfg.scriptType);
 
                 if (cfg.maxSearchDepth >= 1 && cfg.maxSearchDepth != Configuration.UNSET_DEPTH) {
                     // keep redundant test in case we change UNSET_DEPTH value
@@ -111,6 +113,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                 long start = System.currentTimeMillis();
 
                 String computedVersion = gitVersionCalculator.getVersion();
+                
                 long duration = System.currentTimeMillis() - start;
                 logger.info(String.format("    version '%s' computed in %d ms", computedVersion, duration));
                 logger.info("");
