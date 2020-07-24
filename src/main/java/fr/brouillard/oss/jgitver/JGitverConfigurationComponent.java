@@ -54,6 +54,7 @@ public class JGitverConfigurationComponent implements JGitverConfiguration {
                     logger.debug("using " + JGitverUtils.EXTENSION_PREFIX + " on directory: " + rootDirectory);
 
                     configuration = ConfigurationLoader.loadFromRoot(rootDirectory, logger);
+
                     initFromRootDirectory(rootDirectory, configuration.exclusions);
                 }
             }

@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fr.brouillard.oss.jgitver.LookupPolicy;
+import fr.brouillard.oss.jgitver.ScriptType;
 import fr.brouillard.oss.jgitver.Strategies;
 
 @Root
@@ -68,6 +69,12 @@ public class Configuration {
     public String schemaLocation;
     @Element(required = false)
     public boolean skipPomUpdate = false;
+
+    @Element(required = false)
+    public String script;
+
+    @Element(required = false)
+    public ScriptType scriptType;
 
     public final static int UNSET_DEPTH = -1;
 }
