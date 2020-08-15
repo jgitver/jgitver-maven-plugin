@@ -38,6 +38,9 @@ public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", readonly = true)
     private MavenSession mavenSession;
 
+    @Parameter(property = "jgitver.resolve-project-version", defaultValue = "false")
+    private Boolean resolveProjectVersion;
+
     @Override
     public void execute() throws MojoExecutionException {
         if (Objects.isNull(mavenSession.getUserProperties().get(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY))) {
@@ -54,9 +57,12 @@ public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
 
         try {
             JGitverSession jgitverSession = JGitverSession.serializeFrom(content);
-            JGitverUtils.attachModifiedPomFilesToTheProject(mavenSession.getAllProjects(),
-                    jgitverSession.getProjects(), jgitverSession.getVersion(), new
-                            ConsoleLogger());
+            JGitverUtils.attachModifiedPomFilesToTheProject(
+                    mavenSession.getAllProjects(),
+                    jgitverSession.getProjects(),
+                    jgitverSession.getVersion(),
+                    resolveProjectVersion,
+                    new ConsoleLogger());
             mavenSession.getUserProperties().setProperty(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY, "-");
         } catch (Exception ex) {
             throw new MojoExecutionException("Unable to execute goal: "

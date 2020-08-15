@@ -108,6 +108,7 @@ _[Old](https://jgitver.github.io/maven/configuration/) xml schemas are kept for 
 - `-Djgitver.skip=true` : skips totally jgitver usage
 - `-Djgitver.config=FILE` : overrides default config file and uses FILE instead
 - `-Djgitver.use-version=VERSION` : execute jgitver but finally uses VERSION as the project version 
+- `-Djgitver.jgitver.resolve-project-version=true` : replaces the ${project.version} also in properties, dependencies, dependencyManagement, plugins and pluginManagement sections
 
 #### Working on a detached HEAD
 
