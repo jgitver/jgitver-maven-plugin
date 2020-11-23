@@ -48,6 +48,7 @@ public final class JGitverUtils {
     public static final String EXTENSION_GROUP_ID = "fr.brouillard.oss";
     public static final String EXTENSION_ARTIFACT_ID = "jgitver-maven-plugin";
     public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
+    public static final String EXTENSION_FORCE_COMPUTATION = EXTENSION_PREFIX + ".forceComputation";
     public static final String EXTENSION_FLATTEN = EXTENSION_PREFIX + ".flatten";
     public static final String EXTENSION_USE_VERSION = EXTENSION_PREFIX + ".use-version";
     public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
@@ -236,6 +237,19 @@ public final class JGitverUtils {
      */
     public static boolean shouldSkip(MavenSession session) {
         return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_SKIP, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_SKIP, "false"));
+    }
+
+    /**
+     * Tells if forceComputation should be set during the version calculation.
+     * <pre>
+     *     mvn -Djgitver.skip=true/false
+     * </pre>
+     * The value of the property is evaluated using @{@link java.lang.Boolean#parseBoolean(String)}.
+     * @param session a running maven session
+     * @return true if jgitver extension should be skipped
+     */
+    public static boolean shouldForceComputation(MavenSession session) {
+        return Boolean.parseBoolean(session.getSystemProperties().getProperty(EXTENSION_FORCE_COMPUTATION, "false")) || Boolean.parseBoolean(session.getUserProperties().getProperty(EXTENSION_FORCE_COMPUTATION, "false"));
     }
 
     /**
