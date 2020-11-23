@@ -73,7 +73,7 @@
         <plexus-component-annotations.version>1.5.5</plexus-component-annotations.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <guava.version>27.0.1-jre</guava.version>
-        <junit.version>4.8.2</junit.version>
+        <junit.version>4.13.1</junit.version>
         <easymock.version>4.0.2</easymock.version>
         <simple-xml.version>2.7.1</simple-xml.version>
         <checkstyle.version>8.32</checkstyle.version>
