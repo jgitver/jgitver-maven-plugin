@@ -21,25 +21,28 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.maven.MavenExecutionException;
 import org.junit.Test;
 
 public class Issue51Test {
-    @Test
-    public void can_load_correctly_provided_configuration() throws IOException, MavenExecutionException {
-        InMemoryLogger inMemoryLogger = new InMemoryLogger();
+  @Test
+  public void can_load_correctly_provided_configuration()
+      throws IOException, MavenExecutionException {
+    InMemoryLogger inMemoryLogger = new InMemoryLogger();
 
-        try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider.fromResource("/config/issue-51-cfg.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(fromResource.getConfigurationDirectory(), inMemoryLogger);
-            assertThat(cfg, notNullValue());
+    try (ResourceConfigurationProvider fromResource =
+        ResourceConfigurationProvider.fromResource("/config/issue-51-cfg.xml")) {
+      Configuration cfg =
+          ConfigurationLoader.loadFromRoot(
+              fromResource.getConfigurationDirectory(), inMemoryLogger);
+      assertThat(cfg, notNullValue());
 
-            List<BranchPolicy> branchPolicies = cfg.branchPolicies;
+      List<BranchPolicy> branchPolicies = cfg.branchPolicies;
 
-            assertThat(branchPolicies.size(), is(1));
-            List<String> transformations = branchPolicies.get(0).transformations;
-            assertThat(transformations.size(), is(1));
-            assertThat(transformations.get(0), is("IDENTITY"));
-        }
+      assertThat(branchPolicies.size(), is(1));
+      List<String> transformations = branchPolicies.get(0).transformations;
+      assertThat(transformations.size(), is(1));
+      assertThat(transformations.get(0), is("IDENTITY"));
     }
+  }
 }

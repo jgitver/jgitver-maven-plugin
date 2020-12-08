@@ -18,8 +18,9 @@ package fr.brouillard.oss.jgitver;
 import fr.brouillard.oss.jgitver.metadata.MetadataProvider;
 
 public interface JGitverInformationProvider extends MetadataProvider {
-    default String getVersion() {
-        return getVersionObject().toString();
-    }
-    Version getVersionObject();
+  default String getVersion() {
+    return getVersionObject().toString();
+  }
+
+  Version getVersionObject();
 }

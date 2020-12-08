@@ -20,12 +20,13 @@ import com.google.inject.AbstractModule;
 /**
  * Guice binding for {@link fr.brouillard.oss.jgitver.JGitverConfiguration}.
  *
- * <p>Without a guice binding looking up the ProjectBuilder on other plugins will throw an exception trying to
- * load {@link fr.brouillard.oss.jgitver.JGitverConfiguration} (only started on maven 3.6.3).
+ * <p>Without a guice binding looking up the ProjectBuilder on other plugins will throw an exception
+ * trying to load {@link fr.brouillard.oss.jgitver.JGitverConfiguration} (only started on maven
+ * 3.6.3).
  */
 public class JGitverGuiceModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(JGitverConfiguration.class).to(JGitverConfigurationComponent.class);
-    }
+  @Override
+  protected void configure() {
+    bind(JGitverConfiguration.class).to(JGitverConfigurationComponent.class);
+  }
 }

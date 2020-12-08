@@ -15,27 +15,25 @@
  */
 package fr.brouillard.oss.jgitver;
 
-import fr.brouillard.oss.jgitver.metadata.Metadatas;
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
-import java.io.File;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class GitVersionCalculatorProxyTest {
-    @Test
-    public void can_proxy_calls() throws Exception {
-        String expectedVersion = "1.0.0";
-        File basedir = new File(System.getProperty("user.dir"));
+import fr.brouillard.oss.jgitver.metadata.Metadatas;
+import java.io.File;
+import org.junit.Test;
 
-        try (GitVersionCalculator gvc = GitVersionCalculator.location(basedir)) {
-            JGitverInformationProvider infoProvider = Providers.fixVersion(expectedVersion, Providers.decorate(gvc));
-            assertThat(expectedVersion, is(infoProvider.getVersion()));
-            assertThat(expectedVersion, not(is(infoProvider.meta(Metadatas.CALCULATED_VERSION).get())));
-        }
+public class GitVersionCalculatorProxyTest {
+  @Test
+  public void can_proxy_calls() throws Exception {
+    String expectedVersion = "1.0.0";
+    File basedir = new File(System.getProperty("user.dir"));
+
+    try (GitVersionCalculator gvc = GitVersionCalculator.location(basedir)) {
+      JGitverInformationProvider infoProvider =
+          Providers.fixVersion(expectedVersion, Providers.decorate(gvc));
+      assertThat(expectedVersion, is(infoProvider.getVersion()));
+      assertThat(expectedVersion, not(is(infoProvider.meta(Metadatas.CALCULATED_VERSION).get())));
     }
+  }
 }

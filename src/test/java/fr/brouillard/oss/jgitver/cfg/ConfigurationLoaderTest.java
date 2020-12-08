@@ -22,78 +22,84 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-
 import org.apache.maven.MavenExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ConfigurationLoaderTest {
-    private InMemoryLogger inMemoryLogger;
+  private InMemoryLogger inMemoryLogger;
 
-    @Before
-    public void init() {
-        inMemoryLogger = new InMemoryLogger();
+  @Before
+  public void init() {
+    inMemoryLogger = new InMemoryLogger();
+  }
+
+  @After
+  public void dump() {
+    // System.out.println(inMemoryLogger.toString());
+  }
+
+  @Test
+  public void can_load_a_simple_configuration() throws MavenExecutionException, IOException {
+    try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.xml")) {
+      Configuration cfg =
+          ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
+      assertThat(cfg, notNullValue());
+
+      assertThat(cfg.mavenLike, is(false));
+      assertThat(cfg.useCommitDistance, is(true));
     }
-    
-    @After
-    public void dump() {
-        // System.out.println(inMemoryLogger.toString());
+  }
+
+  @Test
+  public void can_load_a_simple_configuration_with_xml_schema()
+      throws MavenExecutionException, IOException {
+    try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.with.schema.xml")) {
+      Configuration cfg =
+          ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
+      assertThat(cfg, notNullValue());
+
+      assertThat(cfg.useCommitDistance, is(true));
+      assertThat(cfg.mavenLike, is(false));
     }
-    
-    @Test
-    public void can_load_a_simple_configuration() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
-            assertThat(cfg, notNullValue());
-            
-            assertThat(cfg.mavenLike, is(false));
-            assertThat(cfg.useCommitDistance, is(true));
-        }
+  }
+
+  @SuppressWarnings("unused")
+  @Test(expected = MavenExecutionException.class)
+  public void must_fail_loading_an_invalid_configuration_with_xml_schema()
+      throws MavenExecutionException, IOException {
+    try (ResourceConfigurationProvider res = fromResource("/config/invalid-with-schema.xml")) {
+      Configuration cfg =
+          ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
+      fail("should have failed loading an erroneous file");
     }
-    
-    @Test
-    public void can_load_a_simple_configuration_with_xml_schema() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider res = fromResource("/config/simple.cfg.with.schema.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
-            assertThat(cfg, notNullValue());
-            
-            assertThat(cfg.useCommitDistance, is(true));
-            assertThat(cfg.mavenLike, is(false));
-        }
+  }
+
+  @Test
+  public void can_load_a_complex_configuration_with_branching_policy()
+      throws MavenExecutionException, IOException {
+    try (ResourceConfigurationProvider res = fromResource("/config/complex-branch.cfg.xml")) {
+      Configuration cfg =
+          ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
+      assertThat(cfg, notNullValue());
+
+      assertThat(cfg.mavenLike, is(false));
+      assertThat(cfg.branchPolicies, notNullValue());
+      assertThat(cfg.branchPolicies.size(), is(2));
+
+      BranchPolicy masterPolicy = cfg.branchPolicies.get(0);
+      assertThat(masterPolicy.pattern, is("(master)"));
+      assertThat(masterPolicy.transformations, notNullValue());
+      assertThat(masterPolicy.transformations.size(), is(1));
+      assertThat(masterPolicy.transformations.get(0), is("IGNORE"));
+
+      BranchPolicy allPolicy = cfg.branchPolicies.get(1);
+      assertThat(allPolicy.pattern, is("(.*)"));
+      assertThat(allPolicy.transformations, notNullValue());
+      assertThat(allPolicy.transformations.size(), is(2));
+      assertThat(allPolicy.transformations.get(0), is("REMOVE_UNEXPECTED_CHARS"));
+      assertThat(allPolicy.transformations.get(1), is("UPPERCASE_EN"));
     }
-    
-    @SuppressWarnings("unused")
-    @Test (expected = MavenExecutionException.class)
-    public void must_fail_loading_an_invalid_configuration_with_xml_schema() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider res = fromResource("/config/invalid-with-schema.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
-            fail("should have failed loading an erroneous file");
-        }
-    }
-    
-    @Test
-    public void can_load_a_complex_configuration_with_branching_policy() throws MavenExecutionException, IOException {
-        try (ResourceConfigurationProvider res = fromResource("/config/complex-branch.cfg.xml")) {
-            Configuration cfg = ConfigurationLoader.loadFromRoot(res.getConfigurationDirectory(), inMemoryLogger);
-            assertThat(cfg, notNullValue());
-            
-            assertThat(cfg.mavenLike, is(false));
-            assertThat(cfg.branchPolicies, notNullValue());
-            assertThat(cfg.branchPolicies.size(), is(2));
-            
-            BranchPolicy masterPolicy = cfg.branchPolicies.get(0);
-            assertThat(masterPolicy.pattern, is("(master)"));
-            assertThat(masterPolicy.transformations, notNullValue());
-            assertThat(masterPolicy.transformations.size(), is(1));
-            assertThat(masterPolicy.transformations.get(0), is("IGNORE"));
-            
-            BranchPolicy allPolicy = cfg.branchPolicies.get(1);
-            assertThat(allPolicy.pattern, is("(.*)"));
-            assertThat(allPolicy.transformations, notNullValue());
-            assertThat(allPolicy.transformations.size(), is(2));
-            assertThat(allPolicy.transformations.get(0), is("REMOVE_UNEXPECTED_CHARS"));
-            assertThat(allPolicy.transformations.get(1), is("UPPERCASE_EN"));
-        }
-    }
+  }
 }

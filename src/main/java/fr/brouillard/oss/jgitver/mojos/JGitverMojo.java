@@ -15,8 +15,8 @@
  */
 package fr.brouillard.oss.jgitver.mojos;
 
+import fr.brouillard.oss.jgitver.JGitverUtils;
 import java.util.List;
-
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -26,49 +26,48 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import fr.brouillard.oss.jgitver.JGitverUtils;
-
 /**
- * jgitver plugin, should only be used as an extension. We use it for configuration purpose of the extension.
+ * jgitver plugin, should only be used as an extension. We use it for configuration purpose of the
+ * extension.
  */
 @Mojo(name = "jgitver", defaultPhase = LifecyclePhase.NONE)
 public class JGitverMojo extends AbstractMojo {
-    @Parameter(property = "jgitver.mavenLike", defaultValue = "true")
-    private Boolean mavenLike;
+  @Parameter(property = "jgitver.mavenLike", defaultValue = "true")
+  private Boolean mavenLike;
 
-    @Parameter(property = "jgitver.autoIncrementPatch", defaultValue = "true")
-    private Boolean autoIncrementPatch;
+  @Parameter(property = "jgitver.autoIncrementPatch", defaultValue = "true")
+  private Boolean autoIncrementPatch;
 
-    @Parameter(property = "jgitver.useCommitDistance", defaultValue = "true")
-    private Boolean useCommitDistance;
+  @Parameter(property = "jgitver.useCommitDistance", defaultValue = "true")
+  private Boolean useCommitDistance;
 
-    @Parameter(property = "jgitver.useGitCommitId", defaultValue = "false")
-    private Boolean useGitCommitId;
+  @Parameter(property = "jgitver.useGitCommitId", defaultValue = "false")
+  private Boolean useGitCommitId;
 
-    @Parameter(property = "jgitver.gitCommitIdLength", defaultValue = "8")
-    private Integer gitCommitIdLength;
+  @Parameter(property = "jgitver.gitCommitIdLength", defaultValue = "8")
+  private Integer gitCommitIdLength;
 
-    @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
-    private String nonQualifierBranches;
+  @Parameter(property = "jgitver.nonQualifierBranches", defaultValue = "master")
+  private String nonQualifierBranches;
 
-    @Parameter(property = "jgitver.nonQualifierBranchesList", defaultValue = "master")
-    private List<String> nonQualifierBranchesList;
+  @Parameter(property = "jgitver.nonQualifierBranchesList", defaultValue = "master")
+  private List<String> nonQualifierBranchesList;
 
-    @Parameter(property = "jgitver.useDirty", defaultValue = "false")
-    private Boolean useDirty;
+  @Parameter(property = "jgitver.useDirty", defaultValue = "false")
+  private Boolean useDirty;
 
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession mavenSession;
+  @Parameter(defaultValue = "${session}", readonly = true)
+  private MavenSession mavenSession;
 
-    @Override
-    public void execute() throws MojoExecutionException {
-        final Log logger = getLog();
-        if (!JGitverUtils.shouldSkip(mavenSession)) {
-            try {
-                JGitverUtils.failAsOldMechanism(logger::warn);
-            } catch (MavenExecutionException ex) {
-                throw new MojoExecutionException("cannot use jgitver as maven plugin anymore", ex);
-            }
-        }
+  @Override
+  public void execute() throws MojoExecutionException {
+    final Log logger = getLog();
+    if (!JGitverUtils.shouldSkip(mavenSession)) {
+      try {
+        JGitverUtils.failAsOldMechanism(logger::warn);
+      } catch (MavenExecutionException ex) {
+        throw new MojoExecutionException("cannot use jgitver as maven plugin anymore", ex);
+      }
     }
+  }
 }

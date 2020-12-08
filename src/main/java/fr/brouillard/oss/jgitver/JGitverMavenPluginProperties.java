@@ -20,23 +20,26 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class JGitverMavenPluginProperties {
-    static Properties p = new Properties();
-    static {
-        try {
-            InputStream is = JGitverMavenPluginProperties.class.getResourceAsStream("/META-INF/jgitver-maven-plugin-project.properties");
-            if (is != null) {
-                p.load(is);
-            }
-        } catch (IOException e) {
-            // ignore
-        }
-    }
+  static Properties p = new Properties();
 
-    public static String getVersion() {
-        return p.getProperty("version", "Unknown");
+  static {
+    try {
+      InputStream is =
+          JGitverMavenPluginProperties.class.getResourceAsStream(
+              "/META-INF/jgitver-maven-plugin-project.properties");
+      if (is != null) {
+        p.load(is);
+      }
+    } catch (IOException e) {
+      // ignore
     }
+  }
 
-    public static String getSHA1() {
-        return p.getProperty("sha1", "not git sha1");
-    }
+  public static String getVersion() {
+    return p.getProperty("version", "Unknown");
+  }
+
+  public static String getSHA1() {
+    return p.getProperty("sha1", "not git sha1");
+  }
 }

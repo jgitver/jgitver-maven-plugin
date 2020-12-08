@@ -20,33 +20,33 @@ import org.simpleframework.xml.stream.InputNode;
 import org.simpleframework.xml.stream.OutputNode;
 
 public class SimpleBranchPolicyConverter implements Converter<BranchPolicy> {
-    @Override
-    public BranchPolicy read(InputNode node) throws Exception {
-        BranchPolicy bp = new BranchPolicy();
-        bp.transformations.clear();
+  @Override
+  public BranchPolicy read(InputNode node) throws Exception {
+    BranchPolicy bp = new BranchPolicy();
+    bp.transformations.clear();
 
-        InputNode patternNode = node.getNext("pattern");
-        if (patternNode != null) {
-            bp.pattern = patternNode.getValue();
-        }
-
-        InputNode transformations = node.getNext("transformations");
-        if (transformations != null) {
-            InputNode transformationNode;
-            while ((transformationNode = transformations.getNext("transformation")) != null) {
-                bp.transformations.add(transformationNode.getValue());
-            }
-        }
-
-        return bp;
+    InputNode patternNode = node.getNext("pattern");
+    if (patternNode != null) {
+      bp.pattern = patternNode.getValue();
     }
 
-    @Override
-    public void write(OutputNode node, BranchPolicy policy) throws Exception {
-        node.getChild("pattern").setValue(policy.pattern);
-        OutputNode transformationsNode = node.getChild("transformations");
-        for (String transformation: policy.transformations) {
-            transformationsNode.getChild("transformation").setValue(transformation);
-        }
+    InputNode transformations = node.getNext("transformations");
+    if (transformations != null) {
+      InputNode transformationNode;
+      while ((transformationNode = transformations.getNext("transformation")) != null) {
+        bp.transformations.add(transformationNode.getValue());
+      }
     }
+
+    return bp;
+  }
+
+  @Override
+  public void write(OutputNode node, BranchPolicy policy) throws Exception {
+    node.getChild("pattern").setValue(policy.pattern);
+    OutputNode transformationsNode = node.getChild("transformations");
+    for (String transformation : policy.transformations) {
+      transformationsNode.getChild("transformation").setValue(transformation);
+    }
+  }
 }

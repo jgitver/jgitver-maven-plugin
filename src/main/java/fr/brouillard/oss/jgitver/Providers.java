@@ -16,39 +16,39 @@
 package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
-
 import java.util.Optional;
 
 public class Providers {
-    private Providers() {
-    }
+  private Providers() {}
 
-    public static JGitverInformationProvider decorate(final GitVersionCalculator calculator) {
-        return new JGitverInformationProvider() {
-            @Override
-            public Version getVersionObject() {
-                return calculator.getVersionObject();
-            }
+  public static JGitverInformationProvider decorate(final GitVersionCalculator calculator) {
+    return new JGitverInformationProvider() {
+      @Override
+      public Version getVersionObject() {
+        return calculator.getVersionObject();
+      }
 
-            @Override
-            public Optional<String> meta(Metadatas meta) {
-                return calculator.meta(meta);
-            }
-        };
-    }
+      @Override
+      public Optional<String> meta(Metadatas meta) {
+        return calculator.meta(meta);
+      }
+    };
+  }
 
-    public static JGitverInformationProvider fixVersion(final String version, final JGitverInformationProvider provider) {
-        return new JGitverInformationProvider() {
-            final Version fixed = Version.parse(version);
-            @Override
-            public Version getVersionObject() {
-                return fixed;
-            }
+  public static JGitverInformationProvider fixVersion(
+      final String version, final JGitverInformationProvider provider) {
+    return new JGitverInformationProvider() {
+      final Version fixed = Version.parse(version);
 
-            @Override
-            public Optional<String> meta(Metadatas meta) {
-                return provider.meta(meta);
-            }
-        };
-    }
+      @Override
+      public Version getVersionObject() {
+        return fixed;
+      }
+
+      @Override
+      public Optional<String> meta(Metadatas meta) {
+        return provider.meta(meta);
+      }
+    };
+  }
 }

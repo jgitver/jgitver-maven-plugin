@@ -16,18 +16,17 @@
 package fr.brouillard.oss.jgitver;
 
 import java.util.Optional;
-
 import org.codehaus.plexus.component.annotations.Component;
 
 @Component(role = JGitverSessionHolder.class, instantiationStrategy = "singleton")
 public class JGitverSessionHolder {
-    private JGitverSession session = null;
+  private JGitverSession session = null;
 
-    public void setSession(JGitverSession session) {
-        this.session = session;
-    }
+  public void setSession(JGitverSession session) {
+    this.session = session;
+  }
 
-    public Optional<JGitverSession> session() {
-        return Optional.ofNullable(session);
-    }
+  public Optional<JGitverSession> session() {
+    return Optional.ofNullable(session);
+  }
 }

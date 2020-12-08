@@ -17,6 +17,7 @@ package fr.brouillard.oss.jgitver.mojos;
 
 import fr.brouillard.oss.jgitver.JGitverSession;
 import fr.brouillard.oss.jgitver.JGitverUtils;
+import java.util.Objects;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,48 +26,51 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
-import java.util.Objects;
-
-/**
- * Works in conjunction with JGitverModelProcessor.
- */
-@Mojo(name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS,
-        instantiationStrategy = InstantiationStrategy.SINGLETON, threadSafe = true)
+/** Works in conjunction with JGitverModelProcessor. */
+@Mojo(
+    name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS,
+    instantiationStrategy = InstantiationStrategy.SINGLETON,
+    threadSafe = true)
 public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
-    public static final String GOAL_ATTACH_MODIFIED_POMS = "attach-modified-poms";
+  public static final String GOAL_ATTACH_MODIFIED_POMS = "attach-modified-poms";
 
-    @Parameter(defaultValue = "${session}", readonly = true)
-    private MavenSession mavenSession;
+  @Parameter(defaultValue = "${session}", readonly = true)
+  private MavenSession mavenSession;
 
-    @Parameter(property = "jgitver.resolve-project-version", defaultValue = "false")
-    private Boolean resolveProjectVersion;
+  @Parameter(property = "jgitver.resolve-project-version", defaultValue = "false")
+  private Boolean resolveProjectVersion;
 
-    @Override
-    public void execute() throws MojoExecutionException {
-        if (Objects.isNull(mavenSession.getUserProperties().get(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY))) {
-            getLog().warn(GOAL_ATTACH_MODIFIED_POMS + "shouldn't be executed alone. The Mojo "
-                    + "is a part of the plugin and executed automatically.");
-            return;
-        }
-
-        String content = mavenSession.getUserProperties().getProperty((JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY));
-        if ("-".equalsIgnoreCase(content)) {
-            // We don't need to attach modified poms anymore.
-            return;
-        }
-
-        try {
-            JGitverSession jgitverSession = JGitverSession.serializeFrom(content);
-            JGitverUtils.attachModifiedPomFilesToTheProject(
-                    mavenSession.getAllProjects(),
-                    jgitverSession.getProjects(),
-                    jgitverSession.getVersion(),
-                    resolveProjectVersion,
-                    new ConsoleLogger());
-            mavenSession.getUserProperties().setProperty(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY, "-");
-        } catch (Exception ex) {
-            throw new MojoExecutionException("Unable to execute goal: "
-                    + JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS, ex);
-        }
+  @Override
+  public void execute() throws MojoExecutionException {
+    if (Objects.isNull(
+        mavenSession.getUserProperties().get(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY))) {
+      getLog()
+          .warn(
+              GOAL_ATTACH_MODIFIED_POMS
+                  + "shouldn't be executed alone. The Mojo "
+                  + "is a part of the plugin and executed automatically.");
+      return;
     }
+
+    String content =
+        mavenSession.getUserProperties().getProperty((JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY));
+    if ("-".equalsIgnoreCase(content)) {
+      // We don't need to attach modified poms anymore.
+      return;
+    }
+
+    try {
+      JGitverSession jgitverSession = JGitverSession.serializeFrom(content);
+      JGitverUtils.attachModifiedPomFilesToTheProject(
+          mavenSession.getAllProjects(),
+          jgitverSession.getProjects(),
+          jgitverSession.getVersion(),
+          resolveProjectVersion,
+          new ConsoleLogger());
+      mavenSession.getUserProperties().setProperty(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY, "-");
+    } catch (Exception ex) {
+      throw new MojoExecutionException(
+          "Unable to execute goal: " + JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS, ex);
+    }
+  }
 }

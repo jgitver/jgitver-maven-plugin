@@ -15,15 +15,13 @@
  */
 package fr.brouillard.oss.jgitver;
 
+import fr.brouillard.oss.jgitver.cfg.Configuration;
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.maven.MavenExecutionException;
 
-import fr.brouillard.oss.jgitver.cfg.Configuration;
-
 public interface JGitverConfiguration {
-    public Configuration getConfiguration() throws MavenExecutionException;
+  public Configuration getConfiguration() throws MavenExecutionException;
 
-    boolean ignore(File pomFile) throws IOException;
+  boolean ignore(File pomFile) throws IOException;
 }
