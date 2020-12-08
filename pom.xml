@@ -76,10 +76,8 @@
         <junit.version>4.8.2</junit.version>
         <easymock.version>4.0.2</easymock.version>
         <simple-xml.version>2.7.1</simple-xml.version>
-        <checkstyle.version>8.32</checkstyle.version>
 
         <!-- plugins versions as properties -->
-        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
         <plexus-component-metadata.version>1.7.1</plexus-component-metadata.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
@@ -312,29 +310,13 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
                 <executions>
                     <execution>
-                        <id>validate</id>
+                        <id>check-styling</id>
                         <phase>validate</phase>
-                        <configuration>
-                            <configLocation>${project.baseUri}/src/quality/checkstyle/checks.xml</configLocation>
-                            <propertyExpansion>checkstyle.suppression.file=${project.baseUri}/src/quality/checkstyle/suppressions.xml</propertyExpansion>
-                            <encoding>UTF-8</encoding>
-                            <consoleOutput>true</consoleOutput>
-                            <failsOnError>true</failsOnError>
-                            <linkXRef>false</linkXRef>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
                         <goals>
                             <goal>check</goal>
                         </goals>
