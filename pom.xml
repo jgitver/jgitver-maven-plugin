@@ -81,7 +81,7 @@
         <!-- plugins versions as properties -->
         <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
         <plexus-component-metadata.version>1.7.1</plexus-component-metadata.version>
-        <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
