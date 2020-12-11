@@ -1,7 +1,7 @@
 # see https://gist.github.com/ArminVieweg/c0fe55fe2fb25cd44772
 
 # Autodetect text files
-* text=auto
+* text=auto eol=lf
 
 # Force the following filetypes to have unix eols, so Windows does not break them
 *.bat text eol=crlf
