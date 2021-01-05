@@ -312,7 +312,6 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless.version}</version>
                 <executions>
                     <execution>
                         <id>check-styling</id>
@@ -400,11 +399,53 @@
                                         <versionRange>[3.2,)</versionRange>
                                         <goals>
                                             <goal>check</goal>
+                                            <goal>descriptor</goal>
+                                            <goal>helpmojo</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
                                         <ignore></ignore>
                                     </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                	<pluginExecutionFilter>
+                                		<groupId>
+                                			org.codehaus.plexus
+                                		</groupId>
+                                		<artifactId>
+                                			plexus-component-metadata
+                                		</artifactId>
+                                		<versionRange>
+                                			[1.7.1,)
+                                		</versionRange>
+                                		<goals>
+                                			<goal>
+                                				generate-metadata
+                                			</goal>
+                                		</goals>
+                                	</pluginExecutionFilter>
+                                	<action>
+                                		<ignore></ignore>
+                                	</action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                	<pluginExecutionFilter>
+                                		<groupId>
+                                			com.diffplug.spotless
+                                		</groupId>
+                                		<artifactId>
+                                			spotless-maven-plugin
+                                		</artifactId>
+                                		<versionRange>
+                                			[2.6.1,)
+                                		</versionRange>
+                                		<goals>
+                                			<goal>check</goal>
+                                		</goals>
+                                	</pluginExecutionFilter>
+                                	<action>
+                                		<ignore></ignore>
+                                	</action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
