@@ -246,6 +246,8 @@ Think to modify your IDE settings regarding maven version ; if required do not u
 
 ## Build & release
 
+see also the [Contributing guide](CONTRIBUTING.md).
+
 ### Github Markdown rendering
 
 Before pushing try to always verify that the modifications pushed in MD files will be correctly rendered by Github.  
