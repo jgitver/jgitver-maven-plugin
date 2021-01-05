@@ -259,9 +259,9 @@ For that purpose you can use [grip](https://github.com/joeyespo/grip).
 
 or using docker
 
-- _Linux_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.5.4-jdk-8 mvn -Prun-its clean install`
-- _Windows_: `docker run --rm -v %CD%:/root/sources -w /root/sources maven:3.5.4-jdk-8 mvn -Prun-its clean install`
-- _Old linux command_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.5.4-jdk-8 ./src/ci/build-with-external-it-fallback.sh`
+- _Linux_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.6.3-openjdk-11 mvn -Prun-its clean install`
+- _Windows_: `docker run --rm -v %CD%:/root/sources -w /root/sources maven:3.6.3-openjdk-11 mvn -Prun-its clean install`
+- _Old linux command_: `docker run --rm -v $(pwd):/root/sources -w /root/sources maven:3.6.3-openjdk-11 ./src/ci/build-with-external-it-fallback.sh`
 
 build and filter some IT tests
 
