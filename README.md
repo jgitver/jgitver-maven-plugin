@@ -1,6 +1,6 @@
 # jgitver-maven-plugin
 
-[![Build Status](https://travis-ci.org/jgitver/jgitver-maven-plugin.svg?branch=master)](https://travis-ci.org/jgitver/jgitver-maven-plugin)
+[![Sponsor](https://img.shields.io/badge/sponsor-jgitver-blue?logo=github-sponsors)](https://github.com/sponsors/McFoggy) [![Build Status](https://travis-ci.org/jgitver/jgitver-maven-plugin.svg?branch=master)](https://travis-ci.org/jgitver/jgitver-maven-plugin)
 [![Open Hub project report for jgitver-maven-plugin](https://www.openhub.net/p/jgitver-maven-plugin/widgets/project_thin_badge.gif)](https://www.openhub.net/p/jgitver-maven-plugin?ref=sample) [![Discuss](https://badges.gitter.im/jgitver/jgitver.svg)](https://gitter.im/jgitver/Lobby)
 
 This plugin allows to define the pom version of your project using the information from your git history.
