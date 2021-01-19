@@ -19,21 +19,21 @@ import fr.brouillard.oss.jgitver.cfg.Configuration;
 import fr.brouillard.oss.jgitver.cfg.ConfigurationLoader;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.LegacySupport;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
 @Component(role = JGitverConfiguration.class, instantiationStrategy = "singleton")
 public class JGitverConfigurationComponent implements JGitverConfiguration {
-  @Requirement private LegacySupport legacySupport = null;
-
   @Requirement private Logger logger = null;
+
+  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
 
   private volatile Configuration configuration;
 
@@ -44,15 +44,18 @@ public class JGitverConfigurationComponent implements JGitverConfiguration {
     if (configuration == null) {
       synchronized (this) {
         if (configuration == null) {
-          MavenSession mavenSession = legacySupport.getSession();
-          final File rootDirectory = mavenSession.getRequest().getMultiModuleProjectDirectory();
+          final File rootDirectory = executionInformationProvider.getRootDirectory();
 
           logger.debug(
               "using " + JGitverUtils.EXTENSION_PREFIX + " on directory: " + rootDirectory);
 
-          configuration = ConfigurationLoader.loadFromRoot(rootDirectory, logger);
+          configuration = new ConfigurationLoader(rootDirectory, logger).load();
 
-          initFromRootDirectory(rootDirectory, configuration.exclusions);
+          excludedDirectories.add(
+              new File(executionInformationProvider.getLocalRepository().getBasedir()));
+          excludedDirectories.addAll(
+              computeExcludedDirectoriesFromConfigurationExclusions(
+                  rootDirectory, configuration.exclusions));
         }
       }
     }
@@ -60,14 +63,19 @@ public class JGitverConfigurationComponent implements JGitverConfiguration {
     return configuration;
   }
 
-  private void initFromRootDirectory(File rootDirectory, List<String> exclusions) {
-    exclusions.stream()
-        .map(dirName -> new File(rootDirectory, dirName))
-        .forEach(
-            dir -> {
-              excludedDirectories.add(dir);
-              logger.debug("ignoring directory (& sub dirs): " + dir);
-            });
+  private Collection<File> computeExcludedDirectoriesFromConfigurationExclusions(
+      File rootDirectory, List<String> exclusions) {
+    return exclusions.stream()
+        .map(
+            dirName -> {
+              File directory = new File(dirName);
+              if (!directory.isAbsolute()) {
+                directory = new File(rootDirectory, dirName);
+              }
+              logger.debug("ignoring directory (& sub dirs): " + directory);
+              return directory;
+            })
+        .collect(Collectors.toList());
   }
 
   @Override

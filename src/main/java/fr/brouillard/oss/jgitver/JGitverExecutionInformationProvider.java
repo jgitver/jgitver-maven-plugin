@@ -15,20 +15,21 @@
  */
 package fr.brouillard.oss.jgitver;
 
-import com.google.inject.AbstractModule;
+import java.io.File;
+import java.util.Optional;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 
-/**
- * Guice binding for {@link fr.brouillard.oss.jgitver.JGitverConfiguration}.
- *
- * <p>Without a guice binding looking up the ProjectBuilder on other plugins will throw an exception
- * trying to load {@link fr.brouillard.oss.jgitver.JGitverConfiguration} (only started on maven
- * 3.6.3).
- */
-public class JGitverGuiceModule extends AbstractModule {
-  @Override
-  protected void configure() {
-    bind(JGitverConfiguration.class).to(JGitverConfigurationComponent.class);
-    bind(JGitverExecutionInformationProvider.class)
-        .to(JGitverExecutionInformationProviderComponent.class);
-  }
+public interface JGitverExecutionInformationProvider {
+
+  ArtifactRepository getLocalRepository();
+
+  void setLocalRepository(ArtifactRepository localRepository);
+
+  File getRootDirectory();
+
+  void setRootDirectory(File rootDirectory);
+
+  void setSession(JGitverSession session);
+
+  Optional<JGitverSession> session();
 }

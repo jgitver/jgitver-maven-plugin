@@ -43,13 +43,19 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
   @Requirement private JGitverConfiguration configurationProvider;
 
+  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
+
   @Override
   public void afterSessionStart(MavenSession mavenSession) throws MavenExecutionException {
     if (JGitverUtils.shouldSkip(mavenSession)) {
       logger.info("  jgitver execution has been skipped by request of the user");
       sessionHolder.setSession(null);
+      executionInformationProvider.setSession(null);
     } else {
       final File rootDirectory = mavenSession.getRequest().getMultiModuleProjectDirectory();
+
+      executionInformationProvider.setLocalRepository(mavenSession.getLocalRepository());
+      executionInformationProvider.setRootDirectory(rootDirectory);
 
       logger.debug("using " + JGitverUtils.EXTENSION_PREFIX + " on directory: " + rootDirectory);
 
@@ -138,6 +144,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
         JGitverSession session = new JGitverSession(infoProvider, rootDirectory);
         sessionHolder.setSession(session);
+        executionInformationProvider.setSession(session);
       } catch (Exception ex) {
         logger.warn(
             "cannot autoclose GitVersionCalculator object for project: " + rootDirectory, ex);
@@ -148,6 +155,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
   @Override
   public void afterSessionEnd(MavenSession session) throws MavenExecutionException {
     sessionHolder.setSession(null);
+    executionInformationProvider.setSession(null);
   }
 
   @Override
@@ -160,7 +168,6 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
           final Consumer<? super CharSequence> c = cs -> logger.warn(cs.toString());
 
           if (JGitverModelProcessor.class.isAssignableFrom(modelProcessor.getClass())) {
-
             if (!mavenSession
                 .getUserProperties()
                 .containsKey(JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY)) {
@@ -170,7 +177,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
             JGitverUtils.failAsOldMechanism(c);
           }
 
-          sessionHolder
+          executionInformationProvider
               .session()
               .ifPresent(
                   jgitverSession -> {
