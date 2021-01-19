@@ -63,6 +63,8 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
   @Requirement private JGitverSessionHolder jgitverSession;
 
+  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
+
   public JGitverModelProcessor() {
     super();
   }
@@ -84,7 +86,7 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
 
   private Model provisionModel(Model model, Map<String, ?> options) throws IOException {
     MavenSession session = legacySupport.getSession();
-    Optional<JGitverSession> optSession = jgitverSession.session();
+    Optional<JGitverSession> optSession = executionInformationProvider.session();
     if (!optSession.isPresent()) {
       // don't do anything in case no jgitver is there (execution could have been skipped)
       return model;
