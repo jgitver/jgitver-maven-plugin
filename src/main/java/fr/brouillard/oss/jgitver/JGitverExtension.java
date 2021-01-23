@@ -17,11 +17,13 @@ package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.cfg.Configuration;
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
@@ -33,17 +35,23 @@ import org.codehaus.plexus.logging.Logger;
 
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "jgitver")
 public class JGitverExtension extends AbstractMavenLifecycleParticipant {
-  @Requirement private Logger logger;
+  @Requirement
+  private Logger logger;
 
-  @Requirement private PlexusContainer container;
+  @Requirement
+  private PlexusContainer container;
 
-  @Requirement private ModelProcessor modelProcessor;
+  @Requirement
+  private ModelProcessor modelProcessor;
 
-  @Requirement private JGitverSessionHolder sessionHolder;
+  @Requirement
+  private JGitverSessionHolder sessionHolder;
 
-  @Requirement private JGitverConfiguration configurationProvider;
+  @Requirement
+  private JGitverConfiguration configurationProvider;
 
-  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
+  @Requirement
+  private JGitverExecutionInformationProvider executionInformationProvider;
 
   @Override
   public void afterSessionStart(MavenSession mavenSession) throws MavenExecutionException {
@@ -61,8 +69,7 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
       Configuration cfg = configurationProvider.getConfiguration();
 
-      try (GitVersionCalculator gitVersionCalculator =
-          GitVersionCalculator.location(rootDirectory)) {
+      try (GitVersionCalculator gitVersionCalculator = GitVersionCalculator.location(rootDirectory)) {
         if (cfg.strategy != null) {
           gitVersionCalculator.setStrategy(cfg.strategy);
         } else {
@@ -102,10 +109,9 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
         }
 
         if (cfg.branchPolicies != null && !cfg.branchPolicies.isEmpty()) {
-          List<BranchingPolicy> policies =
-              cfg.branchPolicies.stream()
-                  .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))
-                  .collect(Collectors.toList());
+          List<BranchingPolicy> policies = cfg.branchPolicies.stream()
+              .map(bp -> new BranchingPolicy(bp.pattern, bp.transformations))
+              .collect(Collectors.toList());
 
           gitVersionCalculator.setQualifierBranchingPolicies(policies);
         }
@@ -122,11 +128,10 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
         logger.info(String.format("    version '%s' computed in %d ms", computedVersion, duration));
         logger.info("");
 
-        boolean isDirty =
-            gitVersionCalculator
-                .meta(Metadatas.DIRTY)
-                .map(Boolean::parseBoolean)
-                .orElse(Boolean.FALSE);
+        boolean isDirty = gitVersionCalculator
+            .meta(Metadatas.DIRTY)
+            .map(Boolean::parseBoolean)
+            .orElse(Boolean.FALSE);
 
         if (cfg.failIfDirty && isDirty) {
           throw new IllegalStateException("repository is dirty");
@@ -134,10 +139,9 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
 
         JGitverInformationProvider infoProvider = Providers.decorate(gitVersionCalculator);
         JGitverInformationProvider finalInfoProvider = infoProvider;
-        infoProvider =
-            JGitverUtils.versionOverride(mavenSession, logger)
-                .map(version -> Providers.fixVersion(version, finalInfoProvider))
-                .orElse(infoProvider);
+        infoProvider = JGitverUtils.versionOverride(mavenSession, logger)
+            .map(version -> Providers.fixVersion(version, finalInfoProvider))
+            .orElse(infoProvider);
 
         JGitverUtils.fillPropertiesFromMetadatas(
             mavenSession.getUserProperties(), infoProvider, logger);
@@ -186,12 +190,11 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                     jgitverSession
                         .getProjects()
                         .forEach(
-                            gav ->
-                                logger.info(
-                                    "    "
-                                        + gav.toString()
-                                        + " -> "
-                                        + jgitverSession.getVersion()));
+                            gav -> logger.info(
+                                "    "
+                                    + gav.toString()
+                                    + " -> "
+                                    + jgitverSession.getVersion()));
                   });
         }
       } catch (IOException ex) {

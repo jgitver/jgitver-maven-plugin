@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.apache.maven.MavenExecutionException;
 import org.junit.Test;
 
@@ -30,11 +31,10 @@ public class Issue51Test {
       throws IOException, MavenExecutionException {
     InMemoryLogger inMemoryLogger = new InMemoryLogger();
 
-    try (ResourceConfigurationProvider fromResource =
-        ResourceConfigurationProvider.fromResource("/config/issue-51-cfg.xml")) {
-      Configuration cfg =
-          ConfigurationLoader.loadFromRoot(
-              fromResource.getConfigurationDirectory(), inMemoryLogger);
+    try (ResourceConfigurationProvider fromResource = ResourceConfigurationProvider
+        .fromResource("/config/issue-51-cfg.xml")) {
+      Configuration cfg = ConfigurationLoader.loadFromRoot(
+          fromResource.getConfigurationDirectory(), inMemoryLogger);
       assertThat(cfg, notNullValue());
 
       List<BranchPolicy> branchPolicies = cfg.branchPolicies;

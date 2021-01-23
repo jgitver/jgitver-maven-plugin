@@ -16,9 +16,11 @@
 package fr.brouillard.oss.jgitver.cfg;
 
 import fr.brouillard.oss.jgitver.JGitverUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.maven.MavenExecutionException;
 import org.codehaus.plexus.logging.Logger;
 import org.simpleframework.xml.Serializer;
@@ -27,10 +29,8 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
 
 public class ConfigurationLoader {
-  private static final String NAMESPACE_1_0_0_beta =
-      "http://jgitver.github.io/maven/configuration/1.0.0-beta";
-  private static final String NAMESPACE_1_0_0 =
-      "http://jgitver.github.io/maven/configuration/1.0.0";
+  private static final String NAMESPACE_1_0_0_beta = "http://jgitver.github.io/maven/configuration/1.0.0-beta";
+  private static final String NAMESPACE_1_0_0 = "http://jgitver.github.io/maven/configuration/1.0.0";
   private final Logger logger;
 
   private final List<File> configurationFiles;
@@ -46,8 +46,7 @@ public class ConfigurationLoader {
     }
     File extensionMavenCoreDirectory = new File(rootDirectory, ".mvn");
     File defaultConfigurationXml = new File(extensionMavenCoreDirectory, "jgitver.config.xml");
-    File backwardCompatibleConfigurationFile =
-        new File(extensionMavenCoreDirectory, "jgtiver.config.xml");
+    File backwardCompatibleConfigurationFile = new File(extensionMavenCoreDirectory, "jgtiver.config.xml");
 
     configurationFiles.add(defaultConfigurationXml);
     configurationFiles.add(backwardCompatibleConfigurationFile);
@@ -72,35 +71,35 @@ public class ConfigurationLoader {
    *
    * @param rootDirectory the root directory of the maven project
    * @param logger the logger to report activity
-   * @return a non null Configuration object from the file $rootDirectory/.mvn/jgitver.config.xml or
-   *     a default one with default values if the configuration file does not exist
+   * @return a non null Configuration object from the file $rootDirectory/.mvn/jgitver.config.xml or a
+   * default one with default values if the configuration file does not exist
    * @throws MavenExecutionException if the file exists but cannot be read correctly
    * @deprecated use new ConfigurationLoader(File, Logger).load() instead.
    */
   public static Configuration loadFromRoot(File rootDirectory, Logger logger)
       throws MavenExecutionException {
     return new ConfigurationLoader(rootDirectory, logger).load();
-    //        File extensionMavenCoreDirectory = new File(rootDirectory, ".mvn");
-    //        File configurationXml = new File(extensionMavenCoreDirectory, "jgitver.config.xml");
-    //        if (!configurationXml.canRead()) {
-    //            logger.debug("no configuration file found under " + configurationXml + ", looking
+    // File extensionMavenCoreDirectory = new File(rootDirectory, ".mvn");
+    // File configurationXml = new File(extensionMavenCoreDirectory, "jgitver.config.xml");
+    // if (!configurationXml.canRead()) {
+    // logger.debug("no configuration file found under " + configurationXml + ", looking
     // under backwards-compatible file name");
-    //            configurationXml = new File(extensionMavenCoreDirectory, "jgtiver.config.xml");
-    //            if (!configurationXml.canRead()) {
-    //                logger.debug("no configuration file found under " + configurationXml + ",
+    // configurationXml = new File(extensionMavenCoreDirectory, "jgtiver.config.xml");
+    // if (!configurationXml.canRead()) {
+    // logger.debug("no configuration file found under " + configurationXml + ",
     // using defaults");
-    //                return new Configuration();
-    //            }
-    //        }
+    // return new Configuration();
+    // }
+    // }
     //
-    //        try {
-    //            logger.info("using jgitver configuration file: " + configurationXml);
-    //            Configuration c = loadFromFile(configurationXml);
-    //            return c;
-    //        } catch (Exception ex) {
-    //            throw new MavenExecutionException("cannot read configuration file " +
+    // try {
+    // logger.info("using jgitver configuration file: " + configurationXml);
+    // Configuration c = loadFromFile(configurationXml);
+    // return c;
+    // } catch (Exception ex) {
+    // throw new MavenExecutionException("cannot read configuration file " +
     // configurationXml, ex);
-    //        }
+    // }
   }
 
   private static Configuration loadFromFile(File configurationXml) throws MavenExecutionException {

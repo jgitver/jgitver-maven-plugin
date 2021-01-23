@@ -24,9 +24,8 @@ public class JGitverMavenPluginProperties {
 
   static {
     try {
-      InputStream is =
-          JGitverMavenPluginProperties.class.getResourceAsStream(
-              "/META-INF/jgitver-maven-plugin-project.properties");
+      InputStream is = JGitverMavenPluginProperties.class.getResourceAsStream(
+          "/META-INF/jgitver-maven-plugin-project.properties");
       if (is != null) {
         p.load(is);
       }

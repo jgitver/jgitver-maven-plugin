@@ -16,6 +16,7 @@
 package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
@@ -161,8 +163,7 @@ public final class JGitverUtils {
         .forEach(
             metaData -> {
               Optional<String> metaValue = informationProvider.meta(metaData);
-              String propertyName =
-                  EXTENSION_PREFIX + "." + metaData.name().toLowerCase(Locale.ENGLISH);
+              String propertyName = EXTENSION_PREFIX + "." + metaData.name().toLowerCase(Locale.ENGLISH);
               String value = metaValue.orElse("");
               properties.put(propertyName, value);
               logger.debug("setting property " + propertyName + " with \"" + value + "\"");
@@ -303,8 +304,8 @@ public final class JGitverUtils {
   }
 
   /**
-   * Tells if this jgitver extension should be skipped for the given maven session execution. To
-   * skip execution launch maven with a user property
+   * Tells if this jgitver extension should be skipped for the given maven session execution. To skip
+   * execution launch maven with a user property
    *
    * <pre>
    *     mvn -Djgitver.skip=true/false
@@ -334,14 +335,14 @@ public final class JGitverUtils {
    */
   public static boolean shouldForceComputation(MavenSession session) {
     return Boolean.parseBoolean(
-            session.getSystemProperties().getProperty(EXTENSION_FORCE_COMPUTATION, "false"))
+        session.getSystemProperties().getProperty(EXTENSION_FORCE_COMPUTATION, "false"))
         || Boolean.parseBoolean(
             session.getUserProperties().getProperty(EXTENSION_FORCE_COMPUTATION, "false"));
   }
 
   /**
-   * Tells if this jgitver extension should use maven-flatten-plugin instead of its own mechanism.
-   * To activate flatten plugin
+   * Tells if this jgitver extension should use maven-flatten-plugin instead of its own mechanism. To
+   * activate flatten plugin
    *
    * <pre>
    *     mvn -Djgitver.flatten=true/false
@@ -354,7 +355,7 @@ public final class JGitverUtils {
    */
   public static boolean shouldUseFlattenPlugin(MavenSession session) {
     return Boolean.parseBoolean(
-            session.getSystemProperties().getProperty(EXTENSION_FLATTEN, "false"))
+        session.getSystemProperties().getProperty(EXTENSION_FLATTEN, "false"))
         || Boolean.parseBoolean(
             session.getUserProperties().getProperty(EXTENSION_FLATTEN, "false"));
   }
@@ -365,20 +366,22 @@ public final class JGitverUtils {
    * @param session a running maven session
    * @param logger logger
    * @return an Optional containing the version to use if the corresponding user or system property
-   *     has been defined
+   * has been defined
    */
   public static Optional<String> versionOverride(final MavenSession session, final Logger logger) {
     return getProperty(session, EXTENSION_USE_VERSION, logger);
   }
 
   /**
-   * Tries to get the property from the user properties ({@link MavenSession#getUserProperties()})
-   * or from the system properties ({@link MavenSession#getSystemProperties()}).
+   * Tries to get the property from the user properties ({@link MavenSession#getUserProperties()}) or
+   * from the system properties ({@link MavenSession#getSystemProperties()}).
    *
-   * <p>The variable can be defined with it's exact name or with it's IEEE Std 1003.1-2001 compliant
+   * <p>
+   * The variable can be defined with it's exact name or with it's IEEE Std 1003.1-2001 compliant
    * version ({@link #normalizeSystemPropertyName(String)}).
    *
-   * <p>User properties have higher priority than all other properties. Environment properties have
+   * <p>
+   * User properties have higher priority than all other properties. Environment properties have
    * higher priority than system properties. Exact matches have higher priority than IEEE Std
    * 1003.1-2001 compliant versions.
    *
@@ -445,10 +448,11 @@ public final class JGitverUtils {
   }
 
   /**
-   * Derives an IEEE Std 1003.1-2001 compliant property name by replacing all non-compliant
-   * characters with underscore.
+   * Derives an IEEE Std 1003.1-2001 compliant property name by replacing all non-compliant characters
+   * with underscore.
    *
-   * <p>In IEEE Std 1003.1-2001 it was defined that the variable name consist solely of uppercase
+   * <p>
+   * In IEEE Std 1003.1-2001 it was defined that the variable name consist solely of uppercase
    * letters, digits, and the '_' (underscore) from the characters defined in Portable Character Set
    * and do not begin with a digit. Although IEEE Std 1003.1-2008 / IEEE POSIX P1003.2/ISO 9945.2
    * doesn't define a lexical convention for variable names, most bash implementations use

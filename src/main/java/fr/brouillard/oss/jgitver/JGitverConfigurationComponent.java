@@ -17,12 +17,14 @@ package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.cfg.Configuration;
 import fr.brouillard.oss.jgitver.cfg.ConfigurationLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.codehaus.plexus.component.annotations.Component;
@@ -31,9 +33,11 @@ import org.codehaus.plexus.logging.Logger;
 
 @Component(role = JGitverConfiguration.class, instantiationStrategy = "singleton")
 public class JGitverConfigurationComponent implements JGitverConfiguration {
-  @Requirement private Logger logger = null;
+  @Requirement
+  private Logger logger = null;
 
-  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
+  @Requirement
+  private JGitverExecutionInformationProvider executionInformationProvider;
 
   private volatile Configuration configuration;
 

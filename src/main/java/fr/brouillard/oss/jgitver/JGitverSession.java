@@ -21,7 +21,14 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.simpleframework.xml.*;
+
+import org.simpleframework.xml.Default;
+import org.simpleframework.xml.DefaultType;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.Transient;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -29,7 +36,8 @@ import org.simpleframework.xml.strategy.Strategy;
 @Root(name = "jgitver")
 @Default(DefaultType.FIELD)
 public class JGitverSession {
-  @Transient private JGitverInformationProvider calculator;
+  @Transient
+  private JGitverInformationProvider calculator;
 
   @Element(name = "calculatedVersion")
   private String version;
@@ -44,8 +52,8 @@ public class JGitverSession {
   JGitverSession() {}
 
   /**
-   * Standard constructor using mandatory fields. The class does not use final attributes dues to
-   * its jaxb nature that requires an empty constructor.
+   * Standard constructor using mandatory fields. The class does not use final attributes dues to its
+   * jaxb nature that requires an empty constructor.
    *
    * @param gitVersionCalculator the jgitver computation
    * @param multiModuleDirectory the base maven directory

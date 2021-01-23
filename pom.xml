@@ -311,6 +311,31 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>unpack-IDE-config</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>fr.brouillard.oss</groupId>
+                                    <artifactId>jgitver-ide-config</artifactId>
+                                    <version>1.2.0</version>
+                                    <type>jar</type>
+                                    <includes>**/*.properties,**/*.xml</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <executions>
@@ -409,44 +434,44 @@
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.codehaus.plexus
-                                		</groupId>
-                                		<artifactId>
-                                			plexus-component-metadata
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.7.1,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>
-                                				generate-metadata
-                                			</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore></ignore>
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.plexus
+                                        </groupId>
+                                        <artifactId>
+                                            plexus-component-metadata
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.7.1,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                generate-metadata
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			com.diffplug.spotless
-                                		</groupId>
-                                		<artifactId>
-                                			spotless-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[2.6.1,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>check</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore></ignore>
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            com.diffplug.spotless
+                                        </groupId>
+                                        <artifactId>
+                                            spotless-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [2.6.1,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
@@ -458,10 +483,12 @@
                     <version>${spotless.version}</version>
                     <configuration>
                         <java>
-                            <googleJavaFormat>
-                                <version>1.9</version>
-                                <style>GOOGLE</style>
-                            </googleJavaFormat>
+                            <importOrder>
+                                <file>${project.build.directory}/dependency/jgitver.importorder.properties</file>
+                            </importOrder>
+                            <eclipse>
+                                <file>${project.build.directory}/dependency/jgitver-format.xml</file>
+                            </eclipse>
                         </java>
                     </configuration>
                 </plugin>

@@ -15,7 +15,6 @@
  */
 package fr.brouillard.oss.jgitver.cfg;
 
-import com.google.common.io.Resources;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import com.google.common.io.Resources;
 
 public class ResourceConfigurationProvider implements Closeable {
   private File configurationDirectory;
