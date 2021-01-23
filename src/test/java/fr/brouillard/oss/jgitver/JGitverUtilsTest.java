@@ -15,12 +15,14 @@
 package fr.brouillard.oss.jgitver;
 
 import java.util.Properties;
-import junit.framework.Assert;
+
 import org.apache.maven.execution.MavenSession;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.easymock.EasyMock;
 import org.junit.Test;
+
+import junit.framework.Assert;
 
 public class JGitverUtilsTest {
   @Test
@@ -28,14 +30,12 @@ public class JGitverUtilsTest {
     try {
       JGitverUtils.normalizeSystemPropertyName(null);
       Assert.fail("It's not possible to derive a compliant name from null");
-    } catch (final IllegalStateException e) {
-    }
+    } catch (final IllegalStateException e) {}
 
     try {
       JGitverUtils.normalizeSystemPropertyName("   ");
       Assert.fail("It's not possible to derive a compliant name from an empty string");
-    } catch (final IllegalStateException e) {
-    }
+    } catch (final IllegalStateException e) {}
 
     Assert.assertEquals(
         "Non A-Z characters and underscore need to be replaced",

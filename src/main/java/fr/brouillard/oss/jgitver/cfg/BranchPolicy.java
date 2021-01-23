@@ -16,10 +16,17 @@
 package fr.brouillard.oss.jgitver.cfg;
 
 import fr.brouillard.oss.jgitver.BranchingPolicy.BranchNameTransformations;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.*;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.convert.Convert;
 
@@ -33,9 +40,8 @@ public class BranchPolicy {
 
   @XmlElementWrapper(name = "transformations")
   @XmlElement(name = "transformation")
-  public List<String> transformations =
-      new LinkedList<>(
-          Arrays.asList(
-              BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name(),
-              BranchNameTransformations.LOWERCASE_EN.name()));
+  public List<String> transformations = new LinkedList<>(
+      Arrays.asList(
+          BranchNameTransformations.REPLACE_UNEXPECTED_CHARS_UNDERSCORE.name(),
+          BranchNameTransformations.LOWERCASE_EN.name()));
 }

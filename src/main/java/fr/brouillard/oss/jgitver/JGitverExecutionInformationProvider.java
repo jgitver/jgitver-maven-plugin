@@ -17,6 +17,7 @@ package fr.brouillard.oss.jgitver;
 
 import java.io.File;
 import java.util.Optional;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
 
 public interface JGitverExecutionInformationProvider {

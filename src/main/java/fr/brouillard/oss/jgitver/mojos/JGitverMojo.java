@@ -16,7 +16,9 @@
 package fr.brouillard.oss.jgitver.mojos;
 
 import fr.brouillard.oss.jgitver.JGitverUtils;
+
 import java.util.List;
+
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;

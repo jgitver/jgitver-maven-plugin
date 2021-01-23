@@ -16,8 +16,10 @@
 package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.cfg.Configuration;
+
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.maven.MavenExecutionException;
 
 public interface JGitverConfiguration {

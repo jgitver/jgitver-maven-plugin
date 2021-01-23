@@ -17,7 +17,9 @@ package fr.brouillard.oss.jgitver.mojos;
 
 import fr.brouillard.oss.jgitver.JGitverSession;
 import fr.brouillard.oss.jgitver.JGitverUtils;
+
 import java.util.Objects;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,10 +29,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 /** Works in conjunction with JGitverModelProcessor. */
-@Mojo(
-    name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS,
-    instantiationStrategy = InstantiationStrategy.SINGLETON,
-    threadSafe = true)
+@Mojo(name = JGitverAttachModifiedPomsMojo.GOAL_ATTACH_MODIFIED_POMS,
+    instantiationStrategy = InstantiationStrategy.SINGLETON, threadSafe = true)
 public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
   public static final String GOAL_ATTACH_MODIFIED_POMS = "attach-modified-poms";
 
@@ -52,8 +52,7 @@ public class JGitverAttachModifiedPomsMojo extends AbstractMojo {
       return;
     }
 
-    String content =
-        mavenSession.getUserProperties().getProperty((JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY));
+    String content = mavenSession.getUserProperties().getProperty((JGitverUtils.SESSION_MAVEN_PROPERTIES_KEY));
     if ("-".equalsIgnoreCase(content)) {
       // We don't need to attach modified poms anymore.
       return;

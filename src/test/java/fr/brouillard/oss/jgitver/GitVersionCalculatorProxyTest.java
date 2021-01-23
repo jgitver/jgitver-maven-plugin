@@ -20,7 +20,9 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
+
 import java.io.File;
+
 import org.junit.Test;
 
 public class GitVersionCalculatorProxyTest {
@@ -30,8 +32,7 @@ public class GitVersionCalculatorProxyTest {
     File basedir = new File(System.getProperty("user.dir"));
 
     try (GitVersionCalculator gvc = GitVersionCalculator.location(basedir)) {
-      JGitverInformationProvider infoProvider =
-          Providers.fixVersion(expectedVersion, Providers.decorate(gvc));
+      JGitverInformationProvider infoProvider = Providers.fixVersion(expectedVersion, Providers.decorate(gvc));
       assertThat(expectedVersion, is(infoProvider.getVersion()));
       assertThat(expectedVersion, not(is(infoProvider.meta(Metadatas.CALCULATED_VERSION).get())));
     }

@@ -17,6 +17,7 @@ package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
 import fr.brouillard.oss.jgitver.mojos.JGitverAttachModifiedPomsMojo;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.building.Source;
@@ -55,15 +57,20 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 public class JGitverModelProcessor extends DefaultModelProcessor {
   public static final String FLATTEN_MAVEN_PLUGIN = "flatten-maven-plugin";
   public static final String ORG_CODEHAUS_MOJO = "org.codehaus.mojo";
-  @Requirement private Logger logger = null;
+  @Requirement
+  private Logger logger = null;
 
-  @Requirement private LegacySupport legacySupport = null;
+  @Requirement
+  private LegacySupport legacySupport = null;
 
-  @Requirement private JGitverConfiguration configurationProvider;
+  @Requirement
+  private JGitverConfiguration configurationProvider;
 
-  @Requirement private JGitverSessionHolder jgitverSession;
+  @Requirement
+  private JGitverSessionHolder jgitverSession;
 
-  @Requirement private JGitverExecutionInformationProvider executionInformationProvider;
+  @Requirement
+  private JGitverExecutionInformationProvider executionInformationProvider;
 
   public JGitverModelProcessor() {
     super();
@@ -130,10 +137,9 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
         if (Objects.nonNull(model.getParent())) {
           // if the parent is part of the multi module project, let's update the parent version
           String modelParentRelativePath = model.getParent().getRelativePath();
-          File relativePathParent =
-              new File(relativePath.getCanonicalPath() + File.separator + modelParentRelativePath)
-                  .getParentFile()
-                  .getCanonicalFile();
+          File relativePathParent = new File(relativePath.getCanonicalPath() + File.separator + modelParentRelativePath)
+              .getParentFile()
+              .getCanonicalFile();
           if (StringUtils.isNotBlank(modelParentRelativePath)
               && StringUtils.containsIgnoreCase(
                   relativePathParent.getCanonicalPath(), multiModuleDirectory.getCanonicalPath())) {
@@ -226,32 +232,31 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
     dependencyManagement.setValue("keep");
     pomElements.addChild(dependencyManagement);
 
-    List<String> pomElementsName =
-        Arrays.asList(
-            "build",
-            "ciManagement",
-            "contributors",
-            "dependencies",
-            "description",
-            "developers",
-            "distributionManagement",
-            "inceptionYear",
-            "issueManagement",
-            "mailingLists",
-            "modules",
-            "name",
-            "organization",
-            "parent",
-            "pluginManagement",
-            "pluginRepositories",
-            "prerequisites",
-            "profiles",
-            "properties",
-            "reporting",
-            "repositories",
-            "scm",
-            "url",
-            "version");
+    List<String> pomElementsName = Arrays.asList(
+        "build",
+        "ciManagement",
+        "contributors",
+        "dependencies",
+        "description",
+        "developers",
+        "distributionManagement",
+        "inceptionYear",
+        "issueManagement",
+        "mailingLists",
+        "modules",
+        "name",
+        "organization",
+        "parent",
+        "pluginManagement",
+        "pluginRepositories",
+        "prerequisites",
+        "profiles",
+        "properties",
+        "reporting",
+        "repositories",
+        "scm",
+        "url",
+        "version");
 
     pomElementsName.forEach(
         elementName -> {
@@ -276,15 +281,12 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
   }
 
   private boolean isFlattenPluginDirectlyUsed(Model model) {
-    Predicate<Plugin> isFlattenPlugin =
-        p ->
-            ORG_CODEHAUS_MOJO.equals(p.getGroupId())
-                && FLATTEN_MAVEN_PLUGIN.equals(p.getArtifactId());
+    Predicate<Plugin> isFlattenPlugin = p -> ORG_CODEHAUS_MOJO.equals(p.getGroupId())
+        && FLATTEN_MAVEN_PLUGIN.equals(p.getArtifactId());
 
-    List<Plugin> pluginList =
-        Optional.ofNullable(model.getBuild())
-            .map(Build::getPlugins)
-            .orElse(Collections.emptyList());
+    List<Plugin> pluginList = Optional.ofNullable(model.getBuild())
+        .map(Build::getPlugins)
+        .orElse(Collections.emptyList());
 
     return pluginList.stream().filter(isFlattenPlugin).findAny().isPresent();
   }
@@ -301,8 +303,8 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
   }
 
   private boolean isVersionFromTag(JGitverInformationProvider calculator) {
-    List<String> versionTagsOnHead =
-        Arrays.asList(calculator.meta(Metadatas.HEAD_VERSION_ANNOTATED_TAGS).orElse("").split(","));
+    List<String> versionTagsOnHead = Arrays
+        .asList(calculator.meta(Metadatas.HEAD_VERSION_ANNOTATED_TAGS).orElse("").split(","));
     String baseTag = calculator.meta(Metadatas.BASE_TAG).orElse("");
     return versionTagsOnHead.contains(baseTag);
   }
@@ -310,25 +312,22 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
   private void addAttachPomMojo(Model model) {
     ensureBuildWithPluginsExistInModel(model);
 
-    Optional<Plugin> pluginOptional =
-        model.getBuild().getPlugins().stream()
-            .filter(
-                x ->
-                    JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                        && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-            .findFirst();
+    Optional<Plugin> pluginOptional = model.getBuild().getPlugins().stream()
+        .filter(
+            x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+        .findFirst();
 
     StringBuilder pluginVersion = new StringBuilder();
 
-    try (InputStream inputStream =
-        getClass()
-            .getResourceAsStream(
-                "/META-INF/maven/"
-                    + JGitverUtils.EXTENSION_GROUP_ID
-                    + "/"
-                    + JGitverUtils.EXTENSION_ARTIFACT_ID
-                    + "/pom"
-                    + ".properties")) {
+    try (InputStream inputStream = getClass()
+        .getResourceAsStream(
+            "/META-INF/maven/"
+                + JGitverUtils.EXTENSION_GROUP_ID
+                + "/"
+                + JGitverUtils.EXTENSION_ARTIFACT_ID
+                + "/pom"
+                + ".properties")) {
       Properties properties = new Properties();
       properties.load(inputStream);
       pluginVersion.append(properties.getProperty("version"));
@@ -337,37 +336,34 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
       logger.warn(ignored.getMessage(), ignored);
     }
 
-    Plugin plugin =
-        pluginOptional.orElseGet(
-            () -> {
-              Plugin plugin2 = new Plugin();
-              plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
-              plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
-              plugin2.setVersion(pluginVersion.toString());
+    Plugin plugin = pluginOptional.orElseGet(
+        () -> {
+          Plugin plugin2 = new Plugin();
+          plugin2.setGroupId(JGitverUtils.EXTENSION_GROUP_ID);
+          plugin2.setArtifactId(JGitverUtils.EXTENSION_ARTIFACT_ID);
+          plugin2.setVersion(pluginVersion.toString());
 
-              model.getBuild().getPlugins().add(0, plugin2);
-              return plugin2;
-            });
+          model.getBuild().getPlugins().add(0, plugin2);
+          return plugin2;
+        });
 
     if (Objects.isNull(plugin.getExecutions())) {
       plugin.setExecutions(new ArrayList<>());
     }
 
     String pluginRunPhase = System.getProperty("jgitver.pom-replacement-phase", "prepare-package");
-    Optional<PluginExecution> pluginExecutionOptional =
-        plugin.getExecutions().stream()
-            .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase()))
-            .findFirst();
+    Optional<PluginExecution> pluginExecutionOptional = plugin.getExecutions().stream()
+        .filter(x -> pluginRunPhase.equalsIgnoreCase(x.getPhase()))
+        .findFirst();
 
-    PluginExecution pluginExecution =
-        pluginExecutionOptional.orElseGet(
-            () -> {
-              PluginExecution pluginExecution2 = new PluginExecution();
-              pluginExecution2.setPhase(pluginRunPhase);
+    PluginExecution pluginExecution = pluginExecutionOptional.orElseGet(
+        () -> {
+          PluginExecution pluginExecution2 = new PluginExecution();
+          pluginExecution2.setPhase(pluginRunPhase);
 
-              plugin.getExecutions().add(pluginExecution2);
-              return pluginExecution2;
-            });
+          plugin.getExecutions().add(pluginExecution2);
+          return pluginExecution2;
+        });
 
     if (Objects.isNull(pluginExecution.getGoals())) {
       pluginExecution.setGoals(new ArrayList<>());
@@ -383,13 +379,11 @@ public class JGitverModelProcessor extends DefaultModelProcessor {
       plugin.setDependencies(new ArrayList<>());
     }
 
-    Optional<Dependency> dependencyOptional =
-        plugin.getDependencies().stream()
-            .filter(
-                x ->
-                    JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
-                        && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
-            .findFirst();
+    Optional<Dependency> dependencyOptional = plugin.getDependencies().stream()
+        .filter(
+            x -> JGitverUtils.EXTENSION_GROUP_ID.equalsIgnoreCase(x.getGroupId())
+                && JGitverUtils.EXTENSION_ARTIFACT_ID.equalsIgnoreCase(x.getArtifactId()))
+        .findFirst();
 
     dependencyOptional.orElseGet(
         () -> {

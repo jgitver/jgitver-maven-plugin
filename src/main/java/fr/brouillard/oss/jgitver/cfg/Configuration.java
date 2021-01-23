@@ -18,9 +18,16 @@ package fr.brouillard.oss.jgitver.cfg;
 import fr.brouillard.oss.jgitver.LookupPolicy;
 import fr.brouillard.oss.jgitver.ScriptType;
 import fr.brouillard.oss.jgitver.Strategies;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.simpleframework.xml.*;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Default;
+import org.simpleframework.xml.DefaultType;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
 @Root
 @Default(DefaultType.FIELD)
