@@ -48,8 +48,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-;
-
 /** Replacement ModelProcessor using jgitver while loading POMs in order to adapt versions. */
 @Component(role = ModelProcessor.class)
 public class JGitverModelProcessor extends DefaultModelProcessor {
