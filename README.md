@@ -51,7 +51,7 @@ __manually__
       <extension>
         <groupId>fr.brouillard.oss</groupId>
         <artifactId>jgitver-maven-plugin</artifactId>
-        <version>1.4.4</version>
+        <version>1.8.0</version>
       </extension>
     </extensions>
     ```
