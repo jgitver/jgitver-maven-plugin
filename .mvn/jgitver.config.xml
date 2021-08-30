@@ -21,9 +21,9 @@
     <useDirty>true</useDirty>
     <exclusions>
         <exclusion>.repository</exclusion>
-        <exclusion>target/local-repo</exclusion>
-        <exclusion>target/it/issues/issue-30-pre</exclusion>
-        <exclusion>target/it/pom-with-old-extension-system</exclusion>
-        <exclusion>target/it/pom-with-old-plugin-system</exclusion>
+        <exclusion>extension/target/local-repo</exclusion>
+        <exclusion>extension/target/it/issues/issue-30-pre</exclusion>
+        <exclusion>extension/target/it/pom-with-old-extension-system</exclusion>
+        <exclusion>extension/target/it/pom-with-old-plugin-system</exclusion>
     </exclusions>
 </configuration>

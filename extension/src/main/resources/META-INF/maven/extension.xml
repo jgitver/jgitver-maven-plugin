@@ -1,0 +1,9 @@
+<extension>
+  <exportedPackages>
+    <exportedPackage>fr.brouillard.oss.jgitver.*</exportedPackage>
+    <exportedPackage>fr.brouillard.oss.jgitver.metadata.*</exportedPackage>
+  </exportedPackages>
+  <exportedArtifacts>
+    <exportedArtifact>fr.brouillard.oss:jgitver</exportedArtifact>
+    </exportedArtifacts>
+</extension>

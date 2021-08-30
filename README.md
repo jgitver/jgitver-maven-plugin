@@ -266,6 +266,7 @@ or using docker
 build and filter some IT tests
 
 - `mvn -Prun-its clean install "-Dinvoker.test=issues/issue-36*"`
+- `mvn -Prun-its clean install "-Dinvoker.test=java-plugin-extension-it"`
 
 If needed, one can also add in above docker command a volume sharing 
 with the maven local repository by adding something like `-v MLR_LOCATION:/root/.m2/repository` for example `-v D:\dev\mlr:/root/.m2/repository`.
