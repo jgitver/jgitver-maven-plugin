@@ -46,12 +46,16 @@ public final class JGitverUtils {
   public static final String EXTENSION_PREFIX = "jgitver";
   public static final String EXTENSION_GROUP_ID = "fr.brouillard.oss";
   public static final String EXTENSION_ARTIFACT_ID = "jgitver-maven-plugin";
+  public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
+  public static final String PROJECT_VERSION = "${project.version}";
+
+  // Command line keys
   public static final String EXTENSION_SKIP = EXTENSION_PREFIX + ".skip";
   public static final String EXTENSION_FORCE_COMPUTATION = EXTENSION_PREFIX + ".forceComputation";
   public static final String EXTENSION_FLATTEN = EXTENSION_PREFIX + ".flatten";
   public static final String EXTENSION_USE_VERSION = EXTENSION_PREFIX + ".use-version";
-  public static final String SESSION_MAVEN_PROPERTIES_KEY = EXTENSION_PREFIX + ".session";
-  public static final String PROJECT_VERSION = "${project.version}";
+  public static final String EXTENSION_EXPORT_PROPERTIES_PATH =
+      EXTENSION_PREFIX + ".export-properties-path";
 
   public interface CLI {
     String OVERRIDE_CONFIG_FILE = EXTENSION_PREFIX + ".config";
@@ -369,6 +373,19 @@ public final class JGitverUtils {
    */
   public static Optional<String> versionOverride(final MavenSession session, final Logger logger) {
     return getProperty(session, EXTENSION_USE_VERSION, logger);
+  }
+
+  /**
+   * Provides the path (file name) to export properties to if defined as user or system property.
+   *
+   * @param session a running maven session
+   * @param logger logger
+   * @return an Optional containing the output filename to use if the corresponding user or system
+   *     property has been defined
+   */
+  public static Optional<String> exportPropertiesPath(
+      final MavenSession session, final Logger logger) {
+    return getProperty(session, EXTENSION_EXPORT_PROPERTIES_PATH, logger);
   }
 
   /**

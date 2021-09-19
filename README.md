@@ -109,6 +109,7 @@ _[Old](https://jgitver.github.io/maven/configuration/) xml schemas are kept for 
 - `-Djgitver.config=FILE` : overrides default config file and uses FILE instead
 - `-Djgitver.use-version=VERSION` : execute jgitver but finally uses VERSION as the project version 
 - `-Djgitver.resolve-project-version=true` : replaces the ${project.version} also in properties, dependencies, dependencyManagement, plugins and pluginManagement sections
+- `-Djgitver.export-properties-path=FILE` : exports output properties into the given file
 
 #### Working on a detached HEAD
 
@@ -119,13 +120,16 @@ Since `1.3.0` it now possible to provide externally the _branch_ information via
 - `JGITVER_BRANCH=SOME_BRANCH_NAME && mvn validate` for bash like shells
 - `SET JGITVER_BRANCH=SOME_BRANCH_NAME`  
     `mvn validate`  
-    for windows CMD (I don't know a one iner solution)
+    for windows CMD (I don't know a one liner solution)
 
 
-### Available properties
+### Available output properties
 
-Since `0.2.0`, the plugin exposes git calculated properties available during the maven build.
-Those are available under the following properties name: "jgitver.meta" where `meta` is one of [Metadatas](https://github.com/jgitver/jgitver/blob/master/src/main/java/fr/brouillard/oss/jgitver/metadata/Metadatas.java#L25) name in lowercase.
+The plugin exposes git calculated properties available during the maven build.
+Those are available under the following properties name: "jgitver.meta" where `meta` is one 
+of [Metadatas](https://github.com/jgitver/jgitver/blob/master/src/main/java/fr/brouillard/oss/jgitver/metadata/Metadatas.java#L25) name in lowercase
+in addition to `jgitver.used_version` which represents the version ultimately
+applied (in case it was overriden on the command line using `-Djgitver.use-version=VERSION`).
 
 You can then use them as standard maven properties in your build:
 
@@ -191,6 +195,18 @@ resulted in my case
      [echo] all_version_lightweight_tags: v0.2.0
 [INFO] Executed tasks
 ```
+
+You can also output the properties into a file so that they can be picked
+up by the next steps in your build pipeline. This is accomplished by setting
+the `jgitver.export-properties-path` system property, e.g. from the command
+line:
+
+``` text
+    mvn ... -Djgitver.export-properties-path=./jgitver-output.properties
+```
+
+The produced file follows the [Java Properties standard](https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html#load-java.io.Reader-).   
+
 
 ## Example
 
