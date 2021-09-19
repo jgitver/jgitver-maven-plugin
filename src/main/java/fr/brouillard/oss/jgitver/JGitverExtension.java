@@ -18,8 +18,12 @@ package fr.brouillard.oss.jgitver;
 import fr.brouillard.oss.jgitver.cfg.Configuration;
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
@@ -133,8 +137,26 @@ public class JGitverExtension extends AbstractMavenLifecycleParticipant {
                 .map(version -> Providers.fixVersion(version, finalInfoProvider))
                 .orElse(infoProvider);
 
+        // Put metadatas into Maven session properties
         JGitverUtils.fillPropertiesFromMetadatas(
             mavenSession.getUserProperties(), infoProvider, logger);
+
+        // Put metadatas into exportedProps file (if requested)
+        Optional<String> exportPropsPathOpt =
+            JGitverUtils.exportPropertiesPath(mavenSession, logger);
+        if (exportPropsPathOpt.isPresent()) {
+          Properties exportedProps = new Properties();
+          JGitverUtils.fillPropertiesFromMetadatas(exportedProps, infoProvider, logger);
+          String exportPropsPath = exportPropsPathOpt.get();
+          try (OutputStream os = new FileOutputStream(exportPropsPath)) {
+            exportedProps.store(
+                os, "Output from " + JGitverUtils.EXTENSION_ARTIFACT_ID + " execution.");
+            logger.info("Properties exported to file \"" + exportPropsPath + "\"");
+          } catch (IOException ex) {
+            throw new IllegalArgumentException(
+                "Cannot write properties to file \"" + exportPropsPath + "\"", ex);
+          }
+        }
 
         JGitverSession session = new JGitverSession(infoProvider, rootDirectory);
         sessionHolder.setSession(session);
