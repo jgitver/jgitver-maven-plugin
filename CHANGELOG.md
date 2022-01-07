@@ -2,6 +2,150 @@
 
 Changelog of [jgitver-maven-plugin](https://github.com/jgitver/jgitver-maven-plugin) project.
 
+## 1.9.0
+### GitHub [#163](https://github.com/jgitver/jgitver-maven-plugin/issues/163) Elegant way to convey Metadatas back to the environment
+
+**Support for export of info properties**
+
+ * If &#39;jgitver.export-properties-path=FILE` is specified then a
+ * properties file, FILE, will be generated with the jgitver info
+ * properties.
+ * Fixes #163
+
+[de60854c98ec822](https://github.com/jgitver/jgitver-maven-plugin/commit/de60854c98ec822) Lars Bruun-Hansen *2021-09-28 06:35:55*
+
+
+## 1.8.0
+### GitHub [#157](https://github.com/jgitver/jgitver-maven-plugin/issues/157) Update to jgitver 0.14.0 to resolve &quot;locking FileBasedConfig failed after 5 retries&quot;
+
+**Upgrade to jgitver 0.14.0. Closes #157**
+
+
+[2b12c272a2ee516](https://github.com/jgitver/jgitver-maven-plugin/commit/2b12c272a2ee516) Marc Carter *2021-08-24 20:48:51*
+
+
+## 1.7.1
+### Jira code-1 
+
+**specify javadoc language source version to avoid errors**
+
+ * see also https://stackoverflow.com/questions/62531431/exit-code-1-javadoc-error-the-code-being-documented-uses-modules-but
+
+[8df68168ee27bd9](https://github.com/jgitver/jgitver-maven-plugin/commit/8df68168ee27bd9) Matthieu Brouillard *2021-01-14 22:03:05*
+
+
+### Jira jgitver-0 
+
+**update dependency to jgitver-0.13.1**
+
+
+[abc1197c4646bc4](https://github.com/jgitver/jgitver-maven-plugin/commit/abc1197c4646bc4) Matthieu Brouillard *2021-01-14 21:47:02*
+
+
+## 1.7.0
+### GitHub [#129](https://github.com/jgitver/jgitver-maven-plugin/issues/129) replace project.version with value
+
+**add option to resolve project.version in depdencendies section**
+
+ * This closes #129
+
+[e0a9acd9ff57003](https://github.com/jgitver/jgitver-maven-plugin/commit/e0a9acd9ff57003) Michael Wirth *2020-12-07 08:43:20*
+
+
+### Jira issue-36 
+
+**temporary exclude issue-36.1 integration test**
+
+
+[4fb439f9d6680b8](https://github.com/jgitver/jgitver-maven-plugin/commit/4fb439f9d6680b8) Matthieu Brouillard *2020-11-23 21:51:45*
+
+
+### Jira plugin-1 
+
+**bump to self use of jgitver-maven-plugin-1.6.0**
+
+
+[d1ec089e1beee96](https://github.com/jgitver/jgitver-maven-plugin/commit/d1ec089e1beee96) Matthieu Brouillard *2020-12-07 09:07:54*
+
+
+## 1.6.0
+### GitHub [#117](https://github.com/jgitver/jgitver-maven-plugin/issues/117) update checkstyle to upper version
+
+**update checkstyle plugin and library to recent versions, adapt configuration**
+
+ * fixes #117
+
+[ba44a40ac1040a2](https://github.com/jgitver/jgitver-maven-plugin/commit/ba44a40ac1040a2) Matthieu Brouillard *2019-06-06 09:15:34*
+
+
+### GitHub [#132](https://github.com/jgitver/jgitver-maven-plugin/issues/132) in maven mode allow SNAPSHOT on version tag 
+
+**allow to control the forceComputation parameter**
+
+ * fixes #132
+
+[932abacc1eeda4e](https://github.com/jgitver/jgitver-maven-plugin/commit/932abacc1eeda4e) Matthieu Brouillard *2020-11-23 20:19:07*
+
+
+## 1.5.1
+### GitHub [#73](https://github.com/jgitver/jgitver-maven-plugin/pull/73) Add support for external parents in a multi-module project 
+
+**update to jgitver-0.10.2 due to jgitver/jgitver#73**
+
+
+[e45d1669b39cedb](https://github.com/jgitver/jgitver-maven-plugin/commit/e45d1669b39cedb) Matthieu Brouillard *2019-01-21 12:48:52*
+
+
+### Jira jgitver-0 
+
+**update to jgitver-0.10.2 due to jgitver/jgitver#73**
+
+
+[e45d1669b39cedb](https://github.com/jgitver/jgitver-maven-plugin/commit/e45d1669b39cedb) Matthieu Brouillard *2019-01-21 12:48:52*
+
+
+## 1.5.0
+### GitHub [#111](https://github.com/jgitver/jgitver-maven-plugin/issues/111) introduce lookup strategy configuration
+
+**use jgitver 0.10.1, introduce LookupPolicy**
+
+ * fixes #111
+
+[122e590ee4a1dbe](https://github.com/jgitver/jgitver-maven-plugin/commit/122e590ee4a1dbe) Matthieu Brouillard *2019-01-15 11:36:26*
+
+
+### Jira SUREFIRE-1588 
+
+**update surefire to bypass SUREFIRE-1588**
+
+ * when using docker images to perform it tests we are facing https://issues.apache.org/jira/browse/SUREFIRE-1588
+
+[f7c912650cd7cac](https://github.com/jgitver/jgitver-maven-plugin/commit/f7c912650cd7cac) Matthieu Brouillard *2019-01-15 11:36:27*
+
+**remove tests in IT that fail because of SUREFIRE-1588**
+
+
+[2e3f2d42ea78ad0](https://github.com/jgitver/jgitver-maven-plugin/commit/2e3f2d42ea78ad0) Matthieu Brouillard *2019-01-15 11:36:27*
+
+
+## 1.4.5
+### GitHub [#69](https://github.com/jgitver/jgitver-maven-plugin/issues/69) Nice to have jgitver.commit_distance
+
+**update guava dependency to 27.0.1-jre**
+
+ * see jgitver/jgitver#69
+
+[a60383dc9816ded](https://github.com/jgitver/jgitver-maven-plugin/commit/a60383dc9816ded) Matthieu Brouillard *2019-01-07 10:11:03*
+
+
+### Jira jgitver-0 
+
+**update to jgitver-0.9.0**
+
+
+[439d4c633510a02](https://github.com/jgitver/jgitver-maven-plugin/commit/439d4c633510a02) Matthieu Brouillard *2019-01-07 09:48:10*
+
+
 ## 1.4.4
 ### GitHub [#101](https://github.com/jgitver/jgitver-maven-plugin/issues/101) &gt;=1.4.0 freezes in life-lock when trying to edit configuration
 
