@@ -15,11 +15,13 @@
 # limitations under the License.
 #
 
+SEARCH_MAVEN_URL="https://search.maven.org/solrsearch/select?q=g:%22fr.brouillard.oss%22+AND+a:%22jgitver-maven-plugin%22&core=gav&rows=1&wt=json"
+
 if command -v jq >/dev/null; then
-    JGITVER_LATEST_VERSION=`curl -s "http://search.maven.org/solrsearch/select?q=g:%22fr.brouillard.oss%22+AND+a:%22jgitver-maven-plugin%22&core=gav&rows=1&wt=json" | jq '.response.docs[0].v' | tr -d '"'`
+    JGITVER_LATEST_VERSION=`curl -s "$SEARCH_MAVEN_URL" | jq '.response.docs[0].v' | tr -d '"'`
 else 
     if command -v python >/dev/null; then
-        JGITVER_LATEST_VERSION=`curl -s "http://search.maven.org/solrsearch/select?q=g:%22fr.brouillard.oss%22+AND+a:%22jgitver-maven-plugin%22&core=gav&rows=1&wt=json" | python -mjson.tool \
+        JGITVER_LATEST_VERSION=`curl -s "$SEARCH_MAVEN_URL" | python -mjson.tool \
             | grep '"v"' | tr -d '", ' | cut -d ':' -f 2`
     else
         echo missing jq or python, cannot create automatically jgitver maven extension file.
