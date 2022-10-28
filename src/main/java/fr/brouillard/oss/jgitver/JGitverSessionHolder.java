@@ -16,9 +16,11 @@
 package fr.brouillard.oss.jgitver;
 
 import java.util.Optional;
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-@Component(role = JGitverSessionHolder.class, instantiationStrategy = "singleton")
+@Named
+@Singleton
 public class JGitverSessionHolder {
   private JGitverSession session = null;
 

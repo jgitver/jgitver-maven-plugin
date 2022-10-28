@@ -17,6 +17,16 @@ package fr.brouillard.oss.jgitver;
 
 import fr.brouillard.oss.jgitver.cfg.Configuration;
 import fr.brouillard.oss.jgitver.metadata.Metadatas;
+import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.building.ModelProcessor;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.logging.Logger;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,26 +36,19 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.apache.maven.AbstractMavenLifecycleParticipant;
-import org.apache.maven.MavenExecutionException;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.building.ModelProcessor;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 
-@Component(role = AbstractMavenLifecycleParticipant.class, hint = "jgitver")
+@Named("jgitver")
+@Singleton
 public class JGitverExtension extends AbstractMavenLifecycleParticipant {
-  @Requirement private Logger logger;
+  @Inject private Logger logger;
 
-  @Requirement private PlexusContainer container;
+  @Inject private PlexusContainer container;
 
-  @Requirement private ModelProcessor modelProcessor;
+  @Inject private ModelProcessor modelProcessor;
 
-  @Requirement private JGitverSessionHolder sessionHolder;
+  @Inject private JGitverSessionHolder sessionHolder;
 
-  @Requirement private JGitverConfiguration configurationProvider;
+  @Inject private JGitverConfiguration configurationProvider;
 
   @Override
   public void afterSessionStart(MavenSession mavenSession) throws MavenExecutionException {
