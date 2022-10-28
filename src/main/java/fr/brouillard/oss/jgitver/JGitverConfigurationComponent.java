@@ -21,19 +21,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.LegacySupport;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
-@Component(role = JGitverConfiguration.class, instantiationStrategy = "singleton")
+@Named
+@Singleton
 public class JGitverConfigurationComponent implements JGitverConfiguration {
-  @Requirement private LegacySupport legacySupport = null;
+  @Inject private LegacySupport legacySupport = null;
 
-  @Requirement private Logger logger = null;
+  @Inject private Logger logger = null;
 
   private volatile Configuration configuration;
 

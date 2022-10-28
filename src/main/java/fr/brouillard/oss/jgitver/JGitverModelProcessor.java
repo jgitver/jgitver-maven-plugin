@@ -30,6 +30,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.building.Source;
@@ -43,25 +46,24 @@ import org.apache.maven.model.Scm;
 import org.apache.maven.model.building.DefaultModelProcessor;
 import org.apache.maven.model.building.ModelProcessor;
 import org.apache.maven.plugin.LegacySupport;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 ;
 
 /** Replacement ModelProcessor using jgitver while loading POMs in order to adapt versions. */
-@Component(role = ModelProcessor.class)
+@Singleton
+@Named
 public class JGitverModelProcessor extends DefaultModelProcessor {
   public static final String FLATTEN_MAVEN_PLUGIN = "flatten-maven-plugin";
   public static final String ORG_CODEHAUS_MOJO = "org.codehaus.mojo";
-  @Requirement private Logger logger = null;
+  @Inject private Logger logger = null;
 
-  @Requirement private LegacySupport legacySupport = null;
+  @Inject private LegacySupport legacySupport = null;
 
-  @Requirement private JGitverConfiguration configurationProvider;
+  @Inject private JGitverConfiguration configurationProvider;
 
-  @Requirement private JGitverSessionHolder jgitverSession;
+  @Inject private JGitverSessionHolder jgitverSession;
 
   public JGitverModelProcessor() {
     super();
